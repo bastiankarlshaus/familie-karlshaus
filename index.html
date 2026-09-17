@@ -137,7 +137,7 @@ function saveConfig(cfg){
   localStorage.setItem(LS_KEY, JSON.stringify(cfg));
 }
 
-const APP_VERSION = "v3 · 17.09.2026 19:15";
+const APP_VERSION = "v4 · 17.09.2026 20:00";
 document.getElementById("versionLabel").textContent = APP_VERSION;
 
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
@@ -207,8 +207,8 @@ async function airtableFetchAll(tableName){
   return records;
 }
 
-function fieldArr(rec, name){
-  const v = rec.fields[name];
+function fieldArr(fields, name){
+  const v = fields[name];
   return Array.isArray(v) ? v : (v ? [v] : []);
 }
 
