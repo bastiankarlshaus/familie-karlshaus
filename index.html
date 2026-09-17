@@ -124,6 +124,45 @@ function saveConfig(cfg){
   localStorage.setItem(LS_KEY, JSON.stringify(cfg));
 }
 
+const UNLOCK_KEY = "familie_karlshaus_unlocked";
+
+async function sha256Hex(str){
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+}
+
+function isUnlocked(){
+  return !config.pwHash || localStorage.getItem(UNLOCK_KEY) === config.pwHash;
+}
+
+function renderGate(){
+  const main = document.getElementById("main");
+  main.innerHTML = `
+    <div class="hint" style="padding-top:60px">
+      <div style="font-size:32px; margin-bottom:12px">🔒</div>
+      <div style="margin-bottom:14px">Bitte Passwort eingeben</div>
+      <div style="max-width:280px; margin:0 auto">
+        <input type="password" id="gatePw" placeholder="Passwort" style="text-align:center">
+        <div class="error" id="gateError" style="display:none; margin-top:8px"></div>
+        <button class="btn" id="gateSubmit" style="width:100%; margin-top:12px">Entsperren</button>
+      </div>
+    </div>`;
+  const submit = async () => {
+    const val = document.getElementById("gatePw").value;
+    const hash = await sha256Hex(val);
+    if (hash === config.pwHash) {
+      localStorage.setItem(UNLOCK_KEY, hash);
+      if (isConfigured()) loadAll(); else render();
+    } else {
+      const err = document.getElementById("gateError");
+      err.textContent = "Falsches Passwort.";
+      err.style.display = "block";
+    }
+  };
+  document.getElementById("gateSubmit").addEventListener("click", submit);
+  document.getElementById("gatePw").addEventListener("keydown", e => { if (e.key === "Enter") submit(); });
+}
+
 let config = loadConfig();
 let state = {
   personen: [],
@@ -213,29 +252,65 @@ function renderSettingsModal(){
           <label>Link zum Airtable-Eingabeformular (optional)</label>
           <input type="text" id="cfgFormUrl" value="${config.formUrl||""}" placeholder="https://airtable.com/app.../form">
         </div>
+        <div class="field">
+          <label>Neues Zugangspasswort setzen (leer lassen = unverändert)</label>
+          <input type="password" id="cfgPassword" placeholder="Passwort">
+        </div>
+        ${config.pwHash ? `<button class="btn secondary" id="cfgRemovePw" style="margin-bottom:10px">Passwortschutz entfernen</button>` : ""}
         <div class="error" id="cfgError" style="display:none"></div>
         <div class="btn-row">
           <button class="btn" id="cfgSave">Speichern</button>
           <button class="btn secondary" id="cfgCancel">Abbrechen</button>
         </div>
+        ${isConfigured() ? `
+        <hr style="border:none; border-top:1px solid var(--border); margin:18px 0">
+        <div class="field" style="margin-bottom:8px">
+          <label>Setup-Link (für neue Geräte, z.B. in OneDrive speichern)</label>
+          <button class="btn secondary" id="cfgMakeLink" style="width:100%">Setup-Link erzeugen</button>
+        </div>
+        <textarea id="cfgLinkOut" readonly style="display:none; width:100%; height:70px; margin-top:6px; padding:8px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:12px"></textarea>
+        <div class="meta" id="cfgLinkHint" style="display:none; margin-top:6px">Enthält deine Zugangsdaten unverschlüsselt (nur codiert) – vertraulich behandeln, nicht öffentlich teilen.</div>
+        ` : ""}
       </div>
     </div>`;
   document.getElementById("overlay").addEventListener("click", (e) => {
     if (e.target.id === "overlay") closeModal();
   });
   document.getElementById("cfgCancel").addEventListener("click", closeModal);
-  document.getElementById("cfgSave").addEventListener("click", () => {
+  const removeBtn = document.getElementById("cfgRemovePw");
+  if (removeBtn) removeBtn.addEventListener("click", () => {
+    delete config.pwHash;
+    saveConfig(config);
+    localStorage.removeItem(UNLOCK_KEY);
+    closeModal();
+    render();
+  });
+  const makeLinkBtn = document.getElementById("cfgMakeLink");
+  if (makeLinkBtn) makeLinkBtn.addEventListener("click", () => {
+    const payload = btoa(unescape(encodeURIComponent(JSON.stringify(config))));
+    const url = `${location.origin}${location.pathname}?setup=${payload}`;
+    const out = document.getElementById("cfgLinkOut");
+    out.style.display = "block";
+    out.value = url;
+    out.select();
+    document.getElementById("cfgLinkHint").style.display = "block";
+    if (navigator.clipboard) navigator.clipboard.writeText(url).catch(() => {});
+  });
+  document.getElementById("cfgSave").addEventListener("click", async () => {
     const baseId = document.getElementById("cfgBaseId").value.trim();
     const token = document.getElementById("cfgToken").value.trim();
     const formUrl = document.getElementById("cfgFormUrl").value.trim();
+    const newPassword = document.getElementById("cfgPassword").value;
     if (!baseId.startsWith("app") || !token.startsWith("pat")) {
       const err = document.getElementById("cfgError");
       err.textContent = "Bitte eine gültige Base ID (beginnt mit 'app') und ein gültiges Token (beginnt mit 'pat') eingeben.";
       err.style.display = "block";
       return;
     }
-    config = { baseId, token, formUrl };
+    const pwHash = newPassword ? await sha256Hex(newPassword) : config.pwHash;
+    config = { baseId, token, formUrl, pwHash };
     saveConfig(config);
+    if (newPassword) localStorage.setItem(UNLOCK_KEY, pwHash);
     closeModal();
     loadAll();
   });
@@ -387,7 +462,7 @@ function renderDetail(id){
   });
 }
 
-document.getElementById("settingsBtn").addEventListener("click", renderSettingsModal);
+document.getElementById("settingsBtn").addEventListener("click", () => { if (isUnlocked()) renderSettingsModal(); });
 document.getElementById("searchInput").addEventListener("input", () => { if (!currentPersonId) renderList(); });
 document.getElementById("fabBtn").addEventListener("click", () => {
   if (config.formUrl) {
@@ -397,7 +472,20 @@ document.getElementById("fabBtn").addEventListener("click", () => {
   }
 });
 
-if (isConfigured()) loadAll(); else render();
+function applySetupLinkFromUrl(){
+  const params = new URLSearchParams(location.search);
+  const payload = params.get("setup");
+  if (!payload) return false;
+  try {
+    config = JSON.parse(decodeURIComponent(escape(atob(payload))));
+    saveConfig(config);
+  } catch (e) { /* ignoriere ungültigen Link */ }
+  history.replaceState(null, "", location.pathname);
+  return true;
+}
+
+applySetupLinkFromUrl();
+if (!isUnlocked()) renderGate(); else if (isConfigured()) loadAll(); else render();
 </script>
 </body>
 </html>
