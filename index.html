@@ -159,6 +159,10 @@
   <div class="search-row">
     <input type="text" id="searchInput" placeholder="Suche über alle Felder (Name, Wohnort, Beruf, Datum, Bemerkung…)" autocomplete="off">
   </div>
+  <div class="search-row" style="margin-top:8px">
+    <select id="sortFieldSelect" style="flex:1"></select>
+    <button class="btn secondary" id="sortDirBtn" style="width:52px; flex:0 0 auto">▲</button>
+  </div>
 </header>
 
 <div id="saveBarRoot"></div>
@@ -172,8 +176,21 @@
 <div id="modalRoot"></div>
 
 <script>
-const APP_VERSION = "v11 · 19.09.2026 · Volle Breite, eine Stichwortsuche, deutlichere Sortierpfeile";
-document.getElementById("versionLabel").textContent = APP_VERSION;
+async function showBuildTime(){
+  const label = document.getElementById("versionLabel");
+  label.textContent = "Stand: wird geladen…";
+  try {
+    const res = await fetch(location.pathname, { cache: "no-store" });
+    const lm = res.headers.get("Last-Modified");
+    if (!lm) { label.textContent = ""; return; }
+    const d = new Date(lm);
+    const pad = n => String(n).padStart(2, "0");
+    label.textContent = `Stand: ${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())} Uhr`;
+  } catch (e) {
+    label.textContent = "";
+  }
+}
+showBuildTime();
 
 const LS_KEY = "familie_karlshaus_config_v2";
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
@@ -377,6 +394,20 @@ function closeModal(){
   document.getElementById("modalRoot").innerHTML = "";
 }
 
+function deletePerson(id){
+  if (!confirm(`${personName(id)} wirklich löschen?`)) return;
+  state.personen = state.personen.filter(x => x.id !== id);
+  state.personen.forEach(x => {
+    if (x.mutter === id) x.mutter = null;
+    if (x.vater === id) x.vater = null;
+    x.ehepartner = (x.ehepartner||[]).filter(eid => eid !== id);
+  });
+  rebuildIndex();
+  markDirty();
+  currentPersonId = null;
+  render();
+}
+
 function renderPersonForm(editId){
   const p = editId ? state.personById[editId] : null;
   const root = document.getElementById("modalRoot");
@@ -409,20 +440,7 @@ function renderPersonForm(editId){
   document.getElementById("overlay").addEventListener("click", (e) => { if (e.target.id === "overlay") closeModal(); });
   document.getElementById("pfCancel").addEventListener("click", closeModal);
   const delBtn = document.getElementById("pfDelete");
-  if (delBtn) delBtn.addEventListener("click", () => {
-    if (!confirm(`${personName(editId)} wirklich löschen?`)) return;
-    state.personen = state.personen.filter(x => x.id !== editId);
-    state.personen.forEach(x => {
-      if (x.mutter === editId) x.mutter = null;
-      if (x.vater === editId) x.vater = null;
-      x.ehepartner = (x.ehepartner||[]).filter(id => id !== editId);
-    });
-    rebuildIndex();
-    markDirty();
-    closeModal();
-    currentPersonId = null;
-    render();
-  });
+  if (delBtn) delBtn.addEventListener("click", () => { closeModal(); deletePerson(editId); });
   document.getElementById("pfSave").addEventListener("click", () => {
     const data = {
       vorname: document.getElementById("pfVorname").value.trim(),
@@ -482,7 +500,7 @@ function renderList(){
   if (items.length === 0) {
     main.innerHTML = `<div class="hint">Keine Treffer.</div>`;
   } else {
-    main.innerHTML = `<div class="hint">${items.length} von ${state.personen.length} Personen. Spaltenkopf antippen zum Sortieren (Laptop/Tablet) bzw. Karten antippen (Handy).</div>`
+    main.innerHTML = `<div class="hint">${items.length} von ${state.personen.length} Personen. Sortierung oben wählen, oder (Laptop/Tablet) Spaltenkopf antippen.</div>`
       + tableHtml(items) + cardListHtml(items);
   }
   main.querySelectorAll("[data-person]").forEach(el => {
@@ -492,6 +510,8 @@ function renderList(){
     el.addEventListener("click", () => {
       const key = el.dataset.key;
       if (sortState.key === key) sortState.dir *= -1; else { sortState.key = key; sortState.dir = 1; }
+      document.getElementById("sortFieldSelect").value = sortState.key;
+      document.getElementById("sortDirBtn").textContent = sortState.dir === 1 ? "▲" : "▼";
       renderList();
     });
   });
@@ -611,19 +631,39 @@ function renderDetail(id){
       ${p.bemerkungen ? `<div class="section-label">Bemerkungen</div><div class="meta" style="white-space:pre-line">${escapeHtml(p.bemerkungen)}</div>` : ""}
       <div class="btn-row">
         <button class="btn secondary" id="editBtn">Bearbeiten</button>
+        <button class="btn danger" id="deleteBtn">Löschen</button>
       </div>
     </div>
   `;
   document.getElementById("backBtn").addEventListener("click", () => { currentPersonId = null; render(); });
   document.getElementById("editBtn").addEventListener("click", () => renderPersonForm(id));
+  document.getElementById("deleteBtn").addEventListener("click", () => deletePerson(id));
   main.querySelectorAll("[data-person]").forEach(el => {
     el.addEventListener("click", () => { currentPersonId = el.dataset.person; render(); window.scrollTo(0,0); });
+  });
+}
+
+function initSortControls(){
+  const sel = document.getElementById("sortFieldSelect");
+  sel.innerHTML = FIELDS.map(f => `<option value="${f.key}">Sortieren: ${f.label}</option>`).join("");
+  sel.value = sortState.key;
+  sel.addEventListener("change", () => {
+    sortState.key = sel.value;
+    if (!currentPersonId) renderList();
+  });
+  const dirBtn = document.getElementById("sortDirBtn");
+  dirBtn.textContent = sortState.dir === 1 ? "▲" : "▼";
+  dirBtn.addEventListener("click", () => {
+    sortState.dir *= -1;
+    dirBtn.textContent = sortState.dir === 1 ? "▲" : "▼";
+    if (!currentPersonId) renderList();
   });
 }
 
 document.getElementById("settingsBtn").addEventListener("click", () => { if (isUnlocked()) renderSettingsModal(); });
 document.getElementById("searchInput").addEventListener("input", () => { if (!currentPersonId) renderList(); });
 document.getElementById("fabBtn").addEventListener("click", () => { if (isUnlocked()) renderPersonForm(null); });
+initSortControls();
 
 if (!isUnlocked()) renderGate(); else loadAll();
 </script>
