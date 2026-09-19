@@ -118,6 +118,16 @@
   .savebar button{background:#fff; color:var(--danger); border:none; border-radius:8px; padding:7px 12px; font-weight:700; cursor:pointer}
   .mselect{display:flex; flex-wrap:wrap; gap:6px; padding:8px; border:1px solid var(--border); border-radius:10px; background:var(--card)}
   .mselect label{display:flex; align-items:center; gap:5px; font-size:13px; background:var(--bg); border:1px solid var(--border); border-radius:999px; padding:4px 10px 4px 6px}
+  .pindots{display:flex; justify-content:center; gap:12px; margin:18px 0}
+  .pindots span{width:16px; height:16px; border-radius:50%; border:2px solid var(--border); display:inline-block}
+  .pindots span.filled{background:var(--accent); border-color:var(--accent)}
+  .pinpad{display:grid; grid-template-columns:repeat(3,64px); gap:12px; justify-content:center; margin:0 auto}
+  .pinpad button{
+    width:64px; height:64px; border-radius:50%; border:1px solid var(--border); background:var(--card);
+    color:var(--text); font-size:22px; cursor:pointer;
+  }
+  .pinpad button:active{background:var(--bg)}
+  .pinpad .empty{visibility:hidden}
 </style>
 </head>
 <body>
@@ -143,7 +153,7 @@
 <div id="modalRoot"></div>
 
 <script>
-const APP_VERSION = "v6 · 19.09.2026 · JSON-Version (ohne Airtable)";
+const APP_VERSION = "v7 · 19.09.2026 · PIN-Sperre, volle Liste, Formular ohne Verknüpfungen";
 document.getElementById("versionLabel").textContent = APP_VERSION;
 
 const LS_KEY = "familie_karlshaus_config_v2";
@@ -158,12 +168,53 @@ function saveConfig(cfg){
 }
 let config = loadConfig();
 
+const DEFAULT_PW_HASH = "08f78996d1305172a91760c98ad43f3c5bdbdac8aba9edec8e56fe3e7ab6c95b";
+
 async function sha256Hex(str){
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
 }
+function activePwHash(){
+  return config.pwHash || DEFAULT_PW_HASH;
+}
 function isUnlocked(){
-  return !config.pwHash || localStorage.getItem(UNLOCK_KEY) === config.pwHash;
+  return localStorage.getItem(UNLOCK_KEY) === activePwHash();
+}
+
+function renderPinPad(container, title, onComplete){
+  let entered = "";
+  container.innerHTML = `
+    <div class="hint" style="padding-top:40px">
+      <div style="font-size:32px; margin-bottom:8px">🔒</div>
+      <div style="margin-bottom:6px">${title}</div>
+      <div class="pindots" id="pinDots">${"".padEnd(6,"o").split("").map(()=>'<span></span>').join("")}</div>
+      <div class="pinpad" id="pinPad">
+        ${[1,2,3,4,5,6,7,8,9].map(n=>`<button data-n="${n}">${n}</button>`).join("")}
+        <button class="empty"></button>
+        <button data-n="0">0</button>
+        <button data-n="back">⌫</button>
+      </div>
+      <div class="error" id="pinError" style="display:none; margin-top:14px"></div>
+    </div>`;
+  const dots = () => container.querySelectorAll("#pinDots span").forEach((el,i) => el.classList.toggle("filled", i < entered.length));
+  container.querySelectorAll("#pinPad button[data-n]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const n = btn.dataset.n;
+      if (n === "back") { entered = entered.slice(0,-1); dots(); return; }
+      if (entered.length >= 6) return;
+      entered += n;
+      dots();
+      if (entered.length === 6) {
+        const ok = await onComplete(entered);
+        if (!ok) {
+          const err = container.querySelector("#pinError");
+          if (err) { err.textContent = "Falsches Passwort."; err.style.display = "block"; }
+          entered = "";
+          dots();
+        }
+      }
+    });
+  });
 }
 
 let state = { personen: [], personById: {}, loaded: false, error: null, dirty: false };
@@ -240,30 +291,15 @@ async function loadAll(){
 
 function renderGate(){
   const main = document.getElementById("main");
-  main.innerHTML = `
-    <div class="hint" style="padding-top:60px">
-      <div style="font-size:32px; margin-bottom:12px">🔒</div>
-      <div style="margin-bottom:14px">Bitte Passwort eingeben</div>
-      <div style="max-width:280px; margin:0 auto">
-        <input type="password" id="gatePw" placeholder="Passwort" style="text-align:center">
-        <div class="error" id="gateError" style="display:none; margin-top:8px"></div>
-        <button class="btn" id="gateSubmit" style="width:100%; margin-top:12px">Entsperren</button>
-      </div>
-    </div>`;
-  const submit = async () => {
-    const val = document.getElementById("gatePw").value;
-    const hash = await sha256Hex(val);
-    if (hash === config.pwHash) {
+  renderPinPad(main, "Bitte PIN eingeben", async (pin) => {
+    const hash = await sha256Hex(pin);
+    if (hash === activePwHash()) {
       localStorage.setItem(UNLOCK_KEY, hash);
       loadAll();
-    } else {
-      const err = document.getElementById("gateError");
-      err.textContent = "Falsches Passwort.";
-      err.style.display = "block";
+      return true;
     }
-  };
-  document.getElementById("gateSubmit").addEventListener("click", submit);
-  document.getElementById("gatePw").addEventListener("keydown", e => { if (e.key === "Enter") submit(); });
+    return false;
+  });
 }
 
 function renderSettingsModal(){
@@ -272,17 +308,10 @@ function renderSettingsModal(){
     <div class="modal-overlay" id="overlay">
       <div class="modal">
         <h3>Einstellungen</h3>
-        <div class="field">
-          <label>Neues Zugangspasswort setzen (leer lassen = unverändert)</label>
-          <input type="password" id="cfgPassword" placeholder="Passwort">
-        </div>
-        ${config.pwHash ? `<button class="btn secondary" id="cfgRemovePw" style="margin-bottom:10px">Passwortschutz entfernen</button>` : ""}
-        <div class="btn-row">
-          <button class="btn" id="cfgSave">Speichern</button>
-          <button class="btn secondary" id="cfgCancel">Abbrechen</button>
-        </div>
-        <hr style="border:none; border-top:1px solid var(--border); margin:18px 0">
-        <button class="btn secondary" id="cfgDownload" style="width:100%">daten.json herunterladen</button>
+        <button class="btn secondary" id="cfgChangePin" style="width:100%; margin-bottom:10px">PIN ändern</button>
+        ${config.pwHash ? `<button class="btn secondary" id="cfgRemovePw" style="width:100%; margin-bottom:10px">Auf Standard-PIN zurücksetzen</button>` : ""}
+        <button class="btn secondary" id="cfgDownload" style="width:100%; margin-bottom:10px">daten.json herunterladen</button>
+        <div class="btn-row"><button class="btn secondary" id="cfgCancel">Schließen</button></div>
       </div>
     </div>`;
   document.getElementById("overlay").addEventListener("click", (e) => { if (e.target.id === "overlay") closeModal(); });
@@ -292,18 +321,20 @@ function renderSettingsModal(){
   if (removeBtn) removeBtn.addEventListener("click", () => {
     delete config.pwHash;
     saveConfig(config);
-    localStorage.removeItem(UNLOCK_KEY);
+    localStorage.setItem(UNLOCK_KEY, DEFAULT_PW_HASH);
     closeModal();
     render();
   });
-  document.getElementById("cfgSave").addEventListener("click", async () => {
-    const newPassword = document.getElementById("cfgPassword").value;
-    if (newPassword) {
-      config.pwHash = await sha256Hex(newPassword);
+  document.getElementById("cfgChangePin").addEventListener("click", () => {
+    const overlay = document.getElementById("overlay");
+    overlay.innerHTML = `<div class="modal" id="pinModal"></div>`;
+    renderPinPad(document.getElementById("pinModal"), "Neue PIN eingeben", async (pin) => {
+      config.pwHash = await sha256Hex(pin);
       saveConfig(config);
       localStorage.setItem(UNLOCK_KEY, config.pwHash);
-    }
-    closeModal();
+      closeModal();
+      return true;
+    });
   });
 }
 
@@ -311,18 +342,9 @@ function closeModal(){
   document.getElementById("modalRoot").innerHTML = "";
 }
 
-function personOptionsHtml(excludeId, selectedId){
-  const list = state.personen.slice().sort((a,b) => (a.vorname||"").localeCompare(b.vorname||"", "de"));
-  return `<option value="">– keine –</option>` + list
-    .filter(p => p.id !== excludeId)
-    .map(p => `<option value="${p.id}" ${p.id===selectedId?"selected":""}>${escapeHtml(personName(p.id))}</option>`)
-    .join("");
-}
-
 function renderPersonForm(editId){
   const p = editId ? state.personById[editId] : null;
   const root = document.getElementById("modalRoot");
-  const allOthers = state.personen.filter(x => x.id !== editId).sort((a,b) => (a.vorname||"").localeCompare(b.vorname||"", "de"));
   root.innerHTML = `
     <div class="modal-overlay" id="overlay">
       <div class="modal">
@@ -332,11 +354,6 @@ function renderPersonForm(editId){
         <div class="field"><label>Geburtsdatum</label><input type="date" id="pfGeburtsdatum" value="${p ? p.geburtsdatum||"" : ""}"></div>
         <div class="field"><label>Todesdatum</label><input type="date" id="pfTodesdatum" value="${p ? p.todesdatum||"" : ""}"></div>
         <div class="field"><label>Beruf</label><input type="text" id="pfBeruf" value="${p ? escapeHtml(p.beruf||"") : ""}"></div>
-        <div class="field"><label>Mutter</label><select id="pfMutter">${personOptionsHtml(editId, p ? p.mutter : "")}</select></div>
-        <div class="field"><label>Vater</label><select id="pfVater">${personOptionsHtml(editId, p ? p.vater : "")}</select></div>
-        <div class="field"><label>Ehepartner (Mehrfachauswahl möglich)</label>
-          <div class="mselect">${allOthers.map(o => `<label><input type="checkbox" value="${o.id}" ${p && (p.ehepartner||[]).includes(o.id) ? "checked" : ""}> ${escapeHtml(personName(o.id))}</label>`).join("")}</div>
-        </div>
         <div class="field"><label>Hochzeitsdatum (Freitext)</label><textarea id="pfHochzeit" rows="2">${p ? escapeHtml(p.hochzeitsdatum||"") : ""}</textarea></div>
         <div class="field"><label>Wohnorte (Freitext, ein Eintrag pro Zeile)</label><textarea id="pfWohnorte" rows="3">${p ? escapeHtml(p.wohnorte||"") : ""}</textarea></div>
         <div class="btn-row">
@@ -350,6 +367,7 @@ function renderPersonForm(editId){
   document.getElementById("pfCancel").addEventListener("click", closeModal);
   const delBtn = document.getElementById("pfDelete");
   if (delBtn) delBtn.addEventListener("click", () => {
+    if (!confirm(`${personName(editId)} wirklich löschen?`)) return;
     state.personen = state.personen.filter(x => x.id !== editId);
     state.personen.forEach(x => {
       if (x.mutter === editId) x.mutter = null;
@@ -363,16 +381,12 @@ function renderPersonForm(editId){
     render();
   });
   document.getElementById("pfSave").addEventListener("click", () => {
-    const ehepartner = Array.from(root.querySelectorAll(".mselect input:checked")).map(el => el.value);
     const data = {
       vorname: document.getElementById("pfVorname").value.trim(),
       maedchenname: document.getElementById("pfMaedchenname").value.trim(),
       geburtsdatum: document.getElementById("pfGeburtsdatum").value,
       todesdatum: document.getElementById("pfTodesdatum").value,
       beruf: document.getElementById("pfBeruf").value.trim(),
-      mutter: document.getElementById("pfMutter").value || null,
-      vater: document.getElementById("pfVater").value || null,
-      ehepartner,
       hochzeitsdatum: document.getElementById("pfHochzeit").value.trim(),
       wohnorte: document.getElementById("pfWohnorte").value.trim(),
     };
@@ -381,7 +395,7 @@ function renderPersonForm(editId){
       Object.assign(p, data);
     } else {
       const id = nextId();
-      state.personen.push({ id, ...data });
+      state.personen.push({ id, mutter: null, vater: null, ehepartner: [], ...data });
       currentPersonId = id;
     }
     rebuildIndex();
@@ -421,9 +435,19 @@ function renderList(){
 
 function listHtml(items){
   return `<div class="list">${items.map(({p,name}) => {
-    const sub = [p.beruf, p.geburtsdatum ? fmtDate(p.geburtsdatum) : null].filter(Boolean).join(" · ");
-    return `<div class="row" data-person="${p.id}">
-      <div><div class="name">${escapeHtml(name)}</div><div class="sub">${escapeHtml(sub)}</div></div>
+    const age = calcAge(p.geburtsdatum, p.todesdatum);
+    const lines = [
+      p.maedchenname ? `geb. ${p.maedchenname}` : null,
+      (p.geburtsdatum || p.todesdatum) ? `${p.geburtsdatum ? "* "+fmtDate(p.geburtsdatum) : ""}${p.todesdatum ? " † "+fmtDate(p.todesdatum) : ""}${age != null ? ` (${age} J.)` : ""}` : null,
+      p.beruf || null,
+      p.hochzeitsdatum ? `⚭ ${p.hochzeitsdatum}` : null,
+      p.wohnorte ? `🏠 ${p.wohnorte.replace(/\n/g, ", ")}` : null,
+    ].filter(Boolean);
+    return `<div class="row" data-person="${p.id}" style="align-items:flex-start">
+      <div style="min-width:0">
+        <div class="name">${escapeHtml(name)}</div>
+        ${lines.map(l => `<div class="sub">${escapeHtml(l)}</div>`).join("")}
+      </div>
       <div class="sub">›</div>
     </div>`;
   }).join("")}</div>`;
