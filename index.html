@@ -135,12 +135,27 @@
   .tablewrap{display:block}
   .cardlist{display:none}
 }
-  .tablewrap{overflow-x:auto; margin-top:12px; border:1px solid var(--border); border-radius:12px; max-width:100%}
+  .tablescroller{position:relative}
+  .scrollBtn{
+    position:absolute; top:50%; transform:translateY(-50%); z-index:3; width:36px; height:36px; border-radius:50%;
+    border:1px solid var(--border); background:var(--card); color:var(--text); font-size:16px; cursor:pointer;
+    box-shadow:0 2px 8px rgba(0,0,0,.2);
+  }
+  #scrollLeftBtn{left:-4px}
+  #scrollRightBtn{right:-4px}
+  .tablewrap{
+    overflow-x:scroll; margin-top:12px; border:1px solid var(--border); border-radius:12px; max-width:100%;
+    scrollbar-width:auto; scrollbar-color:var(--accent) var(--bg);
+  }
+  .tablewrap::-webkit-scrollbar{height:14px}
+  .tablewrap::-webkit-scrollbar-track{background:var(--bg)}
+  .tablewrap::-webkit-scrollbar-thumb{background:var(--accent); border-radius:7px}
   table.datatable{border-collapse:collapse; width:100%; font-size:13px}
   table.datatable th, table.datatable td{padding:8px 11px; border:1px solid var(--border); text-align:left; white-space:nowrap}
-  table.datatable th{cursor:pointer; user-select:none; background:var(--bg)}
+  table.datatable th{cursor:grab; user-select:none; background:var(--bg)}
+  table.datatable th.dragging{opacity:.4}
   table.datatable th:hover{background:var(--border)}
-  table.datatable th .arrow{opacity:.6; font-size:11px; margin-left:4px}
+  table.datatable th .arrow{opacity:.6; font-size:11px; margin-left:4px; cursor:pointer}
   table.datatable tr.datarow{cursor:pointer}
   table.datatable tr.datarow:hover{background:var(--bg)}
   table.datatable tr.datarow:active{opacity:.7}
@@ -243,6 +258,10 @@ function renderPinPad(container, title, onComplete){
 let state = { personen: [], personById: {}, loaded: false, error: null, dirty: false };
 let currentPersonId = null;
 let sortState = { key: "vorname", dir: 1 };
+const COL_ORDER_KEY = "familie_karlshaus_colorder";
+let columnOrder = (() => {
+  try { return JSON.parse(localStorage.getItem(COL_ORDER_KEY)) || null; } catch(e) { return null; }
+})();
 
 const FIELDS = [
   {key:"vorname", label:"Vorname"},
@@ -258,6 +277,15 @@ const FIELDS = [
   {key:"bemerkungen", label:"Bemerkungen"},
   {key:"pruefen", label:"Prüfen?"},
 ];
+const FIELDS_BY_KEY = Object.fromEntries(FIELDS.map(f => [f.key, f]));
+if (!columnOrder || columnOrder.length !== FIELDS.length) columnOrder = FIELDS.map(f => f.key);
+function orderedFields(){ return columnOrder.map(k => FIELDS_BY_KEY[k]); }
+function moveColumn(key, beforeKey){
+  columnOrder = columnOrder.filter(k => k !== key);
+  const idx = beforeKey ? columnOrder.indexOf(beforeKey) : columnOrder.length;
+  columnOrder.splice(idx < 0 ? columnOrder.length : idx, 0, key);
+  localStorage.setItem(COL_ORDER_KEY, JSON.stringify(columnOrder));
+}
 
 function fmtDate(d){
   if (!d) return "";
@@ -494,7 +522,8 @@ function renderList(){
     el.addEventListener("click", () => { currentPersonId = el.dataset.person; render(); window.scrollTo(0,0); });
   });
   main.querySelectorAll("th[data-key]").forEach(el => {
-    el.addEventListener("click", () => {
+    el.querySelector(".arrow").addEventListener("click", (e) => {
+      e.stopPropagation();
       const key = el.dataset.key;
       if (sortState.key === key) sortState.dir *= -1; else { sortState.key = key; sortState.dir = 1; }
       document.getElementById("sortFieldSelect").value = sortState.key;
@@ -502,6 +531,7 @@ function renderList(){
       renderList();
     });
   });
+  wireTableExtras();
 }
 
 function cellDisplay(p, key){
@@ -536,11 +566,38 @@ function cardListHtml(items){
 }
 
 function tableHtml(items){
-  return `<div class="tablewrap"><table class="datatable"><thead><tr>
-    ${FIELDS.map(c => `<th data-key="${c.key}">${c.label}<span class="arrow">${sortState.key === c.key ? (sortState.dir === 1 ? "▲" : "▼") : "⇅"}</span></th>`).join("")}
+  const cols = orderedFields();
+  return `<div class="tablescroller">
+    <button class="scrollBtn" id="scrollLeftBtn" title="Nach links">‹</button>
+    <button class="scrollBtn" id="scrollRightBtn" title="Nach rechts">›</button>
+    <div class="tablewrap" id="tableWrap"><table class="datatable"><thead><tr>
+    ${cols.map(c => `<th data-key="${c.key}" draggable="true">${c.label}<span class="arrow">${sortState.key === c.key ? (sortState.dir === 1 ? "▲" : "▼") : "⇅"}</span></th>`).join("")}
   </tr></thead><tbody>
-    ${items.map(({p}) => `<tr class="datarow" data-person="${p.id}" style="${p.pruefen ? "background:rgba(230,160,40,.15)" : ""}">${FIELDS.map(c => `<td>${escapeHtml(cellDisplay(p, c.key))}</td>`).join("")}</tr>`).join("")}
-  </tbody></table></div>`;
+    ${items.map(({p}) => `<tr class="datarow" data-person="${p.id}" style="${p.pruefen ? "background:rgba(230,160,40,.15)" : ""}">${cols.map(c => `<td>${escapeHtml(cellDisplay(p, c.key))}</td>`).join("")}</tr>`).join("")}
+  </tbody></table></div>
+  </div>`;
+}
+
+function wireTableExtras(){
+  const wrap = document.getElementById("tableWrap");
+  if (!wrap) return;
+  const leftBtn = document.getElementById("scrollLeftBtn");
+  const rightBtn = document.getElementById("scrollRightBtn");
+  if (leftBtn) leftBtn.addEventListener("click", () => wrap.scrollBy({left: -250, behavior: "smooth"}));
+  if (rightBtn) rightBtn.addEventListener("click", () => wrap.scrollBy({left: 250, behavior: "smooth"}));
+
+  let draggedKey = null;
+  wrap.querySelectorAll("th[data-key]").forEach(th => {
+    th.addEventListener("dragstart", () => { draggedKey = th.dataset.key; th.classList.add("dragging"); });
+    th.addEventListener("dragend", () => th.classList.remove("dragging"));
+    th.addEventListener("dragover", e => e.preventDefault());
+    th.addEventListener("drop", e => {
+      e.preventDefault();
+      if (!draggedKey || draggedKey === th.dataset.key) return;
+      moveColumn(draggedKey, th.dataset.key);
+      renderList();
+    });
+  });
 }
 
 function tnode(id, isSelf){
