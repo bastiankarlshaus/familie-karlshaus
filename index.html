@@ -128,6 +128,16 @@
   }
   .pinpad button:active{background:var(--bg)}
   .pinpad .empty{visibility:hidden}
+  .tablewrap{overflow-x:auto; margin-top:12px; border:1px solid var(--border); border-radius:12px}
+  table.datatable{border-collapse:collapse; width:100%; font-size:13px; white-space:nowrap}
+  table.datatable th, table.datatable td{padding:9px 12px; border-bottom:1px solid var(--border); text-align:left}
+  table.datatable th{cursor:pointer; user-select:none; background:var(--card); position:sticky; top:0}
+  table.datatable th .arrow{opacity:.5; font-size:11px; margin-left:3px}
+  table.datatable tr.row{cursor:pointer}
+  table.datatable tr.row:active{opacity:.7}
+  .advsearch{display:flex; flex-direction:column; gap:8px; margin-top:8px}
+  .advsearch .pair{display:flex; gap:8px}
+  .advsearch select{flex:0 0 42%}
 </style>
 </head>
 <body>
@@ -140,6 +150,7 @@
   <div class="search-row">
     <input type="text" id="searchInput" placeholder="Person suchen (Vor- oder Nachname)…" autocomplete="off">
   </div>
+  <div class="advsearch" id="advSearch"></div>
 </header>
 
 <div id="saveBarRoot"></div>
@@ -153,7 +164,7 @@
 <div id="modalRoot"></div>
 
 <script>
-const APP_VERSION = "v7 · 19.09.2026 · PIN-Sperre, volle Liste, Formular ohne Verknüpfungen";
+const APP_VERSION = "v9 · 19.09.2026 · Prüfen-Markierung für unsichere Daten";
 document.getElementById("versionLabel").textContent = APP_VERSION;
 
 const LS_KEY = "familie_karlshaus_config_v2";
@@ -219,6 +230,22 @@ function renderPinPad(container, title, onComplete){
 
 let state = { personen: [], personById: {}, loaded: false, error: null, dirty: false };
 let currentPersonId = null;
+let sortState = { key: "vorname", dir: 1 };
+
+const FIELDS = [
+  {key:"vorname", label:"Vorname"},
+  {key:"maedchenname", label:"Mädchenname"},
+  {key:"geburtsdatum", label:"Geburtsdatum", type:"date"},
+  {key:"todesdatum", label:"Todesdatum", type:"date"},
+  {key:"beruf", label:"Beruf"},
+  {key:"wohnorte", label:"Wohnorte"},
+  {key:"erwaehntVon", label:"Erwähnt von"},
+  {key:"erwaehntBis", label:"Erwähnt bis"},
+  {key:"kennzeichen", label:"Kennzeichen"},
+  {key:"hochzeitsdatum", label:"Hochzeitsdatum", type:"date"},
+  {key:"bemerkungen", label:"Bemerkungen"},
+  {key:"pruefen", label:"Prüfen?"},
+];
 
 function fmtDate(d){
   if (!d) return "";
@@ -354,8 +381,16 @@ function renderPersonForm(editId){
         <div class="field"><label>Geburtsdatum</label><input type="date" id="pfGeburtsdatum" value="${p ? p.geburtsdatum||"" : ""}"></div>
         <div class="field"><label>Todesdatum</label><input type="date" id="pfTodesdatum" value="${p ? p.todesdatum||"" : ""}"></div>
         <div class="field"><label>Beruf</label><input type="text" id="pfBeruf" value="${p ? escapeHtml(p.beruf||"") : ""}"></div>
-        <div class="field"><label>Hochzeitsdatum (Freitext)</label><textarea id="pfHochzeit" rows="2">${p ? escapeHtml(p.hochzeitsdatum||"") : ""}</textarea></div>
+        <div class="field"><label>Hochzeitsdatum</label><input type="date" id="pfHochzeit" value="${p ? p.hochzeitsdatum||"" : ""}"></div>
         <div class="field"><label>Wohnorte (Freitext, ein Eintrag pro Zeile)</label><textarea id="pfWohnorte" rows="3">${p ? escapeHtml(p.wohnorte||"") : ""}</textarea></div>
+        <div class="field"><label>Kennzeichen</label><input type="text" id="pfKennzeichen" value="${p ? escapeHtml(p.kennzeichen||"") : ""}"></div>
+        <div class="field"><label>Erwähnt von (Jahr)</label><input type="text" id="pfErwaehntVon" value="${p ? escapeHtml(p.erwaehntVon||"") : ""}" placeholder="z.B. 1890"></div>
+        <div class="field"><label>Erwähnt bis (Jahr)</label><input type="text" id="pfErwaehntBis" value="${p ? escapeHtml(p.erwaehntBis||"") : ""}" placeholder="z.B. 1933"></div>
+        <div class="field"><label>Bemerkungen</label><textarea id="pfBemerkungen" rows="2">${p ? escapeHtml(p.bemerkungen||"") : ""}</textarea></div>
+        <div class="field"><label style="display:flex; align-items:center; gap:8px; cursor:pointer">
+          <input type="checkbox" id="pfPruefen" ${p && p.pruefen ? "checked" : ""} style="width:auto">
+          ⚠️ Diese Daten müssen noch überprüft werden
+        </label></div>
         <div class="btn-row">
           <button class="btn" id="pfSave">Speichern</button>
           <button class="btn secondary" id="pfCancel">Abbrechen</button>
@@ -387,8 +422,13 @@ function renderPersonForm(editId){
       geburtsdatum: document.getElementById("pfGeburtsdatum").value,
       todesdatum: document.getElementById("pfTodesdatum").value,
       beruf: document.getElementById("pfBeruf").value.trim(),
-      hochzeitsdatum: document.getElementById("pfHochzeit").value.trim(),
+      hochzeitsdatum: document.getElementById("pfHochzeit").value,
       wohnorte: document.getElementById("pfWohnorte").value.trim(),
+      kennzeichen: document.getElementById("pfKennzeichen").value.trim(),
+      erwaehntVon: document.getElementById("pfErwaehntVon").value.trim(),
+      erwaehntBis: document.getElementById("pfErwaehntBis").value.trim(),
+      bemerkungen: document.getElementById("pfBemerkungen").value.trim(),
+      pruefen: document.getElementById("pfPruefen").checked ? "ja" : "",
     };
     if (!data.vorname) { alert("Bitte mindestens einen Vornamen eingeben."); return; }
     if (p) {
@@ -413,44 +453,73 @@ function render(){
   renderList();
 }
 
+function renderAdvSearch(){
+  const root = document.getElementById("advSearch");
+  const optsHtml = FIELDS.map(f => `<option value="${f.key}">${f.label}</option>`).join("");
+  root.innerHTML = [0,1].map(i => `
+    <div class="pair">
+      <select id="advField${i}"><option value="">– Feld wählen –</option>${optsHtml}</select>
+      <input type="text" id="advValue${i}" placeholder="Wert…">
+    </div>`).join("");
+  [0,1].forEach(i => {
+    document.getElementById(`advField${i}`).addEventListener("change", () => { if (!currentPersonId) renderList(); });
+    document.getElementById(`advValue${i}`).addEventListener("input", () => { if (!currentPersonId) renderList(); });
+  });
+}
+function getAdvFilters(){
+  return [0,1].map(i => ({
+    field: document.getElementById(`advField${i}`).value,
+    value: document.getElementById(`advValue${i}`).value.trim().toLowerCase(),
+  })).filter(f => f.field && f.value);
+}
+function fieldValueForFilter(p, key){
+  if (key === "geburtsdatum" || key === "todesdatum" || key === "hochzeitsdatum") return p[key] ? fmtDate(p[key]) : "";
+  return (p[key] || "").toString();
+}
+function sortValue(p, key){
+  return fieldValueForFilter(p, key);
+}
+
 function renderList(){
   const main = document.getElementById("main");
   const q = document.getElementById("searchInput").value.trim().toLowerCase();
-  const items = state.personen
-    .map(p => ({ p, name: personName(p.id) }))
-    .filter(x => !q || x.name.toLowerCase().includes(q) || (x.p.maedchenname||"").toLowerCase().includes(q))
-    .sort((a,b) => a.name.localeCompare(b.name, "de"));
+  const adv = getAdvFilters();
+  let items = state.personen.map(p => ({ p, name: personName(p.id) }));
+  items = items.filter(x => !q || x.name.toLowerCase().includes(q) || (x.p.maedchenname||"").toLowerCase().includes(q));
+  items = items.filter(x => adv.every(f => fieldValueForFilter(x.p, f.field).toLowerCase().includes(f.value)));
+  items.sort((a,b) => sortValue(a.p, sortState.key).localeCompare(sortValue(b.p, sortState.key), "de", {numeric:true}) * sortState.dir);
 
-  if (!q) {
-    main.innerHTML = `<div class="hint">${state.personen.length} Personen in der Datenbank. Oben suchen oder unten scrollen.</div>` + listHtml(items);
-  } else if (items.length === 0) {
-    main.innerHTML = `<div class="hint">Keine Treffer für "${escapeHtml(q)}".</div>`;
+  if (items.length === 0) {
+    main.innerHTML = `<div class="hint">Keine Treffer.</div>`;
   } else {
-    main.innerHTML = listHtml(items);
+    main.innerHTML = `<div class="hint">${items.length} von ${state.personen.length} Personen. Spaltenkopf antippen zum Sortieren.</div>` + tableHtml(items);
   }
   main.querySelectorAll("[data-person]").forEach(el => {
     el.addEventListener("click", () => { currentPersonId = el.dataset.person; render(); window.scrollTo(0,0); });
   });
+  main.querySelectorAll("th[data-key]").forEach(el => {
+    el.addEventListener("click", () => {
+      const key = el.dataset.key;
+      if (sortState.key === key) sortState.dir *= -1; else { sortState.key = key; sortState.dir = 1; }
+      renderList();
+    });
+  });
 }
 
-function listHtml(items){
-  return `<div class="list">${items.map(({p,name}) => {
-    const age = calcAge(p.geburtsdatum, p.todesdatum);
-    const lines = [
-      p.maedchenname ? `geb. ${p.maedchenname}` : null,
-      (p.geburtsdatum || p.todesdatum) ? `${p.geburtsdatum ? "* "+fmtDate(p.geburtsdatum) : ""}${p.todesdatum ? " † "+fmtDate(p.todesdatum) : ""}${age != null ? ` (${age} J.)` : ""}` : null,
-      p.beruf || null,
-      p.hochzeitsdatum ? `⚭ ${p.hochzeitsdatum}` : null,
-      p.wohnorte ? `🏠 ${p.wohnorte.replace(/\n/g, ", ")}` : null,
-    ].filter(Boolean);
-    return `<div class="row" data-person="${p.id}" style="align-items:flex-start">
-      <div style="min-width:0">
-        <div class="name">${escapeHtml(name)}</div>
-        ${lines.map(l => `<div class="sub">${escapeHtml(l)}</div>`).join("")}
-      </div>
-      <div class="sub">›</div>
-    </div>`;
-  }).join("")}</div>`;
+function cellDisplay(p, key){
+  if (key === "vorname") return (p.pruefen ? "⚠️ " : "") + personName(p.id);
+  if (key === "pruefen") return p.pruefen ? "⚠️ ja" : "";
+  if (key === "geburtsdatum" || key === "todesdatum" || key === "hochzeitsdatum") return p[key] ? fmtDate(p[key]) : "";
+  if (key === "wohnorte" || key === "bemerkungen") return (p[key] || "").replace(/\n/g, ", ");
+  return p[key] || "";
+}
+
+function tableHtml(items){
+  return `<div class="tablewrap"><table class="datatable"><thead><tr>
+    ${FIELDS.map(c => `<th data-key="${c.key}">${c.label}${sortState.key === c.key ? `<span class="arrow">${sortState.dir === 1 ? "▲" : "▼"}</span>` : ""}</th>`).join("")}
+  </tr></thead><tbody>
+    ${items.map(({p}) => `<tr class="row" data-person="${p.id}" style="${p.pruefen ? "background:rgba(230,160,40,.15)" : ""}">${FIELDS.map(c => `<td>${escapeHtml(cellDisplay(p, c.key))}</td>`).join("")}</tr>`).join("")}
+  </tbody></table></div>`;
 }
 
 function tnode(id, isSelf){
@@ -511,6 +580,7 @@ function renderDetail(id){
     </div>
 
     <div class="card">
+      ${p.pruefen ? `<div style="background:#e6a028; color:#20201d; border-radius:8px; padding:8px 12px; font-size:13.5px; font-weight:600; margin-bottom:10px">⚠️ Diese Daten müssen noch überprüft werden</div>` : ""}
       <h2>${escapeHtml(personName(id))}</h2>
       ${p.maedchenname ? `<div class="meta">geb. ${escapeHtml(p.maedchenname)}</div>` : ""}
       ${p.beruf ? `<div class="meta">${escapeHtml(p.beruf)}</div>` : ""}
@@ -519,9 +589,12 @@ function renderDetail(id){
         ${p.todesdatum ? " † " + fmtDate(p.todesdatum) : ""}
         ${age != null ? ` (${age} Jahre)` : ""}
       </div>
-      ${p.hochzeitsdatum ? `<div class="section-label">Hochzeitsdatum</div><div class="meta" style="white-space:pre-line">${escapeHtml(p.hochzeitsdatum)}</div>` : ""}
+      ${p.hochzeitsdatum ? `<div class="section-label">Hochzeitsdatum</div><div class="meta">${fmtDate(p.hochzeitsdatum)}</div>` : ""}
       <div class="section-label">Wohnorte</div>
       ${p.wohnorte ? `<div class="meta" style="white-space:pre-line">${escapeHtml(p.wohnorte)}</div>` : `<div class="meta">Keine Angabe</div>`}
+      ${(p.erwaehntVon || p.erwaehntBis) ? `<div class="section-label">Erwähnt</div><div class="meta">${escapeHtml(p.erwaehntVon||"?")} – ${escapeHtml(p.erwaehntBis||"heute")}</div>` : ""}
+      ${p.kennzeichen ? `<div class="section-label">Kennzeichen</div><div class="meta">${escapeHtml(p.kennzeichen)}</div>` : ""}
+      ${p.bemerkungen ? `<div class="section-label">Bemerkungen</div><div class="meta" style="white-space:pre-line">${escapeHtml(p.bemerkungen)}</div>` : ""}
       <div class="btn-row">
         <button class="btn secondary" id="editBtn">Bearbeiten</button>
       </div>
@@ -537,6 +610,7 @@ function renderDetail(id){
 document.getElementById("settingsBtn").addEventListener("click", () => { if (isUnlocked()) renderSettingsModal(); });
 document.getElementById("searchInput").addEventListener("input", () => { if (!currentPersonId) renderList(); });
 document.getElementById("fabBtn").addEventListener("click", () => { if (isUnlocked()) renderPersonForm(null); });
+renderAdvSearch();
 
 if (!isUnlocked()) renderGate(); else loadAll();
 </script>
