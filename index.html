@@ -130,19 +130,19 @@
   .pinpad button:active{background:var(--bg)}
   .pinpad .empty{visibility:hidden}
 .tablewrap{display:none}
+.scrollToolbar{display:none}
 .cardlist{display:block}
 @media (min-width:760px){
   .tablewrap{display:block}
+  .scrollToolbar{display:flex}
   .cardlist{display:none}
 }
-  .tablescroller{position:relative}
+  .scrollToolbar{display:flex; justify-content:flex-end; gap:8px; margin-top:12px}
   .scrollBtn{
-    position:absolute; top:50%; transform:translateY(-50%); z-index:3; width:36px; height:36px; border-radius:50%;
+    width:40px; height:36px; border-radius:8px;
     border:1px solid var(--border); background:var(--card); color:var(--text); font-size:16px; cursor:pointer;
-    box-shadow:0 2px 8px rgba(0,0,0,.2);
   }
-  #scrollLeftBtn{left:-4px}
-  #scrollRightBtn{right:-4px}
+  .scrollBtn:active{background:var(--bg)}
   .tablewrap{
     overflow-x:scroll; margin-top:12px; border:1px solid var(--border); border-radius:12px; max-width:100%;
     scrollbar-width:auto; scrollbar-color:var(--accent) var(--bg);
@@ -567,15 +567,15 @@ function cardListHtml(items){
 
 function tableHtml(items){
   const cols = orderedFields();
-  return `<div class="tablescroller">
+  return `<div class="scrollToolbar">
     <button class="scrollBtn" id="scrollLeftBtn" title="Nach links">‹</button>
     <button class="scrollBtn" id="scrollRightBtn" title="Nach rechts">›</button>
+  </div>
     <div class="tablewrap" id="tableWrap"><table class="datatable"><thead><tr>
     ${cols.map(c => `<th data-key="${c.key}" draggable="true">${c.label}<span class="arrow">${sortState.key === c.key ? (sortState.dir === 1 ? "▲" : "▼") : "⇅"}</span></th>`).join("")}
   </tr></thead><tbody>
     ${items.map(({p}) => `<tr class="datarow" data-person="${p.id}" style="${p.pruefen ? "background:rgba(230,160,40,.15)" : ""}">${cols.map(c => `<td>${escapeHtml(cellDisplay(p, c.key))}</td>`).join("")}</tr>`).join("")}
-  </tbody></table></div>
-  </div>`;
+  </tbody></table></div>`;
 }
 
 function wireTableExtras(){
