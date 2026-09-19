@@ -2,8 +2,12 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Familie Karlshaus</title>
 <style>
@@ -34,10 +38,11 @@
     cursor:pointer; line-height:1;
   }
   .search-row{display:flex; gap:8px}
-  input[type=text], input[type=password], input[type=date]{
+  input[type=text], input[type=password], input[type=date], select, textarea{
     width:100%; padding:11px 12px; border-radius:10px; border:1px solid var(--border);
-    background:var(--card); color:var(--text); font-size:15px;
+    background:var(--card); color:var(--text); font-size:15px; font-family:inherit;
   }
+  textarea{resize:vertical}
   main{padding:12px 16px 40px; max-width:640px; margin:0 auto}
   .hint{color:var(--muted); font-size:13px; padding:24px 4px; text-align:center}
   .list{display:flex; flex-direction:column; gap:8px; margin-top:12px}
@@ -62,6 +67,10 @@
     text-transform:uppercase; letter-spacing:.03em; font-size:11.5px; color:var(--muted);
     margin:16px 0 6px; font-weight:600;
   }
+  .back-btn{
+    background:none; border:none; color:var(--accent); font-size:15px; cursor:pointer; padding:6px 0 12px;
+    display:flex; align-items:center; gap:4px;
+  }
   .tree{margin:10px 0 20px}
   .trow{display:flex; flex-wrap:wrap; justify-content:center; gap:8px}
   .tunion{display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:center}
@@ -74,10 +83,6 @@
   .tnode:active{opacity:.7}
   .tnode .yr{font-size:10.5px; opacity:.7; margin-top:1px}
   .tnode.self{border:2px solid var(--accent); font-weight:700; background:var(--accent); color:var(--accent-text)}
-  .back-btn{
-    background:none; border:none; color:var(--accent); font-size:15px; cursor:pointer; padding:6px 0 12px;
-    display:flex; align-items:center; gap:4px;
-  }
   .fab{
     position:fixed; right:18px; bottom:calc(18px + env(safe-area-inset-bottom));
     width:56px; height:56px; border-radius:50%; background:var(--accent); color:var(--accent-text);
@@ -101,10 +106,18 @@
     font-size:15px; font-weight:600; cursor:pointer;
   }
   .btn.secondary{background:none; color:var(--text); border:1px solid var(--border)}
-  .btn-row{display:flex; gap:10px; margin-top:18px}
+  .btn.danger{background:none; color:var(--danger); border:1px solid var(--danger)}
+  .btn-row{display:flex; gap:10px; margin-top:18px; flex-wrap:wrap}
   .error{color:var(--danger); font-size:13.5px; margin-top:10px}
   .loading{color:var(--muted); text-align:center; padding:30px 0}
-  a.form-link{color:var(--accent); text-decoration:none; font-size:13.5px}
+  .savebar{
+    position:sticky; top:96px; z-index:4; background:var(--danger); color:#fff;
+    padding:10px 14px; border-radius:10px; margin:0 16px 10px; font-size:13.5px;
+    display:flex; justify-content:space-between; align-items:center; gap:10px; max-width:608px; margin-left:auto; margin-right:auto;
+  }
+  .savebar button{background:#fff; color:var(--danger); border:none; border-radius:8px; padding:7px 12px; font-weight:700; cursor:pointer}
+  .mselect{display:flex; flex-wrap:wrap; gap:6px; padding:8px; border:1px solid var(--border); border-radius:10px; background:var(--card)}
+  .mselect label{display:flex; align-items:center; gap:5px; font-size:13px; background:var(--bg); border:1px solid var(--border); border-radius:999px; padding:4px 10px 4px 6px}
 </style>
 </head>
 <body>
@@ -119,6 +132,8 @@
   </div>
 </header>
 
+<div id="saveBarRoot"></div>
+
 <main id="main">
   <div class="hint">Lade Daten…</div>
 </main>
@@ -128,7 +143,12 @@
 <div id="modalRoot"></div>
 
 <script>
-const LS_KEY = "familie_karlshaus_config_v1";
+const APP_VERSION = "v6 · 19.09.2026 · JSON-Version (ohne Airtable)";
+document.getElementById("versionLabel").textContent = APP_VERSION;
+
+const LS_KEY = "familie_karlshaus_config_v2";
+const UNLOCK_KEY = "familie_karlshaus_unlocked";
+const DATA_FILE = "daten.json";
 
 function loadConfig(){
   try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e){ return {}; }
@@ -136,19 +156,86 @@ function loadConfig(){
 function saveConfig(cfg){
   localStorage.setItem(LS_KEY, JSON.stringify(cfg));
 }
-
-const APP_VERSION = "v4 · 17.09.2026 20:00";
-document.getElementById("versionLabel").textContent = APP_VERSION;
-
-const UNLOCK_KEY = "familie_karlshaus_unlocked";
+let config = loadConfig();
 
 async function sha256Hex(str){
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
 }
-
 function isUnlocked(){
   return !config.pwHash || localStorage.getItem(UNLOCK_KEY) === config.pwHash;
+}
+
+let state = { personen: [], personById: {}, loaded: false, error: null, dirty: false };
+let currentPersonId = null;
+
+function fmtDate(d){
+  if (!d) return "";
+  const [y,m,day] = d.split("-");
+  return `${day}.${m}.${y}`;
+}
+function calcAge(geb, tod){
+  if (!geb) return null;
+  const start = new Date(geb);
+  const end = tod ? new Date(tod) : new Date();
+  let age = end.getFullYear() - start.getFullYear();
+  const m = end.getMonth() - start.getMonth();
+  if (m < 0 || (m === 0 && end.getDate() < start.getDate())) age--;
+  return age;
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function personName(id){
+  const p = state.personById[id];
+  if (!p) return "(unbekannt)";
+  return `${p.vorname||""}${p.vorname ? " " : ""}Karlshaus`.trim();
+}
+function rebuildIndex(){
+  state.personById = {};
+  state.personen.forEach(p => state.personById[p.id] = p);
+}
+function nextId(){
+  let max = 0;
+  state.personen.forEach(p => { const n = parseInt(String(p.id).replace(/\D/g,""),10); if (n > max) max = n; });
+  return "p" + (max + 1);
+}
+function markDirty(){
+  state.dirty = true;
+  renderSaveBar();
+}
+function renderSaveBar(){
+  const root = document.getElementById("saveBarRoot");
+  if (!state.dirty) { root.innerHTML = ""; return; }
+  root.innerHTML = `<div class="savebar">
+    <span>Änderungen nur lokal – bitte Datei herunterladen &amp; bei GitHub hochladen, sonst gehen sie beim nächsten Laden verloren.</span>
+    <button id="dlBtn">daten.json herunterladen</button>
+  </div>`;
+  document.getElementById("dlBtn").addEventListener("click", downloadData);
+}
+function downloadData(){
+  const blob = new Blob([JSON.stringify(state.personen, null, 2)], {type: "application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "daten.json";
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+  state.dirty = false;
+  renderSaveBar();
+}
+
+async function loadAll(){
+  state.error = null; state.loaded = false; render();
+  try {
+    const res = await fetch(DATA_FILE, {cache: "no-store"});
+    if (!res.ok) throw new Error(`Konnte ${DATA_FILE} nicht laden (${res.status}). Liegt die Datei im selben Ordner wie index.html?`);
+    state.personen = await res.json();
+    rebuildIndex();
+    state.loaded = true;
+  } catch (err) {
+    state.error = err.message;
+  }
+  render();
 }
 
 function renderGate(){
@@ -168,7 +255,7 @@ function renderGate(){
     const hash = await sha256Hex(val);
     if (hash === config.pwHash) {
       localStorage.setItem(UNLOCK_KEY, hash);
-      if (isConfigured()) loadAll(); else render();
+      loadAll();
     } else {
       const err = document.getElementById("gateError");
       err.textContent = "Falsches Passwort.";
@@ -179,77 +266,6 @@ function renderGate(){
   document.getElementById("gatePw").addEventListener("keydown", e => { if (e.key === "Enter") submit(); });
 }
 
-let config = loadConfig();
-let state = {
-  personen: [],
-  personById: {},
-  loaded: false, error: null
-};
-
-const TABLES = { personen: "Personen" };
-
-async function airtableFetchAll(tableName){
-  let records = [];
-  let offset = undefined;
-  do {
-    const url = new URL(`https://api.airtable.com/v0/${config.baseId}/${encodeURIComponent(tableName)}`);
-    url.searchParams.set("pageSize", "100");
-    if (offset) url.searchParams.set("offset", offset);
-    const res = await fetch(url, { headers: { Authorization: `Bearer ${config.token}` } });
-    if (!res.ok) {
-      const body = await res.text();
-      throw new Error(`Airtable-Fehler bei Tabelle "${tableName}": ${res.status} ${body.slice(0,200)}`);
-    }
-    const data = await res.json();
-    records = records.concat(data.records);
-    offset = data.offset;
-  } while (offset);
-  return records;
-}
-
-function fieldArr(fields, name){
-  const v = fields[name];
-  return Array.isArray(v) ? v : (v ? [v] : []);
-}
-
-function personName(id){
-  const p = state.personById[id];
-  if (!p) return "(unbekannt)";
-  return p.fields["Name"] || `${p.fields["Vorname"]||""} ${p.fields["Nachname"]||""}`.trim();
-}
-
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-}
-
-function fmtDate(d){
-  if (!d) return "";
-  const [y,m,day] = d.split("-");
-  return `${day}.${m}.${y}`;
-}
-
-async function loadAll(){
-  state.error = null;
-  state.loaded = false;
-  render();
-  try {
-    const personen = await airtableFetchAll(TABLES.personen);
-    state.personen = personen;
-    state.personById = {};
-    personen.forEach(p => state.personById[p.id] = p);
-    state.loaded = true;
-  } catch (err) {
-    state.error = err.message;
-  }
-  render();
-}
-
-function isConfigured(){
-  return config.baseId && config.token;
-}
-
-let currentPersonId = null;
-
 function renderSettingsModal(){
   const root = document.getElementById("modalRoot");
   root.innerHTML = `
@@ -257,42 +273,21 @@ function renderSettingsModal(){
       <div class="modal">
         <h3>Einstellungen</h3>
         <div class="field">
-          <label>Airtable Base ID</label>
-          <input type="text" id="cfgBaseId" value="${config.baseId||""}" placeholder="appXXXXXXXXXXXXXX">
-        </div>
-        <div class="field">
-          <label>Airtable Personal Access Token (nur Lesen)</label>
-          <input type="password" id="cfgToken" value="${config.token||""}" placeholder="patXXXXXXXXXXXXXX">
-        </div>
-        <div class="field">
-          <label>Link zum Airtable-Eingabeformular (optional)</label>
-          <input type="text" id="cfgFormUrl" value="${config.formUrl||""}" placeholder="https://airtable.com/app.../form">
-        </div>
-        <div class="field">
           <label>Neues Zugangspasswort setzen (leer lassen = unverändert)</label>
           <input type="password" id="cfgPassword" placeholder="Passwort">
         </div>
         ${config.pwHash ? `<button class="btn secondary" id="cfgRemovePw" style="margin-bottom:10px">Passwortschutz entfernen</button>` : ""}
-        <div class="error" id="cfgError" style="display:none"></div>
         <div class="btn-row">
           <button class="btn" id="cfgSave">Speichern</button>
           <button class="btn secondary" id="cfgCancel">Abbrechen</button>
         </div>
-        ${isConfigured() ? `
         <hr style="border:none; border-top:1px solid var(--border); margin:18px 0">
-        <div class="field" style="margin-bottom:8px">
-          <label>Setup-Link (für neue Geräte, z.B. in OneDrive speichern)</label>
-          <button class="btn secondary" id="cfgMakeLink" style="width:100%">Setup-Link erzeugen</button>
-        </div>
-        <textarea id="cfgLinkOut" readonly style="display:none; width:100%; height:70px; margin-top:6px; padding:8px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:12px"></textarea>
-        <div class="meta" id="cfgLinkHint" style="display:none; margin-top:6px">Enthält deine Zugangsdaten unverschlüsselt (nur codiert) – vertraulich behandeln, nicht öffentlich teilen.</div>
-        ` : ""}
+        <button class="btn secondary" id="cfgDownload" style="width:100%">daten.json herunterladen</button>
       </div>
     </div>`;
-  document.getElementById("overlay").addEventListener("click", (e) => {
-    if (e.target.id === "overlay") closeModal();
-  });
+  document.getElementById("overlay").addEventListener("click", (e) => { if (e.target.id === "overlay") closeModal(); });
   document.getElementById("cfgCancel").addEventListener("click", closeModal);
+  document.getElementById("cfgDownload").addEventListener("click", downloadData);
   const removeBtn = document.getElementById("cfgRemovePw");
   if (removeBtn) removeBtn.addEventListener("click", () => {
     delete config.pwHash;
@@ -301,34 +296,14 @@ function renderSettingsModal(){
     closeModal();
     render();
   });
-  const makeLinkBtn = document.getElementById("cfgMakeLink");
-  if (makeLinkBtn) makeLinkBtn.addEventListener("click", () => {
-    const payload = btoa(unescape(encodeURIComponent(JSON.stringify(config))));
-    const url = `${location.origin}${location.pathname}?setup=${payload}`;
-    const out = document.getElementById("cfgLinkOut");
-    out.style.display = "block";
-    out.value = url;
-    out.select();
-    document.getElementById("cfgLinkHint").style.display = "block";
-    if (navigator.clipboard) navigator.clipboard.writeText(url).catch(() => {});
-  });
   document.getElementById("cfgSave").addEventListener("click", async () => {
-    const baseId = document.getElementById("cfgBaseId").value.trim();
-    const token = document.getElementById("cfgToken").value.trim();
-    const formUrl = document.getElementById("cfgFormUrl").value.trim();
     const newPassword = document.getElementById("cfgPassword").value;
-    if (!baseId.startsWith("app") || !token.startsWith("pat")) {
-      const err = document.getElementById("cfgError");
-      err.textContent = "Bitte eine gültige Base ID (beginnt mit 'app') und ein gültiges Token (beginnt mit 'pat') eingeben.";
-      err.style.display = "block";
-      return;
+    if (newPassword) {
+      config.pwHash = await sha256Hex(newPassword);
+      saveConfig(config);
+      localStorage.setItem(UNLOCK_KEY, config.pwHash);
     }
-    const pwHash = newPassword ? await sha256Hex(newPassword) : config.pwHash;
-    config = { baseId, token, formUrl, pwHash };
-    saveConfig(config);
-    if (newPassword) localStorage.setItem(UNLOCK_KEY, pwHash);
     closeModal();
-    loadAll();
   });
 }
 
@@ -336,27 +311,91 @@ function closeModal(){
   document.getElementById("modalRoot").innerHTML = "";
 }
 
+function personOptionsHtml(excludeId, selectedId){
+  const list = state.personen.slice().sort((a,b) => (a.vorname||"").localeCompare(b.vorname||"", "de"));
+  return `<option value="">– keine –</option>` + list
+    .filter(p => p.id !== excludeId)
+    .map(p => `<option value="${p.id}" ${p.id===selectedId?"selected":""}>${escapeHtml(personName(p.id))}</option>`)
+    .join("");
+}
+
+function renderPersonForm(editId){
+  const p = editId ? state.personById[editId] : null;
+  const root = document.getElementById("modalRoot");
+  const allOthers = state.personen.filter(x => x.id !== editId).sort((a,b) => (a.vorname||"").localeCompare(b.vorname||"", "de"));
+  root.innerHTML = `
+    <div class="modal-overlay" id="overlay">
+      <div class="modal">
+        <h3>${p ? "Person bearbeiten" : "Neue Person"}</h3>
+        <div class="field"><label>Vorname</label><input type="text" id="pfVorname" value="${p ? escapeHtml(p.vorname||"") : ""}"></div>
+        <div class="field"><label>Mädchenname (falls abweichend)</label><input type="text" id="pfMaedchenname" value="${p ? escapeHtml(p.maedchenname||"") : ""}"></div>
+        <div class="field"><label>Geburtsdatum</label><input type="date" id="pfGeburtsdatum" value="${p ? p.geburtsdatum||"" : ""}"></div>
+        <div class="field"><label>Todesdatum</label><input type="date" id="pfTodesdatum" value="${p ? p.todesdatum||"" : ""}"></div>
+        <div class="field"><label>Beruf</label><input type="text" id="pfBeruf" value="${p ? escapeHtml(p.beruf||"") : ""}"></div>
+        <div class="field"><label>Mutter</label><select id="pfMutter">${personOptionsHtml(editId, p ? p.mutter : "")}</select></div>
+        <div class="field"><label>Vater</label><select id="pfVater">${personOptionsHtml(editId, p ? p.vater : "")}</select></div>
+        <div class="field"><label>Ehepartner (Mehrfachauswahl möglich)</label>
+          <div class="mselect">${allOthers.map(o => `<label><input type="checkbox" value="${o.id}" ${p && (p.ehepartner||[]).includes(o.id) ? "checked" : ""}> ${escapeHtml(personName(o.id))}</label>`).join("")}</div>
+        </div>
+        <div class="field"><label>Hochzeitsdatum (Freitext)</label><textarea id="pfHochzeit" rows="2">${p ? escapeHtml(p.hochzeitsdatum||"") : ""}</textarea></div>
+        <div class="field"><label>Wohnorte (Freitext, ein Eintrag pro Zeile)</label><textarea id="pfWohnorte" rows="3">${p ? escapeHtml(p.wohnorte||"") : ""}</textarea></div>
+        <div class="btn-row">
+          <button class="btn" id="pfSave">Speichern</button>
+          <button class="btn secondary" id="pfCancel">Abbrechen</button>
+          ${p ? `<button class="btn danger" id="pfDelete">Person löschen</button>` : ""}
+        </div>
+      </div>
+    </div>`;
+  document.getElementById("overlay").addEventListener("click", (e) => { if (e.target.id === "overlay") closeModal(); });
+  document.getElementById("pfCancel").addEventListener("click", closeModal);
+  const delBtn = document.getElementById("pfDelete");
+  if (delBtn) delBtn.addEventListener("click", () => {
+    state.personen = state.personen.filter(x => x.id !== editId);
+    state.personen.forEach(x => {
+      if (x.mutter === editId) x.mutter = null;
+      if (x.vater === editId) x.vater = null;
+      x.ehepartner = (x.ehepartner||[]).filter(id => id !== editId);
+    });
+    rebuildIndex();
+    markDirty();
+    closeModal();
+    currentPersonId = null;
+    render();
+  });
+  document.getElementById("pfSave").addEventListener("click", () => {
+    const ehepartner = Array.from(root.querySelectorAll(".mselect input:checked")).map(el => el.value);
+    const data = {
+      vorname: document.getElementById("pfVorname").value.trim(),
+      maedchenname: document.getElementById("pfMaedchenname").value.trim(),
+      geburtsdatum: document.getElementById("pfGeburtsdatum").value,
+      todesdatum: document.getElementById("pfTodesdatum").value,
+      beruf: document.getElementById("pfBeruf").value.trim(),
+      mutter: document.getElementById("pfMutter").value || null,
+      vater: document.getElementById("pfVater").value || null,
+      ehepartner,
+      hochzeitsdatum: document.getElementById("pfHochzeit").value.trim(),
+      wohnorte: document.getElementById("pfWohnorte").value.trim(),
+    };
+    if (!data.vorname) { alert("Bitte mindestens einen Vornamen eingeben."); return; }
+    if (p) {
+      Object.assign(p, data);
+    } else {
+      const id = nextId();
+      state.personen.push({ id, ...data });
+      currentPersonId = id;
+    }
+    rebuildIndex();
+    markDirty();
+    closeModal();
+    render();
+  });
+}
+
 function render(){
   const main = document.getElementById("main");
-
-  if (!isConfigured()) {
-    main.innerHTML = `<div class="hint">Noch nicht eingerichtet.<br>Tippe oben rechts auf ⚙️, um Base ID und Zugriffstoken einzutragen.</div>`;
-    return;
-  }
-  if (state.error) {
-    main.innerHTML = `<div class="hint error">${state.error}<br><br>Bitte Einstellungen (⚙️) prüfen.</div>`;
-    return;
-  }
-  if (!state.loaded) {
-    main.innerHTML = `<div class="loading">Lade Familiendaten…</div>`;
-    return;
-  }
-
-  if (currentPersonId) {
-    renderDetail(currentPersonId);
-    return;
-  }
-
+  if (state.error) { main.innerHTML = `<div class="hint error">${escapeHtml(state.error)}</div>`; return; }
+  if (!state.loaded) { main.innerHTML = `<div class="loading">Lade Familiendaten…</div>`; return; }
+  if (currentPersonId) { renderDetail(currentPersonId); return; }
   renderList();
 }
 
@@ -365,17 +404,16 @@ function renderList(){
   const q = document.getElementById("searchInput").value.trim().toLowerCase();
   const items = state.personen
     .map(p => ({ p, name: personName(p.id) }))
-    .filter(x => !q || x.name.toLowerCase().includes(q))
+    .filter(x => !q || x.name.toLowerCase().includes(q) || (x.p.maedchenname||"").toLowerCase().includes(q))
     .sort((a,b) => a.name.localeCompare(b.name, "de"));
 
   if (!q) {
     main.innerHTML = `<div class="hint">${state.personen.length} Personen in der Datenbank. Oben suchen oder unten scrollen.</div>` + listHtml(items);
   } else if (items.length === 0) {
-    main.innerHTML = `<div class="hint">Keine Treffer für "${q}".</div>`;
+    main.innerHTML = `<div class="hint">Keine Treffer für "${escapeHtml(q)}".</div>`;
   } else {
     main.innerHTML = listHtml(items);
   }
-
   main.querySelectorAll("[data-person]").forEach(el => {
     el.addEventListener("click", () => { currentPersonId = el.dataset.person; render(); window.scrollTo(0,0); });
   });
@@ -383,72 +421,55 @@ function renderList(){
 
 function listHtml(items){
   return `<div class="list">${items.map(({p,name}) => {
-    const f = p.fields;
-    const sub = [f["Beruf"], f["Geburtsdatum"] ? fmtDate(f["Geburtsdatum"]) : null].filter(Boolean).join(" · ");
+    const sub = [p.beruf, p.geburtsdatum ? fmtDate(p.geburtsdatum) : null].filter(Boolean).join(" · ");
     return `<div class="row" data-person="${p.id}">
-      <div><div class="name">${name}</div><div class="sub">${sub}</div></div>
+      <div><div class="name">${escapeHtml(name)}</div><div class="sub">${escapeHtml(sub)}</div></div>
       <div class="sub">›</div>
     </div>`;
   }).join("")}</div>`;
 }
 
-function chipHtml(id){
-  return `<span class="chip" data-person="${id}">${personName(id)}</span>`;
-}
-
-function chipsOrNone(ids){
-  return ids.length ? ids.map(chipHtml).join("") : `<div class="meta">Keine Angabe</div>`;
-}
-
 function tnode(id, isSelf){
   const p = state.personById[id];
-  const year = p && p.fields["Geburtsdatum"] ? p.fields["Geburtsdatum"].slice(0,4) : "";
+  const year = p && p.geburtsdatum ? p.geburtsdatum.slice(0,4) : "";
   return `<div class="tnode${isSelf?' self':''}" data-person="${id}">
-    <div>${personName(id)}</div>
+    <div>${escapeHtml(personName(id))}</div>
     ${year ? `<div class="yr">*${year}</div>` : ""}
   </div>`;
 }
-
-function parentsOf(f){
-  return [...fieldArr(f,"Mutter"), ...fieldArr(f,"Vater")];
+function chipsOrNone(ids){
+  return ids.length ? ids.map(id => `<span class="chip" data-person="${id}">${escapeHtml(personName(id))}</span>`).join("") : `<div class="meta">Keine Angabe</div>`;
 }
-
-function siblingsOf(id, f){
-  const mutter = fieldArr(f,"Mutter")[0];
-  const vater = fieldArr(f,"Vater")[0];
-  if (!mutter && !vater) return [];
+function parentsOf(p){ return [p.mutter, p.vater].filter(Boolean); }
+function siblingsOf(id, p){
+  if (!p.mutter && !p.vater) return [];
   const set = new Set();
   state.personen.forEach(other => {
     if (other.id === id) return;
-    const om = fieldArr(other.fields,"Mutter")[0];
-    const ov = fieldArr(other.fields,"Vater")[0];
-    if ((mutter && om === mutter) || (vater && ov === vater)) set.add(other.id);
+    if ((p.mutter && other.mutter === p.mutter) || (p.vater && other.vater === p.vater)) set.add(other.id);
   });
   return [...set];
 }
-
 function childrenOf(id){
-  const set = new Set();
-  state.personen.forEach(other => {
-    if (fieldArr(other.fields,"Mutter")[0] === id || fieldArr(other.fields,"Vater")[0] === id) set.add(other.id);
-  });
-  return [...set];
+  return state.personen.filter(p => p.mutter === id || p.vater === id).map(p => p.id);
 }
-
-function spouseIdsOf(f){
-  return [...new Set([...fieldArr(f,"Ehepartner"), ...fieldArr(f,"From field: Ehepartner")])];
+function spouseIdsOf(id, p){
+  const set = new Set(p.ehepartner || []);
+  state.personen.forEach(other => { if ((other.ehepartner||[]).includes(id)) set.add(other.id); });
+  set.delete(id);
+  return [...set];
 }
 
 function renderDetail(id){
   const p = state.personById[id];
   const main = document.getElementById("main");
   if (!p) { currentPersonId = null; render(); return; }
-  const f = p.fields;
 
-  const eltern = parentsOf(f);
-  const geschwister = siblingsOf(id, f);
-  const ehepartner = spouseIdsOf(f);
+  const eltern = parentsOf(p);
+  const geschwister = siblingsOf(id, p);
+  const ehepartner = spouseIdsOf(id, p);
   const kinder = childrenOf(id);
+  const age = calcAge(p.geburtsdatum, p.todesdatum);
 
   main.innerHTML = `
     <button class="back-btn" id="backBtn">‹ Zurück zur Suche</button>
@@ -466,23 +487,24 @@ function renderDetail(id){
     </div>
 
     <div class="card">
-      <h2>${personName(id)}</h2>
-      ${f["Mädchenname"] ? `<div class="meta">geb. ${escapeHtml(f["Mädchenname"])}</div>` : ""}
-      ${f["Beruf"] ? `<div class="meta">${escapeHtml(f["Beruf"])}</div>` : ""}
+      <h2>${escapeHtml(personName(id))}</h2>
+      ${p.maedchenname ? `<div class="meta">geb. ${escapeHtml(p.maedchenname)}</div>` : ""}
+      ${p.beruf ? `<div class="meta">${escapeHtml(p.beruf)}</div>` : ""}
       <div class="meta">
-        ${f["Geburtsdatum"] ? "* " + fmtDate(f["Geburtsdatum"]) : ""}
-        ${f["Todesdatum"] ? " † " + fmtDate(f["Todesdatum"]) : ""}
-        ${f["Alter"] != null ? ` (${f["Alter"]} Jahre)` : ""}
+        ${p.geburtsdatum ? "* " + fmtDate(p.geburtsdatum) : ""}
+        ${p.todesdatum ? " † " + fmtDate(p.todesdatum) : ""}
+        ${age != null ? ` (${age} Jahre)` : ""}
       </div>
-      ${f["Kennzeichen"] ? `<div class="meta">${escapeHtml(f["Kennzeichen"])}</div>` : ""}
-      ${f["Hochzeitsdatum"] ? `<div class="section-label">Hochzeitsdatum</div><div class="meta" style="white-space:pre-line">${escapeHtml(f["Hochzeitsdatum"])}</div>` : ""}
-
+      ${p.hochzeitsdatum ? `<div class="section-label">Hochzeitsdatum</div><div class="meta" style="white-space:pre-line">${escapeHtml(p.hochzeitsdatum)}</div>` : ""}
       <div class="section-label">Wohnorte</div>
-      ${f["Wohnorte"] ? `<div class="meta" style="white-space:pre-line">${escapeHtml(f["Wohnorte"])}</div>` : `<div class="meta">Keine Angabe</div>`}
+      ${p.wohnorte ? `<div class="meta" style="white-space:pre-line">${escapeHtml(p.wohnorte)}</div>` : `<div class="meta">Keine Angabe</div>`}
+      <div class="btn-row">
+        <button class="btn secondary" id="editBtn">Bearbeiten</button>
+      </div>
     </div>
   `;
-
   document.getElementById("backBtn").addEventListener("click", () => { currentPersonId = null; render(); });
+  document.getElementById("editBtn").addEventListener("click", () => renderPersonForm(id));
   main.querySelectorAll("[data-person]").forEach(el => {
     el.addEventListener("click", () => { currentPersonId = el.dataset.person; render(); window.scrollTo(0,0); });
   });
@@ -490,28 +512,9 @@ function renderDetail(id){
 
 document.getElementById("settingsBtn").addEventListener("click", () => { if (isUnlocked()) renderSettingsModal(); });
 document.getElementById("searchInput").addEventListener("input", () => { if (!currentPersonId) renderList(); });
-document.getElementById("fabBtn").addEventListener("click", () => {
-  if (config.formUrl) {
-    window.open(config.formUrl, "_blank");
-  } else {
-    renderSettingsModal();
-  }
-});
+document.getElementById("fabBtn").addEventListener("click", () => { if (isUnlocked()) renderPersonForm(null); });
 
-function applySetupLinkFromUrl(){
-  const params = new URLSearchParams(location.search);
-  const payload = params.get("setup");
-  if (!payload) return false;
-  try {
-    config = JSON.parse(decodeURIComponent(escape(atob(payload))));
-    saveConfig(config);
-  } catch (e) { /* ignoriere ungültigen Link */ }
-  history.replaceState(null, "", location.pathname);
-  return true;
-}
-
-applySetupLinkFromUrl();
-if (!isUnlocked()) renderGate(); else if (isConfigured()) loadAll(); else render();
+if (!isUnlocked()) renderGate(); else loadAll();
 </script>
 </body>
 </html>
