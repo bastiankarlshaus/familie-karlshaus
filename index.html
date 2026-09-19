@@ -176,21 +176,7 @@
 <div id="modalRoot"></div>
 
 <script>
-async function showBuildTime(){
-  const label = document.getElementById("versionLabel");
-  label.textContent = "Stand: wird geladen…";
-  try {
-    const res = await fetch(location.pathname, { cache: "no-store" });
-    const lm = res.headers.get("Last-Modified");
-    if (!lm) { label.textContent = ""; return; }
-    const d = new Date(lm);
-    const pad = n => String(n).padStart(2, "0");
-    label.textContent = `Stand: ${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())} Uhr`;
-  } catch (e) {
-    label.textContent = "";
-  }
-}
-showBuildTime();
+document.getElementById("versionLabel").textContent = "Stand: 19.09.2026 10:57 UTC";
 
 const LS_KEY = "familie_karlshaus_config_v2";
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
