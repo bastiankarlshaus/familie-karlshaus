@@ -141,9 +141,10 @@
   table.datatable th{cursor:pointer; user-select:none; background:var(--bg)}
   table.datatable th:hover{background:var(--border)}
   table.datatable th .arrow{opacity:.6; font-size:11px; margin-left:4px}
-  table.datatable tr.row{cursor:pointer}
-  table.datatable tr.row:active{opacity:.7}
-  table.datatable tr.row td:first-child{white-space:normal; min-width:140px}
+  table.datatable tr.datarow{cursor:pointer}
+  table.datatable tr.datarow:hover{background:var(--bg)}
+  table.datatable tr.datarow:active{opacity:.7}
+  table.datatable tr.datarow td:first-child{white-space:normal; min-width:140px}
   .advsearch{display:flex; flex-direction:column; gap:8px; margin-top:8px}
   .advsearch .pair{display:flex; gap:8px}
   .advsearch select{flex:0 0 42%}
@@ -176,7 +177,7 @@
 <div id="modalRoot"></div>
 
 <script>
-document.getElementById("versionLabel").textContent = "Stand: 19.09.2026 10:57 UTC";
+document.getElementById("versionLabel").textContent = "Stand: 19.09.2026, 12:57 Uhr";
 
 const LS_KEY = "familie_karlshaus_config_v2";
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
@@ -538,7 +539,7 @@ function tableHtml(items){
   return `<div class="tablewrap"><table class="datatable"><thead><tr>
     ${FIELDS.map(c => `<th data-key="${c.key}">${c.label}<span class="arrow">${sortState.key === c.key ? (sortState.dir === 1 ? "▲" : "▼") : "⇅"}</span></th>`).join("")}
   </tr></thead><tbody>
-    ${items.map(({p}) => `<tr class="row" data-person="${p.id}" style="${p.pruefen ? "background:rgba(230,160,40,.15)" : ""}">${FIELDS.map(c => `<td>${escapeHtml(cellDisplay(p, c.key))}</td>`).join("")}</tr>`).join("")}
+    ${items.map(({p}) => `<tr class="datarow" data-person="${p.id}" style="${p.pruefen ? "background:rgba(230,160,40,.15)" : ""}">${FIELDS.map(c => `<td>${escapeHtml(cellDisplay(p, c.key))}</td>`).join("")}</tr>`).join("")}
   </tbody></table></div>`;
 }
 
