@@ -128,13 +128,20 @@
   }
   .pinpad button:active{background:var(--bg)}
   .pinpad .empty{visibility:hidden}
-  .tablewrap{overflow-x:auto; margin-top:12px; border:1px solid var(--border); border-radius:12px}
-  table.datatable{border-collapse:collapse; width:100%; font-size:13px; white-space:nowrap}
-  table.datatable th, table.datatable td{padding:9px 12px; border-bottom:1px solid var(--border); text-align:left}
-  table.datatable th{cursor:pointer; user-select:none; background:var(--card); position:sticky; top:0}
-  table.datatable th .arrow{opacity:.5; font-size:11px; margin-left:3px}
+.tablewrap{display:none}
+.cardlist{display:block}
+@media (min-width:760px){
+  .tablewrap{display:block}
+  .cardlist{display:none}
+}
+  .tablewrap{overflow-x:auto; margin-top:12px; border:1px solid var(--border); border-radius:12px; max-width:100%}
+  table.datatable{border-collapse:collapse; width:100%; font-size:13px}
+  table.datatable th, table.datatable td{padding:8px 11px; border:1px solid var(--border); text-align:left; white-space:nowrap}
+  table.datatable th{cursor:pointer; user-select:none; background:var(--bg)}
+  table.datatable th .arrow{opacity:.6; font-size:11px; margin-left:3px}
   table.datatable tr.row{cursor:pointer}
   table.datatable tr.row:active{opacity:.7}
+  table.datatable tr.row td:first-child{white-space:normal; min-width:140px}
   .advsearch{display:flex; flex-direction:column; gap:8px; margin-top:8px}
   .advsearch .pair{display:flex; gap:8px}
   .advsearch select{flex:0 0 42%}
@@ -164,7 +171,7 @@
 <div id="modalRoot"></div>
 
 <script>
-const APP_VERSION = "v9 · 19.09.2026 · Prüfen-Markierung für unsichere Daten";
+const APP_VERSION = "v10 · 19.09.2026 · Responsive: Tabelle (Laptop/Tablet) + Karten (Handy)";
 document.getElementById("versionLabel").textContent = APP_VERSION;
 
 const LS_KEY = "familie_karlshaus_config_v2";
@@ -492,7 +499,8 @@ function renderList(){
   if (items.length === 0) {
     main.innerHTML = `<div class="hint">Keine Treffer.</div>`;
   } else {
-    main.innerHTML = `<div class="hint">${items.length} von ${state.personen.length} Personen. Spaltenkopf antippen zum Sortieren.</div>` + tableHtml(items);
+    main.innerHTML = `<div class="hint">${items.length} von ${state.personen.length} Personen. Spaltenkopf antippen zum Sortieren (Laptop/Tablet) bzw. Karten antippen (Handy).</div>`
+      + tableHtml(items) + cardListHtml(items);
   }
   main.querySelectorAll("[data-person]").forEach(el => {
     el.addEventListener("click", () => { currentPersonId = el.dataset.person; render(); window.scrollTo(0,0); });
@@ -512,6 +520,29 @@ function cellDisplay(p, key){
   if (key === "geburtsdatum" || key === "todesdatum" || key === "hochzeitsdatum") return p[key] ? fmtDate(p[key]) : "";
   if (key === "wohnorte" || key === "bemerkungen") return (p[key] || "").replace(/\n/g, ", ");
   return p[key] || "";
+}
+
+function cardListHtml(items){
+  return `<div class="list cardlist">${items.map(({p}) => {
+    const age = calcAge(p.geburtsdatum, p.todesdatum);
+    const lines = [
+      p.maedchenname ? `geb. ${p.maedchenname}` : null,
+      (p.geburtsdatum || p.todesdatum) ? `${p.geburtsdatum ? "* "+fmtDate(p.geburtsdatum) : ""}${p.todesdatum ? " † "+fmtDate(p.todesdatum) : ""}${age != null ? ` (${age} J.)` : ""}` : null,
+      p.beruf || null,
+      p.hochzeitsdatum ? `⚭ ${fmtDate(p.hochzeitsdatum)}` : null,
+      p.wohnorte ? `🏠 ${p.wohnorte.replace(/\n/g, ", ")}` : null,
+      (p.erwaehntVon || p.erwaehntBis) ? `Erwähnt ${p.erwaehntVon||"?"}–${p.erwaehntBis||"heute"}` : null,
+      p.kennzeichen ? `Kennzeichen: ${p.kennzeichen}` : null,
+      p.bemerkungen ? `📝 ${p.bemerkungen}` : null,
+    ].filter(Boolean);
+    return `<div class="row" data-person="${p.id}" style="align-items:flex-start; ${p.pruefen ? "background:rgba(230,160,40,.15)" : ""}">
+      <div style="min-width:0">
+        <div class="name">${p.pruefen ? "⚠️ " : ""}${escapeHtml(personName(p.id))}</div>
+        ${lines.map(l => `<div class="sub">${escapeHtml(l)}</div>`).join("")}
+      </div>
+      <div class="sub">›</div>
+    </div>`;
+  }).join("")}</div>`;
 }
 
 function tableHtml(items){
