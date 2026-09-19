@@ -44,6 +44,7 @@
   }
   textarea{resize:vertical}
   main{padding:12px 16px 40px; max-width:640px; margin:0 auto}
+  @media (min-width:760px){ main{max-width:1400px} }
   .hint{color:var(--muted); font-size:13px; padding:24px 4px; text-align:center}
   .list{display:flex; flex-direction:column; gap:8px; margin-top:12px}
   .row{
@@ -138,7 +139,8 @@
   table.datatable{border-collapse:collapse; width:100%; font-size:13px}
   table.datatable th, table.datatable td{padding:8px 11px; border:1px solid var(--border); text-align:left; white-space:nowrap}
   table.datatable th{cursor:pointer; user-select:none; background:var(--bg)}
-  table.datatable th .arrow{opacity:.6; font-size:11px; margin-left:3px}
+  table.datatable th:hover{background:var(--border)}
+  table.datatable th .arrow{opacity:.6; font-size:11px; margin-left:4px}
   table.datatable tr.row{cursor:pointer}
   table.datatable tr.row:active{opacity:.7}
   table.datatable tr.row td:first-child{white-space:normal; min-width:140px}
@@ -155,9 +157,8 @@
   </h1>
   <div class="meta" style="margin:-6px 0 8px" id="versionLabel"></div>
   <div class="search-row">
-    <input type="text" id="searchInput" placeholder="Person suchen (Vor- oder Nachname)…" autocomplete="off">
+    <input type="text" id="searchInput" placeholder="Suche über alle Felder (Name, Wohnort, Beruf, Datum, Bemerkung…)" autocomplete="off">
   </div>
-  <div class="advsearch" id="advSearch"></div>
 </header>
 
 <div id="saveBarRoot"></div>
@@ -171,7 +172,7 @@
 <div id="modalRoot"></div>
 
 <script>
-const APP_VERSION = "v10 · 19.09.2026 · Responsive: Tabelle (Laptop/Tablet) + Karten (Handy)";
+const APP_VERSION = "v11 · 19.09.2026 · Volle Breite, eine Stichwortsuche, deutlichere Sortierpfeile";
 document.getElementById("versionLabel").textContent = APP_VERSION;
 
 const LS_KEY = "familie_karlshaus_config_v2";
@@ -460,25 +461,6 @@ function render(){
   renderList();
 }
 
-function renderAdvSearch(){
-  const root = document.getElementById("advSearch");
-  const optsHtml = FIELDS.map(f => `<option value="${f.key}">${f.label}</option>`).join("");
-  root.innerHTML = [0,1].map(i => `
-    <div class="pair">
-      <select id="advField${i}"><option value="">– Feld wählen –</option>${optsHtml}</select>
-      <input type="text" id="advValue${i}" placeholder="Wert…">
-    </div>`).join("");
-  [0,1].forEach(i => {
-    document.getElementById(`advField${i}`).addEventListener("change", () => { if (!currentPersonId) renderList(); });
-    document.getElementById(`advValue${i}`).addEventListener("input", () => { if (!currentPersonId) renderList(); });
-  });
-}
-function getAdvFilters(){
-  return [0,1].map(i => ({
-    field: document.getElementById(`advField${i}`).value,
-    value: document.getElementById(`advValue${i}`).value.trim().toLowerCase(),
-  })).filter(f => f.field && f.value);
-}
 function fieldValueForFilter(p, key){
   if (key === "geburtsdatum" || key === "todesdatum" || key === "hochzeitsdatum") return p[key] ? fmtDate(p[key]) : "";
   return (p[key] || "").toString();
@@ -486,14 +468,15 @@ function fieldValueForFilter(p, key){
 function sortValue(p, key){
   return fieldValueForFilter(p, key);
 }
+function searchBlob(p){
+  return (FIELDS.map(f => fieldValueForFilter(p, f.key)).join(" ") + " " + personName(p.id)).toLowerCase();
+}
 
 function renderList(){
   const main = document.getElementById("main");
   const q = document.getElementById("searchInput").value.trim().toLowerCase();
-  const adv = getAdvFilters();
   let items = state.personen.map(p => ({ p, name: personName(p.id) }));
-  items = items.filter(x => !q || x.name.toLowerCase().includes(q) || (x.p.maedchenname||"").toLowerCase().includes(q));
-  items = items.filter(x => adv.every(f => fieldValueForFilter(x.p, f.field).toLowerCase().includes(f.value)));
+  items = items.filter(x => !q || searchBlob(x.p).includes(q));
   items.sort((a,b) => sortValue(a.p, sortState.key).localeCompare(sortValue(b.p, sortState.key), "de", {numeric:true}) * sortState.dir);
 
   if (items.length === 0) {
@@ -547,7 +530,7 @@ function cardListHtml(items){
 
 function tableHtml(items){
   return `<div class="tablewrap"><table class="datatable"><thead><tr>
-    ${FIELDS.map(c => `<th data-key="${c.key}">${c.label}${sortState.key === c.key ? `<span class="arrow">${sortState.dir === 1 ? "▲" : "▼"}</span>` : ""}</th>`).join("")}
+    ${FIELDS.map(c => `<th data-key="${c.key}">${c.label}<span class="arrow">${sortState.key === c.key ? (sortState.dir === 1 ? "▲" : "▼") : "⇅"}</span></th>`).join("")}
   </tr></thead><tbody>
     ${items.map(({p}) => `<tr class="row" data-person="${p.id}" style="${p.pruefen ? "background:rgba(230,160,40,.15)" : ""}">${FIELDS.map(c => `<td>${escapeHtml(cellDisplay(p, c.key))}</td>`).join("")}</tr>`).join("")}
   </tbody></table></div>`;
@@ -641,7 +624,6 @@ function renderDetail(id){
 document.getElementById("settingsBtn").addEventListener("click", () => { if (isUnlocked()) renderSettingsModal(); });
 document.getElementById("searchInput").addEventListener("input", () => { if (!currentPersonId) renderList(); });
 document.getElementById("fabBtn").addEventListener("click", () => { if (isUnlocked()) renderPersonForm(null); });
-renderAdvSearch();
 
 if (!isUnlocked()) renderGate(); else loadAll();
 </script>
