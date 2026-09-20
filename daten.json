@@ -1698,5 +1698,21 @@
     "ehepartner": "",
     "bemerkungen": "",
     "pruefen": "ja"
+  },
+  {
+    "id": "p102",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Ewald",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "Packer",
+    "wohnorte": "Luisenstraße. 106",
+    "zweig": "",
+    "erwaehnt": "1952-1953",
+    "ehepartner": "",
+    "bemerkungen": "",
+    "pruefen": "ja"
   }
 ]
