@@ -1474,5 +1474,21 @@
     "ehepartner": "Wilhelma Korten",
     "bemerkungen": "",
     "pruefen": "ja"
+  },
+  {
+    "id": "p88",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Johann Wilhelm",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "Clara Brockmann",
+    "bemerkungen": "Sta 1588-1898",
+    "pruefen": "ja"
   }
 ]
