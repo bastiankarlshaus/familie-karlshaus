@@ -137,14 +137,17 @@
   .scrollToolbar{display:flex}
   .cardlist{display:none}
 }
-  .scrollToolbar{display:flex; justify-content:flex-end; gap:8px; margin-top:12px}
+  .scrollToolbar{
+    display:flex; justify-content:flex-end; gap:8px; margin-top:12px;
+    position:sticky; top:var(--stickyTop, 0px); z-index:4; background:var(--bg); padding:4px 0;
+  }
   .scrollBtn{
     width:40px; height:36px; border-radius:8px;
     border:1px solid var(--border); background:var(--card); color:var(--text); font-size:16px; cursor:pointer;
   }
   .scrollBtn:active{background:var(--bg)}
   .tablewrap{
-    overflow-x:scroll; margin-top:12px; border:1px solid var(--border); border-radius:12px; max-width:100%;
+    overflow-x:scroll; border:1px solid var(--border); border-radius:12px; max-width:100%;
     scrollbar-width:auto; scrollbar-color:var(--accent) var(--bg);
   }
   .tablewrap::-webkit-scrollbar{height:14px}
@@ -156,6 +159,9 @@
   table.datatable th.dragging{opacity:.4}
   table.datatable th:hover{background:var(--border)}
   table.datatable th .arrow{opacity:.6; font-size:11px; margin-left:4px; cursor:pointer}
+  table.datatable thead th{position:sticky; top:var(--stickyTop2, 0px); z-index:2}
+  table.datatable th:first-child, table.datatable td:first-child{position:sticky; left:0; z-index:1; background:var(--card)}
+  table.datatable thead th:first-child{z-index:3}
   table.datatable tr.datarow{cursor:pointer}
   table.datatable tr.datarow:hover{background:var(--bg)}
   table.datatable tr.datarow:active{opacity:.7}
@@ -192,7 +198,7 @@
 <div id="modalRoot"></div>
 
 <script>
-document.getElementById("versionLabel").textContent = "v13 · Stand: 19.09.2026, 13:34 Uhr";
+document.getElementById("versionLabel").textContent = "v15 · Stand: 19.09.2026, 16:22 Uhr";
 
 const LS_KEY = "familie_karlshaus_config_v2";
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
@@ -266,13 +272,12 @@ let columnOrder = (() => {
 const FIELDS = [
   {key:"vorname", label:"Vorname"},
   {key:"maedchenname", label:"Mädchenname"},
-  {key:"geburtsdatum", label:"Geburtsdatum", type:"date"},
-  {key:"todesdatum", label:"Todesdatum", type:"date"},
+  {key:"geburtsdatum", label:"geboren", type:"date"},
+  {key:"todesdatum", label:"verstorben", type:"date"},
   {key:"beruf", label:"Beruf"},
   {key:"wohnorte", label:"Wohnorte"},
-  {key:"erwaehntVon", label:"Erwähnt von"},
-  {key:"erwaehntBis", label:"Erwähnt bis"},
-  {key:"kennzeichen", label:"Kennzeichen"},
+  {key:"erwaehnt", label:"Erwähnt"},
+  {key:"kennzeichen", label:"Kennz."},
   {key:"hochzeitsdatum", label:"Hochzeitsdatum", type:"date"},
   {key:"bemerkungen", label:"Bemerkungen"},
   {key:"pruefen", label:"Prüfen?"},
@@ -307,7 +312,7 @@ function escapeHtml(s){
 function personName(id){
   const p = state.personById[id];
   if (!p) return "(unbekannt)";
-  return `${p.vorname||""}${p.vorname ? " " : ""}Karlshaus`.trim();
+  return p.vorname || "";
 }
 function rebuildIndex(){
   state.personById = {};
@@ -322,14 +327,31 @@ function markDirty(){
   state.dirty = true;
   renderSaveBar();
 }
+const GH_OWNER = "bastiankarlshaus";
+const GH_REPO = "familie-karlshaus";
+const GH_BRANCH = "main";
+const GH_PATH = "daten.json";
+
 function renderSaveBar(){
   const root = document.getElementById("saveBarRoot");
   if (!state.dirty) { root.innerHTML = ""; return; }
-  root.innerHTML = `<div class="savebar">
-    <span>Änderungen nur lokal – bitte Datei herunterladen &amp; bei GitHub hochladen, sonst gehen sie beim nächsten Laden verloren.</span>
-    <button id="dlBtn">daten.json herunterladen</button>
-  </div>`;
+  if (config.ghToken) {
+    root.innerHTML = `<div class="savebar">
+      <span id="saveBarMsg">Änderungen noch nicht gespeichert.</span>
+      <span style="display:flex; gap:8px; flex-shrink:0">
+        <button id="ghSaveBtn">Jetzt speichern</button>
+        <button id="dlBtn">Als Datei</button>
+      </span>
+    </div>`;
+  } else {
+    root.innerHTML = `<div class="savebar">
+      <span>Änderungen nur lokal – bitte Datei herunterladen &amp; bei GitHub hochladen (oder in ⚙️ einen GitHub-Token eintragen für direktes Speichern).</span>
+      <button id="dlBtn">daten.json herunterladen</button>
+    </div>`;
+  }
   document.getElementById("dlBtn").addEventListener("click", downloadData);
+  const ghBtn = document.getElementById("ghSaveBtn");
+  if (ghBtn) ghBtn.addEventListener("click", saveToGitHub);
 }
 function downloadData(){
   const blob = new Blob([JSON.stringify(state.personen, null, 2)], {type: "application/json"});
@@ -340,6 +362,40 @@ function downloadData(){
   URL.revokeObjectURL(url);
   state.dirty = false;
   renderSaveBar();
+}
+
+async function saveToGitHub(){
+  const btn = document.getElementById("ghSaveBtn");
+  const msg = document.getElementById("saveBarMsg");
+  if (btn) { btn.disabled = true; btn.textContent = "Speichere…"; }
+  const api = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}`;
+  try {
+    const getRes = await fetch(`${api}?ref=${GH_BRANCH}`, {
+      headers: { Authorization: `Bearer ${config.ghToken}`, Accept: "application/vnd.github+json" },
+    });
+    if (!getRes.ok) throw new Error(`Aktuelle Datei nicht lesbar (${getRes.status}). Token/Berechtigung prüfen.`);
+    const sha = (await getRes.json()).sha;
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(state.personen, null, 2))));
+    const putRes = await fetch(api, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${config.ghToken}`,
+        Accept: "application/vnd.github+json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message: "Familiendaten aktualisiert", content, sha, branch: GH_BRANCH }),
+    });
+    if (!putRes.ok) {
+      const t = await putRes.text();
+      throw new Error(`Speichern fehlgeschlagen (${putRes.status}): ${t.slice(0,200)}`);
+    }
+    state.dirty = false;
+    renderSaveBar();
+    alert("Gespeichert! Kann 1-2 Minuten dauern, bis GitHub Pages die neue Version ausliefert.");
+  } catch (err) {
+    if (msg) msg.textContent = err.message;
+    if (btn) { btn.disabled = false; btn.textContent = "Nochmal versuchen"; }
+  }
 }
 
 async function loadAll(){
@@ -378,12 +434,36 @@ function renderSettingsModal(){
         <button class="btn secondary" id="cfgChangePin" style="width:100%; margin-bottom:10px">PIN ändern</button>
         ${config.pwHash ? `<button class="btn secondary" id="cfgRemovePw" style="width:100%; margin-bottom:10px">Auf Standard-PIN zurücksetzen</button>` : ""}
         <button class="btn secondary" id="cfgDownload" style="width:100%; margin-bottom:10px">daten.json herunterladen</button>
+        <hr style="border:none; border-top:1px solid var(--border); margin:16px 0">
+        <div class="field">
+          <label>GitHub-Token für direktes Speichern (optional)</label>
+          <input type="password" id="cfgGhToken" value="${config.ghToken||""}" placeholder="github_pat_...">
+        </div>
+        <div class="meta" style="margin-bottom:10px">Fine-grained Token, nur für Repo "familie-karlshaus", Berechtigung "Contents: Read and write".</div>
+        <div class="btn-row" style="margin-top:0; margin-bottom:16px">
+          <button class="btn secondary" id="cfgSaveGhToken">Token speichern</button>
+          ${config.ghToken ? `<button class="btn danger" id="cfgRemoveGhToken">Token entfernen</button>` : ""}
+        </div>
         <div class="btn-row"><button class="btn secondary" id="cfgCancel">Schließen</button></div>
       </div>
     </div>`;
   document.getElementById("overlay").addEventListener("click", (e) => { if (e.target.id === "overlay") closeModal(); });
   document.getElementById("cfgCancel").addEventListener("click", closeModal);
   document.getElementById("cfgDownload").addEventListener("click", downloadData);
+  document.getElementById("cfgSaveGhToken").addEventListener("click", () => {
+    const val = document.getElementById("cfgGhToken").value.trim();
+    if (val) config.ghToken = val; else delete config.ghToken;
+    saveConfig(config);
+    closeModal();
+    renderSaveBar();
+  });
+  const removeGhBtn = document.getElementById("cfgRemoveGhToken");
+  if (removeGhBtn) removeGhBtn.addEventListener("click", () => {
+    delete config.ghToken;
+    saveConfig(config);
+    closeModal();
+    renderSaveBar();
+  });
   const removeBtn = document.getElementById("cfgRemovePw");
   if (removeBtn) removeBtn.addEventListener("click", () => {
     delete config.pwHash;
@@ -438,8 +518,7 @@ function renderPersonForm(editId){
         <div class="field"><label>Hochzeitsdatum</label><input type="date" id="pfHochzeit" value="${p ? p.hochzeitsdatum||"" : ""}"></div>
         <div class="field"><label>Wohnorte (Freitext, ein Eintrag pro Zeile)</label><textarea id="pfWohnorte" rows="3">${p ? escapeHtml(p.wohnorte||"") : ""}</textarea></div>
         <div class="field"><label>Kennzeichen</label><input type="text" id="pfKennzeichen" value="${p ? escapeHtml(p.kennzeichen||"") : ""}"></div>
-        <div class="field"><label>Erwähnt von (Jahr)</label><input type="text" id="pfErwaehntVon" value="${p ? escapeHtml(p.erwaehntVon||"") : ""}" placeholder="z.B. 1890"></div>
-        <div class="field"><label>Erwähnt bis (Jahr)</label><input type="text" id="pfErwaehntBis" value="${p ? escapeHtml(p.erwaehntBis||"") : ""}" placeholder="z.B. 1933"></div>
+        <div class="field"><label>Erwähnt (z.B. "1890–1933")</label><input type="text" id="pfErwaehnt" value="${p ? escapeHtml(p.erwaehnt||"") : ""}" placeholder="z.B. 1890–1933"></div>
         <div class="field"><label>Bemerkungen</label><textarea id="pfBemerkungen" rows="2">${p ? escapeHtml(p.bemerkungen||"") : ""}</textarea></div>
         <div class="field"><label style="display:flex; align-items:center; gap:8px; cursor:pointer">
           <input type="checkbox" id="pfPruefen" ${p && p.pruefen ? "checked" : ""} style="width:auto">
@@ -466,8 +545,7 @@ function renderPersonForm(editId){
       hochzeitsdatum: document.getElementById("pfHochzeit").value,
       wohnorte: document.getElementById("pfWohnorte").value.trim(),
       kennzeichen: document.getElementById("pfKennzeichen").value.trim(),
-      erwaehntVon: document.getElementById("pfErwaehntVon").value.trim(),
-      erwaehntBis: document.getElementById("pfErwaehntBis").value.trim(),
+      erwaehnt: document.getElementById("pfErwaehnt").value.trim(),
       bemerkungen: document.getElementById("pfBemerkungen").value.trim(),
       pruefen: document.getElementById("pfPruefen").checked ? "ja" : "",
     };
@@ -532,6 +610,15 @@ function renderList(){
     });
   });
   wireTableExtras();
+  updateStickyOffsets();
+}
+
+function updateStickyOffsets(){
+  const headerH = document.querySelector("header").offsetHeight;
+  document.documentElement.style.setProperty("--stickyTop", headerH + "px");
+  const toolbar = document.querySelector(".scrollToolbar");
+  const toolbarH = toolbar ? toolbar.offsetHeight : 0;
+  document.documentElement.style.setProperty("--stickyTop2", (headerH + toolbarH) + "px");
 }
 
 function cellDisplay(p, key){
@@ -551,7 +638,7 @@ function cardListHtml(items){
       p.beruf || null,
       p.hochzeitsdatum ? `⚭ ${fmtDate(p.hochzeitsdatum)}` : null,
       p.wohnorte ? `🏠 ${p.wohnorte.replace(/\n/g, ", ")}` : null,
-      (p.erwaehntVon || p.erwaehntBis) ? `Erwähnt ${p.erwaehntVon||"?"}–${p.erwaehntBis||"heute"}` : null,
+      p.erwaehnt ? `Erwähnt ${p.erwaehnt}` : null,
       p.kennzeichen ? `Kennzeichen: ${p.kennzeichen}` : null,
       p.bemerkungen ? `📝 ${p.bemerkungen}` : null,
     ].filter(Boolean);
@@ -670,7 +757,7 @@ function renderDetail(id){
       ${p.hochzeitsdatum ? `<div class="section-label">Hochzeitsdatum</div><div class="meta">${fmtDate(p.hochzeitsdatum)}</div>` : ""}
       <div class="section-label">Wohnorte</div>
       ${p.wohnorte ? `<div class="meta" style="white-space:pre-line">${escapeHtml(p.wohnorte)}</div>` : `<div class="meta">Keine Angabe</div>`}
-      ${(p.erwaehntVon || p.erwaehntBis) ? `<div class="section-label">Erwähnt</div><div class="meta">${escapeHtml(p.erwaehntVon||"?")} – ${escapeHtml(p.erwaehntBis||"heute")}</div>` : ""}
+      ${p.erwaehnt ? `<div class="section-label">Erwähnt</div><div class="meta">${escapeHtml(p.erwaehnt)}</div>` : ""}
       ${p.kennzeichen ? `<div class="section-label">Kennzeichen</div><div class="meta">${escapeHtml(p.kennzeichen)}</div>` : ""}
       ${p.bemerkungen ? `<div class="section-label">Bemerkungen</div><div class="meta" style="white-space:pre-line">${escapeHtml(p.bemerkungen)}</div>` : ""}
       <div class="btn-row">
