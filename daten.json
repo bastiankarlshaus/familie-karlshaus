@@ -147,19 +147,19 @@
     "id": "p11",
     "vorname": "Martin",
     "maedchenname": "",
-    "geburtsdatum": "",
+    "geburtsdatum": "1960-04-06",
     "todesdatum": "",
     "beruf": "",
     "mutter": null,
     "vater": null,
-    "ehepartner": "",
+    "ehepartner": "Lydia",
     "hochzeitsdatum": "",
     "wohnorte": "",
     "kennzeichen": "",
-    "bemerkungen": "",
-    "pruefen": "ja",
+    "bemerkungen": "Vater von Wolfgang",
+    "pruefen": "",
     "erwaehnt": "",
-    "zweig": ""
+    "zweig": "Bä"
   },
   {
     "id": "p12",
@@ -463,7 +463,7 @@
     "wohnorte": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": "",
+    "pruefen": "ja",
     "erwaehnt": "",
     "zweig": ""
   },
