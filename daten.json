@@ -1186,5 +1186,21 @@
     "id": "p69",
     "erwaehnt": "",
     "zweig": ""
+  },
+  {
+    "id": "p70",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Johann Wilhem dÄ",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "Juliana Schmachtender",
+    "bemerkungen": "Vater von Wilhelm Otto, Wilhelmine Juliane Selma, Heinrich Wilhelm Ernst",
+    "pruefen": "ja"
   }
 ]
