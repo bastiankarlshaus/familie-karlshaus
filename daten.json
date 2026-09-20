@@ -301,7 +301,7 @@
     "wohnorte": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": "",
+    "pruefen": "ja",
     "erwaehnt": "",
     "zweig": ""
   },
@@ -319,7 +319,7 @@
     "wohnorte": "Wülfrath",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": "",
+    "pruefen": "ja",
     "erwaehnt": "",
     "zweig": ""
   },
