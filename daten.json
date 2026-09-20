@@ -72,24 +72,6 @@
     "zweig": ""
   },
   {
-    "id": "p5",
-    "vorname": "Wilhelm Meyers",
-    "maedchenname": "",
-    "geburtsdatum": "",
-    "todesdatum": "",
-    "beruf": "",
-    "mutter": null,
-    "vater": null,
-    "ehepartner": [],
-    "hochzeitsdatum": "",
-    "wohnorte": "",
-    "kennzeichen": "",
-    "bemerkungen": "",
-    "pruefen": "",
-    "erwaehnt": "",
-    "zweig": ""
-  },
-  {
     "id": "p6",
     "vorname": "Klara",
     "maedchenname": "Anna Klara Schumacher",
@@ -391,7 +373,7 @@
     "wohnorte": "Uellendahler Str. 452",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": "",
+    "pruefen": "ja",
     "erwaehnt": "",
     "zweig": ""
   },
@@ -409,7 +391,7 @@
     "wohnorte": "",
     "kennzeichen": "",
     "bemerkungen": "verheiratet mit Karl Blau",
-    "pruefen": "",
+    "pruefen": "ja",
     "erwaehnt": "",
     "zweig": ""
   },
