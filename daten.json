@@ -1602,5 +1602,21 @@
     "ehepartner": "",
     "bemerkungen": "",
     "pruefen": "ja"
+  },
+  {
+    "id": "p96",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Willi",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "Lebensmittelhandlung",
+    "wohnorte": "Charlottenstraße. 17",
+    "zweig": "",
+    "erwaehnt": "1935",
+    "ehepartner": "",
+    "bemerkungen": "",
+    "pruefen": ""
   }
 ]
