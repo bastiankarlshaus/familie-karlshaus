@@ -119,8 +119,6 @@
     display:flex; justify-content:space-between; align-items:center; gap:10px; max-width:608px; margin-left:auto; margin-right:auto;
   }
   .savebar button{background:#fff; color:var(--danger); border:none; border-radius:8px; padding:7px 12px; font-weight:700; cursor:pointer}
-  .mselect{display:flex; flex-wrap:wrap; gap:6px; padding:8px; border:1px solid var(--border); border-radius:10px; background:var(--card)}
-  .mselect label{display:flex; align-items:center; gap:5px; font-size:13px; background:var(--bg); border:1px solid var(--border); border-radius:999px; padding:4px 10px 4px 6px}
   .pindots{display:flex; justify-content:center; gap:12px; margin:18px 0}
   .pindots span{width:16px; height:16px; border-radius:50%; border:2px solid var(--border); display:inline-block}
   .pindots span.filled{background:var(--accent); border-color:var(--accent)}
@@ -218,7 +216,7 @@
 <div id="modalRoot"></div>
 
 <script>
-document.getElementById("versionLabel").textContent = "v21 · Stand: 20.09.2026, 16:38 Uhr";
+document.getElementById("versionLabel").textContent = "v22 · Stand: 20.09.2026, 20:03 Uhr";
 
 const LS_KEY = "familie_karlshaus_config_v2";
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
@@ -537,7 +535,6 @@ function deletePerson(id){
   state.personen.forEach(x => {
     if (x.mutter === id) x.mutter = null;
     if (x.vater === id) x.vater = null;
-    x.ehepartner = (x.ehepartner||[]).filter(eid => eid !== id);
   });
   rebuildIndex();
   markDirty();
@@ -548,8 +545,6 @@ function deletePerson(id){
 function renderPersonForm(editId){
   const p = editId ? state.personById[editId] : null;
   const root = document.getElementById("modalRoot");
-  const others = state.personen.filter(x => x.id !== editId).sort((a,b) => (a.vorname||"").localeCompare(b.vorname||"", "de"));
-  const currentPartners = p ? (p.ehepartner || []) : [];
   root.innerHTML = `
     <div class="modal-overlay" id="overlay">
       <div class="modal wide">
@@ -562,9 +557,7 @@ function renderPersonForm(editId){
         <div class="field"><label>Wohnorte (Freitext, ein Eintrag pro Zeile)</label><textarea id="pfWohnorte" rows="5">${p ? escapeHtml(p.wohnorte||"") : ""}</textarea></div>
         <div class="field"><label>Zweig</label><input type="text" id="pfZweig" value="${p ? escapeHtml(p.zweig||"") : ""}"></div>
         <div class="field"><label>Erwähnt (z.B. "1890–1933")</label><input type="text" id="pfErwaehnt" value="${p ? escapeHtml(p.erwaehnt||"") : ""}" placeholder="z.B. 1890–1933"></div>
-        <div class="field"><label>verheiratet mit (Mehrfachauswahl möglich)</label>
-          <div class="mselect">${others.map(o => `<label><input type="checkbox" value="${o.id}" ${currentPartners.includes(o.id) ? "checked" : ""}> ${escapeHtml(personName(o.id))}</label>`).join("") || `<span class="meta">Keine anderen Personen vorhanden</span>`}</div>
-        </div>
+        <div class="field"><label>verheiratet mit</label><input type="text" id="pfEhepartner" value="${p ? escapeHtml(p.ehepartner||"") : ""}"></div>
         <div class="field"><label>Bemerkungen</label><textarea id="pfBemerkungen" rows="4">${p ? escapeHtml(p.bemerkungen||"") : ""}</textarea></div>
         <div class="field"><label style="display:flex; align-items:center; gap:8px; cursor:pointer">
           <input type="checkbox" id="pfPruefen" ${p && p.pruefen ? "checked" : ""} style="width:auto">
@@ -575,10 +568,6 @@ function renderPersonForm(editId){
           <button class="btn secondary" id="pfCancel">Abbrechen</button>
           ${p ? `<button class="btn danger" id="pfDelete">Person löschen</button>` : ""}
         </div>
-        <div class="field" id="pfNextPartnerWrap" style="display:none; margin-top:14px">
-          <select id="pfNextPartner" style="margin-bottom:8px"></select>
-          <button class="btn secondary" id="pfSaveAndNext" style="width:100%">Speichern &amp; weiter zu Partner ▸</button>
-        </div>
       </div>
     </div>`;
   document.getElementById("overlay").addEventListener("click", (e) => { if (e.target.id === "overlay") closeModal(); });
@@ -586,19 +575,7 @@ function renderPersonForm(editId){
   const delBtn = document.getElementById("pfDelete");
   if (delBtn) delBtn.addEventListener("click", () => { closeModal(); deletePerson(editId); });
 
-  function updateNextPartnerUI(){
-    const checked = Array.from(root.querySelectorAll(".mselect input:checked")).map(el => el.value);
-    const wrap = document.getElementById("pfNextPartnerWrap");
-    const sel = document.getElementById("pfNextPartner");
-    if (checked.length === 0) { wrap.style.display = "none"; return; }
-    wrap.style.display = "block";
-    sel.innerHTML = checked.map(id => `<option value="${id}">${escapeHtml(personName(id))}</option>`).join("");
-  }
-  root.querySelectorAll(".mselect input").forEach(cb => cb.addEventListener("change", updateNextPartnerUI));
-  updateNextPartnerUI();
-
   function collectAndSave(){
-    const ehepartner = Array.from(root.querySelectorAll(".mselect input:checked")).map(el => el.value);
     const data = {
       vorname: document.getElementById("pfVorname").value.trim(),
       maedchenname: document.getElementById("pfMaedchenname").value.trim(),
@@ -608,7 +585,7 @@ function renderPersonForm(editId){
       wohnorte: document.getElementById("pfWohnorte").value.trim(),
       zweig: document.getElementById("pfZweig").value.trim(),
       erwaehnt: document.getElementById("pfErwaehnt").value.trim(),
-      ehepartner,
+      ehepartner: document.getElementById("pfEhepartner").value.trim(),
       bemerkungen: document.getElementById("pfBemerkungen").value.trim(),
       pruefen: document.getElementById("pfPruefen").checked ? "ja" : "",
     };
@@ -633,14 +610,6 @@ function renderPersonForm(editId){
     currentPersonId = savedId;
     render();
   });
-  const saveNextBtn = document.getElementById("pfSaveAndNext");
-  if (saveNextBtn) saveNextBtn.addEventListener("click", () => {
-    const savedId = collectAndSave();
-    if (!savedId) return;
-    const nextId2 = document.getElementById("pfNextPartner").value;
-    closeModal();
-    renderPersonForm(nextId2);
-  });
 }
 
 function render(){
@@ -651,12 +620,8 @@ function render(){
   renderList();
 }
 
-function partnerNamesOf(p){
-  return spouseIdsOf(p.id, p).map(id => personName(id)).join(", ");
-}
 function fieldValueForFilter(p, key){
   if (key === "geburtsdatum" || key === "todesdatum") return p[key] ? fmtDate(p[key]) : "";
-  if (key === "ehepartner") return partnerNamesOf(p);
   return (p[key] || "").toString();
 }
 function sortValue(p, key){
@@ -725,7 +690,6 @@ function updateStickyOffsets(){
 function cellDisplay(p, key){
   if (key === "vorname") return (p.pruefen ? "⚠️ " : "") + personName(p.id);
   if (key === "pruefen") return p.pruefen ? "⚠️ ja" : "";
-  if (key === "ehepartner") return partnerNamesOf(p);
   if (key === "geburtsdatum" || key === "todesdatum") return p[key] ? fmtDate(p[key]) : "";
   if (key === "wohnorte" || key === "bemerkungen") return (p[key] || "").replace(/\n/g, ", ");
   return p[key] || "";
@@ -738,7 +702,7 @@ function cardListHtml(items){
       p.maedchenname ? `geb. ${p.maedchenname}` : null,
       (p.geburtsdatum || p.todesdatum) ? `${p.geburtsdatum ? "* "+fmtDate(p.geburtsdatum) : ""}${p.todesdatum ? " † "+fmtDate(p.todesdatum) : ""}${age != null ? ` (${age} J.)` : ""}` : null,
       p.beruf || null,
-      partnerNamesOf(p) ? `⚭ ${partnerNamesOf(p)}` : null,
+      p.ehepartner ? `⚭ ${p.ehepartner}` : null,
       p.wohnorte ? `🏠 ${p.wohnorte.replace(/\n/g, ", ")}` : null,
       p.zweig ? `Zweig: ${p.zweig}` : null,
       p.erwaehnt ? `Erwähnt ${p.erwaehnt}` : null,
@@ -848,12 +812,6 @@ function siblingsOf(id, p){
 function childrenOf(id){
   return state.personen.filter(p => p.mutter === id || p.vater === id).map(p => p.id);
 }
-function spouseIdsOf(id, p){
-  const set = new Set(p.ehepartner || []);
-  state.personen.forEach(other => { if ((other.ehepartner||[]).includes(id)) set.add(other.id); });
-  set.delete(id);
-  return [...set];
-}
 
 function renderDetail(id){
   const p = state.personById[id];
@@ -862,7 +820,6 @@ function renderDetail(id){
 
   const eltern = parentsOf(p);
   const geschwister = siblingsOf(id, p);
-  const ehepartner = spouseIdsOf(id, p);
   const kinder = childrenOf(id);
   const age = calcAge(p.geburtsdatum, p.todesdatum);
 
@@ -875,7 +832,7 @@ function renderDetail(id){
         ${geschwister.map(pid => tnode(pid)).join("")}
         <div class="tunion">
           ${tnode(id, true)}
-          ${ehepartner.map(pid => `<span class="sep">⚭</span>${tnode(pid)}`).join("")}
+          ${p.ehepartner ? `<span class="sep">⚭</span><div class="tnode">${escapeHtml(p.ehepartner)}</div>` : ""}
         </div>
       </div>
       ${kinder.length ? `<div class="tconn"></div><div class="trow">${kinder.map(pid => tnode(pid)).join("")}</div>` : ""}
