@@ -1490,5 +1490,21 @@
     "ehepartner": "Clara Brockmann",
     "bemerkungen": "Sta 1588-1898",
     "pruefen": "ja"
+  },
+  {
+    "id": "p89",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Anna Maria",
+    "maedchenname": "",
+    "geburtsdatum": "1818-07-19",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "",
+    "bemerkungen": "V: Heinrich\nM: Maria Christina Borbeck\nSta 1558-1898",
+    "pruefen": ""
   }
 ]
