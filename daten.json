@@ -307,7 +307,7 @@
   },
   {
     "id": "p18",
-    "vorname": "Johann Peter",
+    "vorname": "Johann Peter (Wurzel)",
     "maedchenname": "",
     "geburtsdatum": "",
     "todesdatum": "",
@@ -463,7 +463,7 @@
     "wohnorte": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": "",
+    "pruefen": "ja",
     "erwaehnt": "",
     "zweig": ""
   },
