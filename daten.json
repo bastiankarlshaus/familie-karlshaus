@@ -181,8 +181,8 @@
   },
   {
     "id": "p13",
-    "vorname": "August dJ (Ewald)",
-    "maedchenname": "",
+    "vorname": "August dJ (7)",
+    "maedchenname": "August Ewald",
     "geburtsdatum": "1897-03-28",
     "todesdatum": "",
     "beruf": "Bäckermeister",
@@ -192,7 +192,7 @@
     "hochzeitsdatum": "",
     "wohnorte": "Uellendahl 26",
     "kennzeichen": "",
-    "bemerkungen": "",
+    "bemerkungen": "Das 7. von 7 Kindern",
     "pruefen": "ja",
     "erwaehnt": "1933–1964",
     "zweig": "Bä"
@@ -451,7 +451,7 @@
   },
   {
     "id": "p28",
-    "vorname": "Maria Hedwig",
+    "vorname": "Maria Hedwig (6)",
     "maedchenname": "",
     "geburtsdatum": "1895-02-20",
     "todesdatum": "",
@@ -462,10 +462,10 @@
     "hochzeitsdatum": "",
     "wohnorte": "",
     "kennzeichen": "",
-    "bemerkungen": "",
+    "bemerkungen": "Das 6. von 7 Kindern",
     "pruefen": "ja",
     "erwaehnt": "",
-    "zweig": ""
+    "zweig": "Bä"
   },
   {
     "maedchenname": "",
