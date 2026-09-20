@@ -160,6 +160,7 @@
     padding:8px 11px; border:1px solid var(--border); text-align:left; white-space:nowrap;
     overflow:hidden; text-overflow:ellipsis; position:relative;
   }
+  table.datatable td.wrapcell{white-space:normal; overflow:visible; text-overflow:clip; word-break:break-word; vertical-align:top}
   table.datatable th{cursor:grab; user-select:none; background:var(--bg)}
   table.datatable th.dragging{opacity:.4}
   table.datatable th:hover{background:var(--border)}
@@ -217,7 +218,7 @@
 <div id="modalRoot"></div>
 
 <script>
-document.getElementById("versionLabel").textContent = "v19 · Stand: 20.09.2026, 15:48 Uhr";
+document.getElementById("versionLabel").textContent = "v20 · Stand: 20.09.2026, 16:18 Uhr";
 
 const LS_KEY = "familie_karlshaus_config_v2";
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
@@ -298,12 +299,12 @@ const FIELDS = [
   {key:"zweig", label:"Zweig"},
   {key:"ehepartner", label:"verheiratet mit"},
   {key:"erwaehnt", label:"Erwähnt"},
-  {key:"kennzeichen", label:"Kennz."},
   {key:"hochzeitsdatum", label:"Hochzeitsdatum", type:"date"},
   {key:"bemerkungen", label:"Bemerkungen"},
   {key:"pruefen", label:"Prüfen?"},
 ];
 const FIELDS_BY_KEY = Object.fromEntries(FIELDS.map(f => [f.key, f]));
+const WRAP_KEYS = ["wohnorte", "beruf", "bemerkungen"];
 const VALID_KEYS = new Set(FIELDS.map(f => f.key));
 if (!columnOrder || columnOrder.length !== FIELDS.length
     || columnOrder.some(k => !VALID_KEYS.has(k)) || new Set(columnOrder).size !== VALID_KEYS.size) {
@@ -562,7 +563,6 @@ function renderPersonForm(editId){
         <div class="field"><label>Hochzeitsdatum</label><input type="date" id="pfHochzeit" value="${p ? p.hochzeitsdatum||"" : ""}"></div>
         <div class="field"><label>Wohnorte (Freitext, ein Eintrag pro Zeile)</label><textarea id="pfWohnorte" rows="5">${p ? escapeHtml(p.wohnorte||"") : ""}</textarea></div>
         <div class="field"><label>Zweig</label><input type="text" id="pfZweig" value="${p ? escapeHtml(p.zweig||"") : ""}"></div>
-        <div class="field"><label>Kennzeichen</label><input type="text" id="pfKennzeichen" value="${p ? escapeHtml(p.kennzeichen||"") : ""}"></div>
         <div class="field"><label>Erwähnt (z.B. "1890–1933")</label><input type="text" id="pfErwaehnt" value="${p ? escapeHtml(p.erwaehnt||"") : ""}" placeholder="z.B. 1890–1933"></div>
         <div class="field"><label>verheiratet mit (Mehrfachauswahl möglich)</label>
           <div class="mselect">${others.map(o => `<label><input type="checkbox" value="${o.id}" ${currentPartners.includes(o.id) ? "checked" : ""}> ${escapeHtml(personName(o.id))}</label>`).join("") || `<span class="meta">Keine anderen Personen vorhanden</span>`}</div>
@@ -610,7 +610,6 @@ function renderPersonForm(editId){
       hochzeitsdatum: document.getElementById("pfHochzeit").value,
       wohnorte: document.getElementById("pfWohnorte").value.trim(),
       zweig: document.getElementById("pfZweig").value.trim(),
-      kennzeichen: document.getElementById("pfKennzeichen").value.trim(),
       erwaehnt: document.getElementById("pfErwaehnt").value.trim(),
       ehepartner,
       bemerkungen: document.getElementById("pfBemerkungen").value.trim(),
@@ -746,7 +745,6 @@ function cardListHtml(items){
       p.wohnorte ? `🏠 ${p.wohnorte.replace(/\n/g, ", ")}` : null,
       p.zweig ? `Zweig: ${p.zweig}` : null,
       p.erwaehnt ? `Erwähnt ${p.erwaehnt}` : null,
-      p.kennzeichen ? `Kennzeichen: ${p.kennzeichen}` : null,
       p.bemerkungen ? `📝 ${p.bemerkungen}` : null,
     ].filter(Boolean);
     return `<div class="row" data-person="${p.id}" style="align-items:flex-start; ${p.pruefen ? "background:rgba(230,160,40,.15)" : ""}">
@@ -775,7 +773,7 @@ function tableHtml(items){
     ${cols.map(c => `<th><input class="colFilterInput" data-key="${c.key}" placeholder="Filter…" value="${escapeHtml(columnFilters[c.key]||"")}"></th>`).join("")}
     </tr>
     </thead><tbody>
-    ${items.map(({p}) => `<tr class="datarow" data-person="${p.id}" style="${p.pruefen ? "background:rgba(230,160,40,.15)" : ""}">${cols.map(c => `<td>${escapeHtml(cellDisplay(p, c.key))}</td>`).join("")}</tr>`).join("")}
+    ${items.map(({p}) => `<tr class="datarow" data-person="${p.id}" style="${p.pruefen ? "background:rgba(230,160,40,.15)" : ""}">${cols.map(c => `<td class="${WRAP_KEYS.includes(c.key) ? "wrapcell" : ""}">${escapeHtml(cellDisplay(p, c.key))}</td>`).join("")}</tr>`).join("")}
   </tbody></table></div>`;
 }
 
@@ -901,7 +899,6 @@ function renderDetail(id){
       ${p.wohnorte ? `<div class="meta" style="white-space:pre-line">${escapeHtml(p.wohnorte)}</div>` : `<div class="meta">Keine Angabe</div>`}
       ${p.zweig ? `<div class="section-label">Zweig</div><div class="meta">${escapeHtml(p.zweig)}</div>` : ""}
       ${p.erwaehnt ? `<div class="section-label">Erwähnt</div><div class="meta">${escapeHtml(p.erwaehnt)}</div>` : ""}
-      ${p.kennzeichen ? `<div class="section-label">Kennzeichen</div><div class="meta">${escapeHtml(p.kennzeichen)}</div>` : ""}
       ${p.bemerkungen ? `<div class="section-label">Bemerkungen</div><div class="meta" style="white-space:pre-line">${escapeHtml(p.bemerkungen)}</div>` : ""}
       <div class="btn-row">
         <button class="btn secondary" id="editBtn">Bearbeiten</button>
