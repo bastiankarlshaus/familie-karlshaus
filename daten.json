@@ -3,7 +3,7 @@
     "id": "p1",
     "vorname": "Christoph",
     "maedchenname": "",
-    "geburtsdatum": "",
+    "geburtsdatum": "2000-12-07",
     "todesdatum": "",
     "beruf": "",
     "mutter": null,
@@ -12,10 +12,10 @@
     "hochzeitsdatum": "",
     "wohnorte": "Cuxhaven",
     "kennzeichen": "",
-    "bemerkungen": "",
-    "pruefen": "ja",
+    "bemerkungen": "Sohn von Martin & Lydia",
+    "pruefen": "",
     "erwaehnt": "",
-    "zweig": ""
+    "zweig": "Bä"
   },
   {
     "id": "p2",
