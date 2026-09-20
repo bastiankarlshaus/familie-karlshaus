@@ -99,6 +99,8 @@
     padding:20px 18px calc(20px + env(safe-area-inset-bottom)); max-height:88vh; overflow:auto;
   }
   @media (min-width:520px){ .modal{border-radius:16px} }
+  .modal.wide{max-width:720px}
+  @media (min-width:820px){ .modal.wide{max-width:900px} }
   .modal h3{margin-top:0}
   .field{margin-bottom:14px}
   .field label{display:block; font-size:13px; color:var(--muted); margin-bottom:5px}
@@ -147,10 +149,10 @@
   }
   .scrollBtn:active{background:var(--bg)}
   .tablewrap{
-    overflow-x:scroll; border:1px solid var(--border); border-radius:12px; max-width:100%;
+    overflow:auto; max-height:65vh; border:1px solid var(--border); border-radius:12px; max-width:100%;
     scrollbar-width:auto; scrollbar-color:var(--accent) var(--bg);
   }
-  .tablewrap::-webkit-scrollbar{height:14px}
+  .tablewrap::-webkit-scrollbar{height:14px; width:14px}
   .tablewrap::-webkit-scrollbar-track{background:var(--bg)}
   .tablewrap::-webkit-scrollbar-thumb{background:var(--accent); border-radius:7px}
   table.datatable{border-collapse:collapse; width:100%; font-size:13px}
@@ -159,7 +161,7 @@
   table.datatable th.dragging{opacity:.4}
   table.datatable th:hover{background:var(--border)}
   table.datatable th .arrow{opacity:.6; font-size:11px; margin-left:4px; cursor:pointer}
-  table.datatable thead th{position:sticky; top:var(--stickyTop2, 0px); z-index:2}
+  table.datatable thead th{position:sticky; top:0; z-index:2}
   table.datatable th:first-child, table.datatable td:first-child{position:sticky; left:0; z-index:1; background:var(--card)}
   table.datatable thead th:first-child{z-index:3}
   table.datatable tr.datarow{cursor:pointer}
@@ -175,7 +177,10 @@
 
 <header>
   <h1><span class="title">🌳 Familie Karlshaus</span>
-    <button class="icon-btn" id="settingsBtn" title="Einstellungen">⚙️</button>
+    <span style="display:flex; gap:4px; flex-shrink:0">
+      <button class="icon-btn" id="saveBtn" title="Speichern">💾</button>
+      <button class="icon-btn" id="settingsBtn" title="Einstellungen">⚙️</button>
+    </span>
   </h1>
   <div class="meta" style="margin:-6px 0 8px" id="versionLabel"></div>
   <div class="search-row">
@@ -198,7 +203,7 @@
 <div id="modalRoot"></div>
 
 <script>
-document.getElementById("versionLabel").textContent = "v15 · Stand: 19.09.2026, 16:22 Uhr";
+document.getElementById("versionLabel").textContent = "v16 · Stand: 20.09.2026, 14:03 Uhr";
 
 const LS_KEY = "familie_karlshaus_config_v2";
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
@@ -276,6 +281,7 @@ const FIELDS = [
   {key:"todesdatum", label:"verstorben", type:"date"},
   {key:"beruf", label:"Beruf"},
   {key:"wohnorte", label:"Wohnorte"},
+  {key:"ehepartner", label:"verheiratet mit"},
   {key:"erwaehnt", label:"Erwähnt"},
   {key:"kennzeichen", label:"Kennz."},
   {key:"hochzeitsdatum", label:"Hochzeitsdatum", type:"date"},
@@ -325,33 +331,22 @@ function nextId(){
 }
 function markDirty(){
   state.dirty = true;
-  renderSaveBar();
+  updateSaveBtn();
 }
 const GH_OWNER = "bastiankarlshaus";
 const GH_REPO = "familie-karlshaus";
 const GH_BRANCH = "main";
 const GH_PATH = "daten.json";
 
-function renderSaveBar(){
-  const root = document.getElementById("saveBarRoot");
-  if (!state.dirty) { root.innerHTML = ""; return; }
-  if (config.ghToken) {
-    root.innerHTML = `<div class="savebar">
-      <span id="saveBarMsg">Änderungen noch nicht gespeichert.</span>
-      <span style="display:flex; gap:8px; flex-shrink:0">
-        <button id="ghSaveBtn">Jetzt speichern</button>
-        <button id="dlBtn">Als Datei</button>
-      </span>
-    </div>`;
-  } else {
-    root.innerHTML = `<div class="savebar">
-      <span>Änderungen nur lokal – bitte Datei herunterladen &amp; bei GitHub hochladen (oder in ⚙️ einen GitHub-Token eintragen für direktes Speichern).</span>
-      <button id="dlBtn">daten.json herunterladen</button>
-    </div>`;
-  }
-  document.getElementById("dlBtn").addEventListener("click", downloadData);
-  const ghBtn = document.getElementById("ghSaveBtn");
-  if (ghBtn) ghBtn.addEventListener("click", saveToGitHub);
+function updateSaveBtn(){
+  const btn = document.getElementById("saveBtn");
+  if (!btn) return;
+  btn.style.background = state.dirty ? "var(--accent)" : "none";
+  btn.style.borderRadius = state.dirty ? "8px" : "0";
+  btn.title = state.dirty ? "Änderungen speichern" : "Keine Änderungen";
+}
+function setSaveStatus(msg){
+  document.getElementById("saveBarRoot").innerHTML = msg ? `<div class="savebar">${msg}</div>` : "";
 }
 function downloadData(){
   const blob = new Blob([JSON.stringify(state.personen, null, 2)], {type: "application/json"});
@@ -361,13 +356,22 @@ function downloadData(){
   document.body.appendChild(a); a.click(); a.remove();
   URL.revokeObjectURL(url);
   state.dirty = false;
-  renderSaveBar();
+  updateSaveBtn();
+}
+
+async function handleSaveClick(){
+  if (!state.dirty) return;
+  if (!config.ghToken) {
+    setSaveStatus("Kein GitHub-Token hinterlegt – Datei wird heruntergeladen, bitte manuell bei GitHub hochladen (oder in ⚙️ einen Token eintragen für direktes Speichern).");
+    downloadData();
+    setTimeout(() => setSaveStatus(""), 6000);
+    return;
+  }
+  await saveToGitHub();
 }
 
 async function saveToGitHub(){
-  const btn = document.getElementById("ghSaveBtn");
-  const msg = document.getElementById("saveBarMsg");
-  if (btn) { btn.disabled = true; btn.textContent = "Speichere…"; }
+  setSaveStatus("Speichere…");
   const api = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}`;
   try {
     const getRes = await fetch(`${api}?ref=${GH_BRANCH}`, {
@@ -390,11 +394,11 @@ async function saveToGitHub(){
       throw new Error(`Speichern fehlgeschlagen (${putRes.status}): ${t.slice(0,200)}`);
     }
     state.dirty = false;
-    renderSaveBar();
-    alert("Gespeichert! Kann 1-2 Minuten dauern, bis GitHub Pages die neue Version ausliefert.");
+    updateSaveBtn();
+    setSaveStatus("Gespeichert! Kann 1-2 Minuten dauern, bis GitHub Pages die neue Version ausliefert.");
+    setTimeout(() => setSaveStatus(""), 6000);
   } catch (err) {
-    if (msg) msg.textContent = err.message;
-    if (btn) { btn.disabled = false; btn.textContent = "Nochmal versuchen"; }
+    setSaveStatus(err.message);
   }
 }
 
@@ -455,14 +459,14 @@ function renderSettingsModal(){
     if (val) config.ghToken = val; else delete config.ghToken;
     saveConfig(config);
     closeModal();
-    renderSaveBar();
+    updateSaveBtn();
   });
   const removeGhBtn = document.getElementById("cfgRemoveGhToken");
   if (removeGhBtn) removeGhBtn.addEventListener("click", () => {
     delete config.ghToken;
     saveConfig(config);
     closeModal();
-    renderSaveBar();
+    updateSaveBtn();
   });
   const removeBtn = document.getElementById("cfgRemovePw");
   if (removeBtn) removeBtn.addEventListener("click", () => {
@@ -506,9 +510,11 @@ function deletePerson(id){
 function renderPersonForm(editId){
   const p = editId ? state.personById[editId] : null;
   const root = document.getElementById("modalRoot");
+  const others = state.personen.filter(x => x.id !== editId).sort((a,b) => (a.vorname||"").localeCompare(b.vorname||"", "de"));
+  const currentPartners = p ? (p.ehepartner || []) : [];
   root.innerHTML = `
     <div class="modal-overlay" id="overlay">
-      <div class="modal">
+      <div class="modal wide">
         <h3>${p ? "Person bearbeiten" : "Neue Person"}</h3>
         <div class="field"><label>Vorname</label><input type="text" id="pfVorname" value="${p ? escapeHtml(p.vorname||"") : ""}"></div>
         <div class="field"><label>Mädchenname (falls abweichend)</label><input type="text" id="pfMaedchenname" value="${p ? escapeHtml(p.maedchenname||"") : ""}"></div>
@@ -516,10 +522,13 @@ function renderPersonForm(editId){
         <div class="field"><label>Todesdatum</label><input type="date" id="pfTodesdatum" value="${p ? p.todesdatum||"" : ""}"></div>
         <div class="field"><label>Beruf</label><input type="text" id="pfBeruf" value="${p ? escapeHtml(p.beruf||"") : ""}"></div>
         <div class="field"><label>Hochzeitsdatum</label><input type="date" id="pfHochzeit" value="${p ? p.hochzeitsdatum||"" : ""}"></div>
-        <div class="field"><label>Wohnorte (Freitext, ein Eintrag pro Zeile)</label><textarea id="pfWohnorte" rows="3">${p ? escapeHtml(p.wohnorte||"") : ""}</textarea></div>
+        <div class="field"><label>Wohnorte (Freitext, ein Eintrag pro Zeile)</label><textarea id="pfWohnorte" rows="5">${p ? escapeHtml(p.wohnorte||"") : ""}</textarea></div>
         <div class="field"><label>Kennzeichen</label><input type="text" id="pfKennzeichen" value="${p ? escapeHtml(p.kennzeichen||"") : ""}"></div>
         <div class="field"><label>Erwähnt (z.B. "1890–1933")</label><input type="text" id="pfErwaehnt" value="${p ? escapeHtml(p.erwaehnt||"") : ""}" placeholder="z.B. 1890–1933"></div>
-        <div class="field"><label>Bemerkungen</label><textarea id="pfBemerkungen" rows="2">${p ? escapeHtml(p.bemerkungen||"") : ""}</textarea></div>
+        <div class="field"><label>verheiratet mit (Mehrfachauswahl möglich)</label>
+          <div class="mselect">${others.map(o => `<label><input type="checkbox" value="${o.id}" ${currentPartners.includes(o.id) ? "checked" : ""}> ${escapeHtml(personName(o.id))}</label>`).join("") || `<span class="meta">Keine anderen Personen vorhanden</span>`}</div>
+        </div>
+        <div class="field"><label>Bemerkungen</label><textarea id="pfBemerkungen" rows="4">${p ? escapeHtml(p.bemerkungen||"") : ""}</textarea></div>
         <div class="field"><label style="display:flex; align-items:center; gap:8px; cursor:pointer">
           <input type="checkbox" id="pfPruefen" ${p && p.pruefen ? "checked" : ""} style="width:auto">
           ⚠️ Diese Daten müssen noch überprüft werden
@@ -529,13 +538,30 @@ function renderPersonForm(editId){
           <button class="btn secondary" id="pfCancel">Abbrechen</button>
           ${p ? `<button class="btn danger" id="pfDelete">Person löschen</button>` : ""}
         </div>
+        <div class="field" id="pfNextPartnerWrap" style="display:none; margin-top:14px">
+          <select id="pfNextPartner" style="margin-bottom:8px"></select>
+          <button class="btn secondary" id="pfSaveAndNext" style="width:100%">Speichern &amp; weiter zu Partner ▸</button>
+        </div>
       </div>
     </div>`;
   document.getElementById("overlay").addEventListener("click", (e) => { if (e.target.id === "overlay") closeModal(); });
   document.getElementById("pfCancel").addEventListener("click", closeModal);
   const delBtn = document.getElementById("pfDelete");
   if (delBtn) delBtn.addEventListener("click", () => { closeModal(); deletePerson(editId); });
-  document.getElementById("pfSave").addEventListener("click", () => {
+
+  function updateNextPartnerUI(){
+    const checked = Array.from(root.querySelectorAll(".mselect input:checked")).map(el => el.value);
+    const wrap = document.getElementById("pfNextPartnerWrap");
+    const sel = document.getElementById("pfNextPartner");
+    if (checked.length === 0) { wrap.style.display = "none"; return; }
+    wrap.style.display = "block";
+    sel.innerHTML = checked.map(id => `<option value="${id}">${escapeHtml(personName(id))}</option>`).join("");
+  }
+  root.querySelectorAll(".mselect input").forEach(cb => cb.addEventListener("change", updateNextPartnerUI));
+  updateNextPartnerUI();
+
+  function collectAndSave(){
+    const ehepartner = Array.from(root.querySelectorAll(".mselect input:checked")).map(el => el.value);
     const data = {
       vorname: document.getElementById("pfVorname").value.trim(),
       maedchenname: document.getElementById("pfMaedchenname").value.trim(),
@@ -546,21 +572,38 @@ function renderPersonForm(editId){
       wohnorte: document.getElementById("pfWohnorte").value.trim(),
       kennzeichen: document.getElementById("pfKennzeichen").value.trim(),
       erwaehnt: document.getElementById("pfErwaehnt").value.trim(),
+      ehepartner,
       bemerkungen: document.getElementById("pfBemerkungen").value.trim(),
       pruefen: document.getElementById("pfPruefen").checked ? "ja" : "",
     };
-    if (!data.vorname) { alert("Bitte mindestens einen Vornamen eingeben."); return; }
+    if (!data.vorname) { alert("Bitte mindestens einen Vornamen eingeben."); return null; }
+    let savedId;
     if (p) {
       Object.assign(p, data);
+      savedId = p.id;
     } else {
-      const id = nextId();
-      state.personen.push({ id, mutter: null, vater: null, ehepartner: [], ...data });
-      currentPersonId = id;
+      savedId = nextId();
+      state.personen.push({ id: savedId, mutter: null, vater: null, ...data });
     }
     rebuildIndex();
     markDirty();
+    return savedId;
+  }
+
+  document.getElementById("pfSave").addEventListener("click", () => {
+    const savedId = collectAndSave();
+    if (!savedId) return;
     closeModal();
+    currentPersonId = savedId;
     render();
+  });
+  const saveNextBtn = document.getElementById("pfSaveAndNext");
+  if (saveNextBtn) saveNextBtn.addEventListener("click", () => {
+    const savedId = collectAndSave();
+    if (!savedId) return;
+    const nextId2 = document.getElementById("pfNextPartner").value;
+    closeModal();
+    renderPersonForm(nextId2);
   });
 }
 
@@ -572,8 +615,12 @@ function render(){
   renderList();
 }
 
+function partnerNamesOf(p){
+  return spouseIdsOf(p.id, p).map(id => personName(id)).join(", ");
+}
 function fieldValueForFilter(p, key){
   if (key === "geburtsdatum" || key === "todesdatum" || key === "hochzeitsdatum") return p[key] ? fmtDate(p[key]) : "";
+  if (key === "ehepartner") return partnerNamesOf(p);
   return (p[key] || "").toString();
 }
 function sortValue(p, key){
@@ -616,14 +663,12 @@ function renderList(){
 function updateStickyOffsets(){
   const headerH = document.querySelector("header").offsetHeight;
   document.documentElement.style.setProperty("--stickyTop", headerH + "px");
-  const toolbar = document.querySelector(".scrollToolbar");
-  const toolbarH = toolbar ? toolbar.offsetHeight : 0;
-  document.documentElement.style.setProperty("--stickyTop2", (headerH + toolbarH) + "px");
 }
 
 function cellDisplay(p, key){
   if (key === "vorname") return (p.pruefen ? "⚠️ " : "") + personName(p.id);
   if (key === "pruefen") return p.pruefen ? "⚠️ ja" : "";
+  if (key === "ehepartner") return partnerNamesOf(p);
   if (key === "geburtsdatum" || key === "todesdatum" || key === "hochzeitsdatum") return p[key] ? fmtDate(p[key]) : "";
   if (key === "wohnorte" || key === "bemerkungen") return (p[key] || "").replace(/\n/g, ", ");
   return p[key] || "";
@@ -636,7 +681,7 @@ function cardListHtml(items){
       p.maedchenname ? `geb. ${p.maedchenname}` : null,
       (p.geburtsdatum || p.todesdatum) ? `${p.geburtsdatum ? "* "+fmtDate(p.geburtsdatum) : ""}${p.todesdatum ? " † "+fmtDate(p.todesdatum) : ""}${age != null ? ` (${age} J.)` : ""}` : null,
       p.beruf || null,
-      p.hochzeitsdatum ? `⚭ ${fmtDate(p.hochzeitsdatum)}` : null,
+      partnerNamesOf(p) ? `⚭ ${partnerNamesOf(p)}${p.hochzeitsdatum ? " (" + fmtDate(p.hochzeitsdatum) + ")" : ""}` : null,
       p.wohnorte ? `🏠 ${p.wohnorte.replace(/\n/g, ", ")}` : null,
       p.erwaehnt ? `Erwähnt ${p.erwaehnt}` : null,
       p.kennzeichen ? `Kennzeichen: ${p.kennzeichen}` : null,
@@ -792,9 +837,11 @@ function initSortControls(){
 }
 
 document.getElementById("settingsBtn").addEventListener("click", () => { if (isUnlocked()) renderSettingsModal(); });
+document.getElementById("saveBtn").addEventListener("click", () => { if (isUnlocked()) handleSaveClick(); });
 document.getElementById("searchInput").addEventListener("input", () => { if (!currentPersonId) renderList(); });
 document.getElementById("fabBtn").addEventListener("click", () => { if (isUnlocked()) renderPersonForm(null); });
 initSortControls();
+updateSaveBtn();
 
 if (!isUnlocked()) renderGate(); else loadAll();
 </script>
