@@ -1330,5 +1330,21 @@
     "ehepartner": "",
     "bemerkungen": "Geburtsurkunde nicht lesbar",
     "pruefen": "ja"
+  },
+  {
+    "id": "p79",
+    "mutter": null,
+    "vater": null,
+    "vorname": "August Ernst Otto",
+    "maedchenname": "",
+    "geburtsdatum": "1919-01-10",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "",
+    "bemerkungen": "",
+    "pruefen": "ja"
   }
 ]
