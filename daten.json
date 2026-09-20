@@ -1216,7 +1216,7 @@
     "zweig": "",
     "erwaehnt": "",
     "ehepartner": "Emma aus dem Siepen (Prüfen!)",
-    "bemerkungen": "",
+    "bemerkungen": "Sohn von Johann Wilhelm dÄ & Juliana Schmachtenbeg",
     "pruefen": "ja"
   },
   {
@@ -1233,6 +1233,22 @@
     "erwaehnt": "",
     "ehepartner": "",
     "bemerkungen": "Tochter von Johann Wilhelm dÄ & Juliana Schmachtenbeg",
+    "pruefen": "ja"
+  },
+  {
+    "id": "p73",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Heinrich Wilhelm Ernst",
+    "maedchenname": "",
+    "geburtsdatum": "1867-05-15",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "Eltern von Adele Anna Olga, Johann Wilhelm dJ, August Walter Helmut",
+    "bemerkungen": "Sohn von Johann Wilhelm dÄ & Juliana Schmachtenbeg",
     "pruefen": "ja"
   }
 ]
