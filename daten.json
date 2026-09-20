@@ -1682,5 +1682,21 @@
     "ehepartner": "",
     "bemerkungen": "",
     "pruefen": "ja"
+  },
+  {
+    "id": "p101",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Wwe Ernst",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "Schlieffenstr. 56",
+    "zweig": "",
+    "erwaehnt": "1950-1951",
+    "ehepartner": "",
+    "bemerkungen": "",
+    "pruefen": "ja"
   }
 ]
