@@ -1730,5 +1730,21 @@
     "ehepartner": "",
     "bemerkungen": "",
     "pruefen": "ja"
+  },
+  {
+    "id": "p104",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Otto",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "Kraftfahrer",
+    "wohnorte": "Am Opphof 4",
+    "zweig": "",
+    "erwaehnt": "1956",
+    "ehepartner": "",
+    "bemerkungen": "",
+    "pruefen": "ja"
   }
 ]
