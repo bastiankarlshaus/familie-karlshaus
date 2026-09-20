@@ -1266,5 +1266,21 @@
     "ehepartner": "",
     "bemerkungen": "Sohn von Wilhelm Otto & Emma aus den Siepen",
     "pruefen": "ja"
+  },
+  {
+    "id": "p75",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Adele Anna Olga",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "",
+    "bemerkungen": "Tochter von Heinrich Wilhelm Ernst \nGebDat 28.11.1900 prüfen",
+    "pruefen": "ja"
   }
 ]
