@@ -1522,5 +1522,21 @@
     "ehepartner": "",
     "bemerkungen": "",
     "pruefen": "ja"
+  },
+  {
+    "id": "p91",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Wwe Otto",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "Näherin",
+    "wohnorte": "Nordstr. 22a",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "",
+    "bemerkungen": "",
+    "pruefen": "ja"
   }
 ]
