@@ -476,7 +476,9 @@
     "beruf": "",
     "mutter": null,
     "vater": null,
-    "ehepartner": [],
+    "ehepartner": [
+      "p9"
+    ],
     "hochzeitsdatum": "",
     "wohnorte": "",
     "kennzeichen": "",
