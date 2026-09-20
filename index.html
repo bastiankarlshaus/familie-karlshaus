@@ -218,7 +218,7 @@
 <div id="modalRoot"></div>
 
 <script>
-document.getElementById("versionLabel").textContent = "v20 · Stand: 20.09.2026, 16:18 Uhr";
+document.getElementById("versionLabel").textContent = "v21 · Stand: 20.09.2026, 16:38 Uhr";
 
 const LS_KEY = "familie_karlshaus_config_v2";
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
@@ -299,7 +299,6 @@ const FIELDS = [
   {key:"zweig", label:"Zweig"},
   {key:"ehepartner", label:"verheiratet mit"},
   {key:"erwaehnt", label:"Erwähnt"},
-  {key:"hochzeitsdatum", label:"Hochzeitsdatum", type:"date"},
   {key:"bemerkungen", label:"Bemerkungen"},
   {key:"pruefen", label:"Prüfen?"},
 ];
@@ -560,7 +559,6 @@ function renderPersonForm(editId){
         <div class="field"><label>Geburtsdatum</label><input type="date" id="pfGeburtsdatum" value="${p ? p.geburtsdatum||"" : ""}"></div>
         <div class="field"><label>Todesdatum</label><input type="date" id="pfTodesdatum" value="${p ? p.todesdatum||"" : ""}"></div>
         <div class="field"><label>Beruf</label><input type="text" id="pfBeruf" value="${p ? escapeHtml(p.beruf||"") : ""}"></div>
-        <div class="field"><label>Hochzeitsdatum</label><input type="date" id="pfHochzeit" value="${p ? p.hochzeitsdatum||"" : ""}"></div>
         <div class="field"><label>Wohnorte (Freitext, ein Eintrag pro Zeile)</label><textarea id="pfWohnorte" rows="5">${p ? escapeHtml(p.wohnorte||"") : ""}</textarea></div>
         <div class="field"><label>Zweig</label><input type="text" id="pfZweig" value="${p ? escapeHtml(p.zweig||"") : ""}"></div>
         <div class="field"><label>Erwähnt (z.B. "1890–1933")</label><input type="text" id="pfErwaehnt" value="${p ? escapeHtml(p.erwaehnt||"") : ""}" placeholder="z.B. 1890–1933"></div>
@@ -607,7 +605,6 @@ function renderPersonForm(editId){
       geburtsdatum: document.getElementById("pfGeburtsdatum").value,
       todesdatum: document.getElementById("pfTodesdatum").value,
       beruf: document.getElementById("pfBeruf").value.trim(),
-      hochzeitsdatum: document.getElementById("pfHochzeit").value,
       wohnorte: document.getElementById("pfWohnorte").value.trim(),
       zweig: document.getElementById("pfZweig").value.trim(),
       erwaehnt: document.getElementById("pfErwaehnt").value.trim(),
@@ -658,7 +655,7 @@ function partnerNamesOf(p){
   return spouseIdsOf(p.id, p).map(id => personName(id)).join(", ");
 }
 function fieldValueForFilter(p, key){
-  if (key === "geburtsdatum" || key === "todesdatum" || key === "hochzeitsdatum") return p[key] ? fmtDate(p[key]) : "";
+  if (key === "geburtsdatum" || key === "todesdatum") return p[key] ? fmtDate(p[key]) : "";
   if (key === "ehepartner") return partnerNamesOf(p);
   return (p[key] || "").toString();
 }
@@ -729,7 +726,7 @@ function cellDisplay(p, key){
   if (key === "vorname") return (p.pruefen ? "⚠️ " : "") + personName(p.id);
   if (key === "pruefen") return p.pruefen ? "⚠️ ja" : "";
   if (key === "ehepartner") return partnerNamesOf(p);
-  if (key === "geburtsdatum" || key === "todesdatum" || key === "hochzeitsdatum") return p[key] ? fmtDate(p[key]) : "";
+  if (key === "geburtsdatum" || key === "todesdatum") return p[key] ? fmtDate(p[key]) : "";
   if (key === "wohnorte" || key === "bemerkungen") return (p[key] || "").replace(/\n/g, ", ");
   return p[key] || "";
 }
@@ -741,7 +738,7 @@ function cardListHtml(items){
       p.maedchenname ? `geb. ${p.maedchenname}` : null,
       (p.geburtsdatum || p.todesdatum) ? `${p.geburtsdatum ? "* "+fmtDate(p.geburtsdatum) : ""}${p.todesdatum ? " † "+fmtDate(p.todesdatum) : ""}${age != null ? ` (${age} J.)` : ""}` : null,
       p.beruf || null,
-      partnerNamesOf(p) ? `⚭ ${partnerNamesOf(p)}${p.hochzeitsdatum ? " (" + fmtDate(p.hochzeitsdatum) + ")" : ""}` : null,
+      partnerNamesOf(p) ? `⚭ ${partnerNamesOf(p)}` : null,
       p.wohnorte ? `🏠 ${p.wohnorte.replace(/\n/g, ", ")}` : null,
       p.zweig ? `Zweig: ${p.zweig}` : null,
       p.erwaehnt ? `Erwähnt ${p.erwaehnt}` : null,
@@ -894,7 +891,6 @@ function renderDetail(id){
         ${p.todesdatum ? " † " + fmtDate(p.todesdatum) : ""}
         ${age != null ? ` (${age} Jahre)` : ""}
       </div>
-      ${p.hochzeitsdatum ? `<div class="section-label">Hochzeitsdatum</div><div class="meta">${fmtDate(p.hochzeitsdatum)}</div>` : ""}
       <div class="section-label">Wohnorte</div>
       ${p.wohnorte ? `<div class="meta" style="white-space:pre-line">${escapeHtml(p.wohnorte)}</div>` : `<div class="meta">Keine Angabe</div>`}
       ${p.zweig ? `<div class="section-label">Zweig</div><div class="meta">${escapeHtml(p.zweig)}</div>` : ""}
