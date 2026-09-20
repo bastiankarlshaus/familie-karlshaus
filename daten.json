@@ -1666,5 +1666,21 @@
     "ehepartner": "",
     "bemerkungen": "",
     "pruefen": "ja"
+  },
+  {
+    "id": "p100",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Wwe Helmut",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "Schlieffenstr. 56",
+    "zweig": "",
+    "erwaehnt": "1950-1951",
+    "ehepartner": "",
+    "bemerkungen": "",
+    "pruefen": "ja"
   }
 ]
