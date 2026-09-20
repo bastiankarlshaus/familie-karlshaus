@@ -1506,5 +1506,21 @@
     "ehepartner": "",
     "bemerkungen": "V: Heinrich\nM: Maria Christina Borbeck\nSta 1558-1898",
     "pruefen": ""
+  },
+  {
+    "id": "p90",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Helene",
+    "maedchenname": "Dörpelkus",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "",
+    "bemerkungen": "",
+    "pruefen": "ja"
   }
 ]
