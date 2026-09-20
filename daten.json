@@ -1346,5 +1346,21 @@
     "ehepartner": "",
     "bemerkungen": "",
     "pruefen": "ja"
+  },
+  {
+    "id": "p80",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Gertrud Margret",
+    "maedchenname": "",
+    "geburtsdatum": "1919-10-03",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "",
+    "bemerkungen": "",
+    "pruefen": "ja"
   }
 ]
