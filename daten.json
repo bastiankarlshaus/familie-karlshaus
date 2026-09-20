@@ -264,7 +264,7 @@
     "hochzeitsdatum": "",
     "wohnorte": "",
     "kennzeichen": "",
-    "bemerkungen": "",
+    "bemerkungen": "Das 3. von 7 Kindern",
     "pruefen": "ja",
     "erwaehnt": "",
     "zweig": "Bä"
@@ -307,7 +307,7 @@
   },
   {
     "id": "p20",
-    "vorname": "Maria Agnes",
+    "vorname": "Maria Agnes (5)",
     "maedchenname": "",
     "geburtsdatum": "1893-03-28",
     "todesdatum": "",
@@ -318,10 +318,10 @@
     "hochzeitsdatum": "",
     "wohnorte": "",
     "kennzeichen": "",
-    "bemerkungen": "",
+    "bemerkungen": "Das 5. von 7 Kindern",
     "pruefen": "ja",
     "erwaehnt": "",
-    "zweig": ""
+    "zweig": "Bä"
   },
   {
     "id": "p21",
