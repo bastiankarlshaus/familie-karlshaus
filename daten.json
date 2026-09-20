@@ -1618,5 +1618,37 @@
     "ehepartner": "",
     "bemerkungen": "",
     "pruefen": "ja"
+  },
+  {
+    "id": "p97",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Willi",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "Techniker",
+    "wohnorte": "Königstor. 170",
+    "zweig": "",
+    "erwaehnt": "1938",
+    "ehepartner": "",
+    "bemerkungen": "",
+    "pruefen": "ja"
+  },
+  {
+    "id": "p98",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Ernst",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "Angestellter",
+    "wohnorte": "Wall 1/3",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "",
+    "bemerkungen": "",
+    "pruefen": "ja"
   }
 ]
