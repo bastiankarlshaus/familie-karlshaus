@@ -1458,5 +1458,21 @@
     "ehepartner": "",
     "bemerkungen": "V: Heinrich Wilhelm Karlshaus\nM: Wilhelma Korten",
     "pruefen": "ja"
+  },
+  {
+    "id": "p87",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Heinrich Wilhelm",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "Wilhelma Korten",
+    "bemerkungen": "",
+    "pruefen": "ja"
   }
 ]
