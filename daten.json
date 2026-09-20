@@ -1534,9 +1534,25 @@
     "beruf": "Näherin",
     "wohnorte": "Nordstr. 22a",
     "zweig": "",
-    "erwaehnt": "",
+    "erwaehnt": "1896",
     "ehepartner": "",
     "bemerkungen": "",
     "pruefen": "ja"
+  },
+  {
+    "id": "p92",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Wwe Ernst",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "Hofkamperstr. 11",
+    "zweig": "",
+    "erwaehnt": "1899",
+    "ehepartner": "Ernst",
+    "bemerkungen": "",
+    "pruefen": ""
   }
 ]
