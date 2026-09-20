@@ -237,7 +237,7 @@
     "id": "p15",
     "vorname": "Daniel",
     "maedchenname": "",
-    "geburtsdatum": "",
+    "geburtsdatum": "1987-07-02",
     "todesdatum": "",
     "beruf": "",
     "mutter": null,
@@ -246,10 +246,10 @@
     "hochzeitsdatum": "",
     "wohnorte": "",
     "kennzeichen": "",
-    "bemerkungen": "",
-    "pruefen": "ja",
+    "bemerkungen": "Sohn von Martin & Lydia",
+    "pruefen": "",
     "erwaehnt": "",
-    "zweig": ""
+    "zweig": "Bä"
   },
   {
     "id": "p16",
