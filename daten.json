@@ -1714,5 +1714,21 @@
     "ehepartner": "",
     "bemerkungen": "",
     "pruefen": "ja"
+  },
+  {
+    "id": "p103",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Otto",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "Stadt. Angestellter",
+    "wohnorte": "Am Opphof 4",
+    "zweig": "",
+    "erwaehnt": "1952-1953",
+    "ehepartner": "",
+    "bemerkungen": "",
+    "pruefen": "ja"
   }
 ]
