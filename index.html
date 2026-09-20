@@ -203,7 +203,7 @@
 <div id="modalRoot"></div>
 
 <script>
-document.getElementById("versionLabel").textContent = "v16 · Stand: 20.09.2026, 14:03 Uhr";
+document.getElementById("versionLabel").textContent = "v17 · Stand: 20.09.2026, 14:09 Uhr";
 
 const LS_KEY = "familie_karlshaus_config_v2";
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
@@ -289,7 +289,12 @@ const FIELDS = [
   {key:"pruefen", label:"Prüfen?"},
 ];
 const FIELDS_BY_KEY = Object.fromEntries(FIELDS.map(f => [f.key, f]));
-if (!columnOrder || columnOrder.length !== FIELDS.length) columnOrder = FIELDS.map(f => f.key);
+const VALID_KEYS = new Set(FIELDS.map(f => f.key));
+if (!columnOrder || columnOrder.length !== FIELDS.length
+    || columnOrder.some(k => !VALID_KEYS.has(k)) || new Set(columnOrder).size !== VALID_KEYS.size) {
+  columnOrder = FIELDS.map(f => f.key);
+  localStorage.setItem(COL_ORDER_KEY, JSON.stringify(columnOrder));
+}
 function orderedFields(){ return columnOrder.map(k => FIELDS_BY_KEY[k]); }
 function moveColumn(key, beforeKey){
   columnOrder = columnOrder.filter(k => k !== key);
