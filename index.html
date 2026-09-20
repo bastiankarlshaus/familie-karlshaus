@@ -155,19 +155,33 @@
   .tablewrap::-webkit-scrollbar{height:14px; width:14px}
   .tablewrap::-webkit-scrollbar-track{background:var(--bg)}
   .tablewrap::-webkit-scrollbar-thumb{background:var(--accent); border-radius:7px}
-  table.datatable{border-collapse:collapse; width:100%; font-size:13px}
-  table.datatable th, table.datatable td{padding:8px 11px; border:1px solid var(--border); text-align:left; white-space:nowrap}
+  table.datatable{border-collapse:collapse; width:100%; font-size:13px; table-layout:fixed}
+  table.datatable th, table.datatable td{
+    padding:8px 11px; border:1px solid var(--border); text-align:left; white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis; position:relative;
+  }
   table.datatable th{cursor:grab; user-select:none; background:var(--bg)}
   table.datatable th.dragging{opacity:.4}
   table.datatable th:hover{background:var(--border)}
   table.datatable th .arrow{opacity:.6; font-size:11px; margin-left:4px; cursor:pointer}
-  table.datatable thead th{position:sticky; top:0; z-index:2}
+  table.datatable thead tr.headRow th{position:sticky; top:0; z-index:2}
+  table.datatable thead tr.filterRow th{
+    position:sticky; top:var(--headRowH, 38px); z-index:2; background:var(--card); padding:4px 6px; cursor:default;
+  }
+  table.datatable thead tr.filterRow th:hover{background:var(--card)}
+  input.colFilterInput{
+    width:100%; padding:5px 7px; font-size:12px; border-radius:6px; border:1px solid var(--border);
+    background:var(--bg); color:var(--text); font-family:inherit;
+  }
   table.datatable th:first-child, table.datatable td:first-child{position:sticky; left:0; z-index:1; background:var(--card)}
   table.datatable thead th:first-child{z-index:3}
   table.datatable tr.datarow{cursor:pointer}
   table.datatable tr.datarow:hover{background:var(--bg)}
   table.datatable tr.datarow:active{opacity:.7}
-  table.datatable tr.datarow td:first-child{white-space:normal; min-width:140px}
+  .colResizer{
+    position:absolute; top:0; right:0; width:8px; height:100%; cursor:col-resize; z-index:5;
+  }
+  .colResizer:hover, .colResizer.resizing{background:var(--accent)}
   .advsearch{display:flex; flex-direction:column; gap:8px; margin-top:8px}
   .advsearch .pair{display:flex; gap:8px}
   .advsearch select{flex:0 0 42%}
@@ -203,7 +217,7 @@
 <div id="modalRoot"></div>
 
 <script>
-document.getElementById("versionLabel").textContent = "v17 · Stand: 20.09.2026, 14:09 Uhr";
+document.getElementById("versionLabel").textContent = "v19 · Stand: 20.09.2026, 15:48 Uhr";
 
 const LS_KEY = "familie_karlshaus_config_v2";
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
@@ -281,6 +295,7 @@ const FIELDS = [
   {key:"todesdatum", label:"verstorben", type:"date"},
   {key:"beruf", label:"Beruf"},
   {key:"wohnorte", label:"Wohnorte"},
+  {key:"zweig", label:"Zweig"},
   {key:"ehepartner", label:"verheiratet mit"},
   {key:"erwaehnt", label:"Erwähnt"},
   {key:"kennzeichen", label:"Kennz."},
@@ -301,6 +316,17 @@ function moveColumn(key, beforeKey){
   const idx = beforeKey ? columnOrder.indexOf(beforeKey) : columnOrder.length;
   columnOrder.splice(idx < 0 ? columnOrder.length : idx, 0, key);
   localStorage.setItem(COL_ORDER_KEY, JSON.stringify(columnOrder));
+}
+
+const COL_WIDTH_KEY = "familie_karlshaus_colwidths";
+const DEFAULT_COL_WIDTH = 140;
+let colWidths = (() => {
+  try { return JSON.parse(localStorage.getItem(COL_WIDTH_KEY)) || {}; } catch(e) { return {}; }
+})();
+function widthFor(key){ return colWidths[key] || DEFAULT_COL_WIDTH; }
+function setWidth(key, px){
+  colWidths[key] = Math.max(50, Math.round(px));
+  localStorage.setItem(COL_WIDTH_KEY, JSON.stringify(colWidths));
 }
 
 function fmtDate(d){
@@ -334,9 +360,15 @@ function nextId(){
   state.personen.forEach(p => { const n = parseInt(String(p.id).replace(/\D/g,""),10); if (n > max) max = n; });
   return "p" + (max + 1);
 }
+let autoSaveTimer = null;
 function markDirty(){
   state.dirty = true;
   updateSaveBtn();
+  if (config.ghToken) {
+    clearTimeout(autoSaveTimer);
+    setSaveStatus("Änderung erkannt – speichere in ein paar Sekunden automatisch…");
+    autoSaveTimer = setTimeout(() => { if (state.dirty) saveToGitHub(); }, 4000);
+  }
 }
 const GH_OWNER = "bastiankarlshaus";
 const GH_REPO = "familie-karlshaus";
@@ -366,6 +398,7 @@ function downloadData(){
 
 async function handleSaveClick(){
   if (!state.dirty) return;
+  clearTimeout(autoSaveTimer);
   if (!config.ghToken) {
     setSaveStatus("Kein GitHub-Token hinterlegt – Datei wird heruntergeladen, bitte manuell bei GitHub hochladen (oder in ⚙️ einen Token eintragen für direktes Speichern).");
     downloadData();
@@ -528,6 +561,7 @@ function renderPersonForm(editId){
         <div class="field"><label>Beruf</label><input type="text" id="pfBeruf" value="${p ? escapeHtml(p.beruf||"") : ""}"></div>
         <div class="field"><label>Hochzeitsdatum</label><input type="date" id="pfHochzeit" value="${p ? p.hochzeitsdatum||"" : ""}"></div>
         <div class="field"><label>Wohnorte (Freitext, ein Eintrag pro Zeile)</label><textarea id="pfWohnorte" rows="5">${p ? escapeHtml(p.wohnorte||"") : ""}</textarea></div>
+        <div class="field"><label>Zweig</label><input type="text" id="pfZweig" value="${p ? escapeHtml(p.zweig||"") : ""}"></div>
         <div class="field"><label>Kennzeichen</label><input type="text" id="pfKennzeichen" value="${p ? escapeHtml(p.kennzeichen||"") : ""}"></div>
         <div class="field"><label>Erwähnt (z.B. "1890–1933")</label><input type="text" id="pfErwaehnt" value="${p ? escapeHtml(p.erwaehnt||"") : ""}" placeholder="z.B. 1890–1933"></div>
         <div class="field"><label>verheiratet mit (Mehrfachauswahl möglich)</label>
@@ -575,6 +609,7 @@ function renderPersonForm(editId){
       beruf: document.getElementById("pfBeruf").value.trim(),
       hochzeitsdatum: document.getElementById("pfHochzeit").value,
       wohnorte: document.getElementById("pfWohnorte").value.trim(),
+      zweig: document.getElementById("pfZweig").value.trim(),
       kennzeichen: document.getElementById("pfKennzeichen").value.trim(),
       erwaehnt: document.getElementById("pfErwaehnt").value.trim(),
       ehepartner,
@@ -635,24 +670,30 @@ function searchBlob(p){
   return (FIELDS.map(f => fieldValueForFilter(p, f.key)).join(" ") + " " + personName(p.id)).toLowerCase();
 }
 
+let columnFilters = {};
+let activeFilterKey = null;
+let filterDebounce = null;
+
 function renderList(){
   const main = document.getElementById("main");
   const q = document.getElementById("searchInput").value.trim().toLowerCase();
   let items = state.personen.map(p => ({ p, name: personName(p.id) }));
   items = items.filter(x => !q || searchBlob(x.p).includes(q));
+  items = items.filter(x => Object.entries(columnFilters).every(([k,v]) => !v || fieldValueForFilter(x.p, k).toLowerCase().includes(v.toLowerCase())));
   items.sort((a,b) => sortValue(a.p, sortState.key).localeCompare(sortValue(b.p, sortState.key), "de", {numeric:true}) * sortState.dir);
 
   if (items.length === 0) {
     main.innerHTML = `<div class="hint">Keine Treffer.</div>`;
   } else {
-    main.innerHTML = `<div class="hint">${items.length} von ${state.personen.length} Personen. Sortierung oben wählen, oder (Laptop/Tablet) Spaltenkopf antippen.</div>`
+    main.innerHTML = `<div class="hint">${items.length} von ${state.personen.length} Personen. Sortierung oben wählen, oder (Laptop/Tablet) Spaltenkopf antippen. Filterzeile unter den Überschriften.</div>`
       + tableHtml(items) + cardListHtml(items);
   }
   main.querySelectorAll("[data-person]").forEach(el => {
     el.addEventListener("click", () => { currentPersonId = el.dataset.person; render(); window.scrollTo(0,0); });
   });
   main.querySelectorAll("th[data-key]").forEach(el => {
-    el.querySelector(".arrow").addEventListener("click", (e) => {
+    const arrow = el.querySelector(".arrow");
+    if (arrow) arrow.addEventListener("click", (e) => {
       e.stopPropagation();
       const key = el.dataset.key;
       if (sortState.key === key) sortState.dir *= -1; else { sortState.key = key; sortState.dir = 1; }
@@ -661,6 +702,19 @@ function renderList(){
       renderList();
     });
   });
+  main.querySelectorAll(".colFilterInput").forEach(inp => {
+    inp.addEventListener("input", () => {
+      const key = inp.dataset.key;
+      columnFilters[key] = inp.value;
+      activeFilterKey = key;
+      clearTimeout(filterDebounce);
+      filterDebounce = setTimeout(() => { if (!currentPersonId) renderList(); }, 300);
+    });
+  });
+  if (activeFilterKey) {
+    const toFocus = main.querySelector(`.colFilterInput[data-key="${activeFilterKey}"]`);
+    if (toFocus) { toFocus.focus(); const v = toFocus.value; toFocus.setSelectionRange(v.length, v.length); }
+  }
   wireTableExtras();
   updateStickyOffsets();
 }
@@ -668,6 +722,8 @@ function renderList(){
 function updateStickyOffsets(){
   const headerH = document.querySelector("header").offsetHeight;
   document.documentElement.style.setProperty("--stickyTop", headerH + "px");
+  const headRow = document.querySelector("tr.headRow");
+  if (headRow) document.documentElement.style.setProperty("--headRowH", headRow.offsetHeight + "px");
 }
 
 function cellDisplay(p, key){
@@ -688,6 +744,7 @@ function cardListHtml(items){
       p.beruf || null,
       partnerNamesOf(p) ? `⚭ ${partnerNamesOf(p)}${p.hochzeitsdatum ? " (" + fmtDate(p.hochzeitsdatum) + ")" : ""}` : null,
       p.wohnorte ? `🏠 ${p.wohnorte.replace(/\n/g, ", ")}` : null,
+      p.zweig ? `Zweig: ${p.zweig}` : null,
       p.erwaehnt ? `Erwähnt ${p.erwaehnt}` : null,
       p.kennzeichen ? `Kennzeichen: ${p.kennzeichen}` : null,
       p.bemerkungen ? `📝 ${p.bemerkungen}` : null,
@@ -708,9 +765,16 @@ function tableHtml(items){
     <button class="scrollBtn" id="scrollLeftBtn" title="Nach links">‹</button>
     <button class="scrollBtn" id="scrollRightBtn" title="Nach rechts">›</button>
   </div>
-    <div class="tablewrap" id="tableWrap"><table class="datatable"><thead><tr>
-    ${cols.map(c => `<th data-key="${c.key}" draggable="true">${c.label}<span class="arrow">${sortState.key === c.key ? (sortState.dir === 1 ? "▲" : "▼") : "⇅"}</span></th>`).join("")}
-  </tr></thead><tbody>
+    <div class="tablewrap" id="tableWrap"><table class="datatable">
+    <colgroup>${cols.map(c => `<col style="width:${widthFor(c.key)}px">`).join("")}</colgroup>
+    <thead>
+    <tr class="headRow">
+    ${cols.map(c => `<th data-key="${c.key}" draggable="true">${c.label}<span class="arrow">${sortState.key === c.key ? (sortState.dir === 1 ? "▲" : "▼") : "⇅"}</span><div class="colResizer" data-key="${c.key}" draggable="false"></div></th>`).join("")}
+    </tr>
+    <tr class="filterRow">
+    ${cols.map(c => `<th><input class="colFilterInput" data-key="${c.key}" placeholder="Filter…" value="${escapeHtml(columnFilters[c.key]||"")}"></th>`).join("")}
+    </tr>
+    </thead><tbody>
     ${items.map(({p}) => `<tr class="datarow" data-person="${p.id}" style="${p.pruefen ? "background:rgba(230,160,40,.15)" : ""}">${cols.map(c => `<td>${escapeHtml(cellDisplay(p, c.key))}</td>`).join("")}</tr>`).join("")}
   </tbody></table></div>`;
 }
@@ -735,6 +799,34 @@ function wireTableExtras(){
       renderList();
     });
   });
+
+  wrap.querySelectorAll(".colResizer").forEach(handle => {
+    handle.addEventListener("dragstart", e => e.preventDefault());
+    handle.addEventListener("pointerdown", e => {
+      e.preventDefault();
+      e.stopPropagation();
+      const key = handle.dataset.key;
+      const col = wrap.querySelector(`col:nth-child(${cols_indexOf(key)+1})`);
+      const startX = e.clientX;
+      const startWidth = widthFor(key);
+      handle.classList.add("resizing");
+      handle.setPointerCapture(e.pointerId);
+      const onMove = (ev) => {
+        const newWidth = Math.max(50, startWidth + (ev.clientX - startX));
+        if (col) col.style.width = newWidth + "px";
+      };
+      const onUp = (ev) => {
+        const newWidth = Math.max(50, startWidth + (ev.clientX - startX));
+        setWidth(key, newWidth);
+        handle.classList.remove("resizing");
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
+      };
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
+    });
+  });
+  function cols_indexOf(key){ return orderedFields().findIndex(f => f.key === key); }
 }
 
 function tnode(id, isSelf){
@@ -807,6 +899,7 @@ function renderDetail(id){
       ${p.hochzeitsdatum ? `<div class="section-label">Hochzeitsdatum</div><div class="meta">${fmtDate(p.hochzeitsdatum)}</div>` : ""}
       <div class="section-label">Wohnorte</div>
       ${p.wohnorte ? `<div class="meta" style="white-space:pre-line">${escapeHtml(p.wohnorte)}</div>` : `<div class="meta">Keine Angabe</div>`}
+      ${p.zweig ? `<div class="section-label">Zweig</div><div class="meta">${escapeHtml(p.zweig)}</div>` : ""}
       ${p.erwaehnt ? `<div class="section-label">Erwähnt</div><div class="meta">${escapeHtml(p.erwaehnt)}</div>` : ""}
       ${p.kennzeichen ? `<div class="section-label">Kennzeichen</div><div class="meta">${escapeHtml(p.kennzeichen)}</div>` : ""}
       ${p.bemerkungen ? `<div class="section-label">Bemerkungen</div><div class="meta" style="white-space:pre-line">${escapeHtml(p.bemerkungen)}</div>` : ""}

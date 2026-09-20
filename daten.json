@@ -11,11 +11,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Cuxhaven",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p2",
@@ -29,11 +29,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p3",
@@ -47,11 +47,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p4",
@@ -65,11 +65,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p5",
@@ -83,11 +83,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p6",
@@ -95,18 +95,17 @@
     "maedchenname": "Schumacher",
     "geburtsdatum": "1890-10-15",
     "todesdatum": "1971-08-27",
-    "beruf": "Testberufddddd",
+    "beruf": "",
     "mutter": null,
     "vater": null,
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Winkelstr. 57",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
     "pruefen": "",
-    "erwaehnt": ""
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p7",
@@ -120,11 +119,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Uellendahl 8",
-    "erwaehntVon": "1890",
-    "erwaehntBis": "1933",
     "kennzeichen": "",
     "bemerkungen": "Laut Stadtarchiv: Wohnung Uellendahl 26 (= Uellendahler Str. 452?) – widerspricht ggf. vorhandenem Eintrag \"Uellendahl 8\", bitte gegenchecken.",
-    "pruefen": "ja"
+    "pruefen": "ja",
+    "erwaehnt": "1890–1933",
+    "zweig": ""
   },
   {
     "id": "p8",
@@ -138,11 +137,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "1938",
-    "erwaehntBis": "1952",
     "kennzeichen": "",
     "bemerkungen": "Laut Stadtarchiv als \"Wwe August dÄ\" gefuehrt (Witwe), Wohnung Uellendahler Str. 452, Vater von August + Wilhelm (Notiz im Archiv).",
-    "pruefen": "ja"
+    "pruefen": "ja",
+    "erwaehnt": "1938–1952",
+    "zweig": ""
   },
   {
     "id": "p9",
@@ -156,11 +155,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p10",
@@ -174,11 +173,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p11",
@@ -192,11 +191,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p12",
@@ -210,11 +209,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p13",
@@ -228,11 +227,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Uellendahl 26",
-    "erwaehntVon": "1933",
-    "erwaehntBis": "1964",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": "ja"
+    "pruefen": "ja",
+    "erwaehnt": "1933–1964",
+    "zweig": ""
   },
   {
     "id": "p14",
@@ -246,11 +245,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Wülfrath",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p15",
@@ -264,11 +263,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p16",
@@ -282,11 +281,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p17",
@@ -300,11 +299,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p18",
@@ -318,11 +317,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Wülfrath",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p19",
@@ -336,11 +335,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p20",
@@ -354,11 +353,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p21",
@@ -372,11 +371,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p22",
@@ -390,11 +389,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Uellendahler Str. 452",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p23",
@@ -408,11 +407,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "verheiratet mit Karl Blau",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p24",
@@ -426,11 +425,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p25",
@@ -444,11 +443,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p26",
@@ -462,11 +461,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p27",
@@ -480,11 +479,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "id": "p28",
@@ -498,11 +497,11 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -514,13 +513,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Hülsbeck",
-    "erwaehntVon": "1850",
-    "erwaehntBis": "1864",
     "kennzeichen": "",
     "bemerkungen": "Frühester Eintrag im Stadtarchiv-Auszug.",
     "pruefen": "ja",
     "vorname": "Wilhelm",
-    "id": "p29"
+    "id": "p29",
+    "erwaehnt": "1850–1864",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -532,13 +531,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Franzengasse",
-    "erwaehntVon": "1864",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "Geschwister? (laut Archiv) - moeglicherweise anderer Wilhelm als voriger Eintrag.",
     "pruefen": "ja",
     "vorname": "Wilhelm",
-    "id": "p30"
+    "id": "p30",
+    "erwaehnt": "1864",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -550,13 +549,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Franzengasse",
-    "erwaehntVon": "1864",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "Geschwister? (laut Archiv). Moeglicherweise identisch mit vorhandenem Eintrag Wilhelmine (Rauterkuls) - bitte pruefen.",
     "pruefen": "ja",
     "vorname": "Wilhelmine",
-    "id": "p31"
+    "id": "p31",
+    "erwaehnt": "1864",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -568,13 +567,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Luisenstr. 84a",
-    "erwaehntVon": "1875",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "Name im Archiv nur als Abkuerzung 'Fr.' vermerkt - vollstaendiger Name unklar.",
     "pruefen": "ja",
     "vorname": "Fr.",
-    "id": "p32"
+    "id": "p32",
+    "erwaehnt": "1875",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -586,13 +585,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Nordstr.",
-    "erwaehntVon": "1896",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "Im Archiv als 'Wwe Otto' (Witwe des Otto) gefuehrt.",
     "pruefen": "ja",
     "vorname": "Otto",
-    "id": "p33"
+    "id": "p33",
+    "erwaehnt": "1896",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -604,13 +603,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Herrmannstr. / Rosenstr. / Wirkerstr. 3 / Hofkamperstr.",
-    "erwaehntVon": "1899",
-    "erwaehntBis": "1911",
     "kennzeichen": "",
     "bemerkungen": "Archiv-Kuerzel 'M.' vor dem Namen (Bedeutung unklar).",
     "pruefen": "ja",
     "vorname": "Ernst",
-    "id": "p34"
+    "id": "p34",
+    "erwaehnt": "1899–1911",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -622,13 +621,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Birkerstr. 9",
-    "erwaehntVon": "1911",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "Geschwister? (laut Archiv).",
     "pruefen": "ja",
     "vorname": "Berta",
-    "id": "p35"
+    "id": "p35",
+    "erwaehnt": "1911",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -640,13 +639,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Wirkerstr. 3 / Birkerstr. 9",
-    "erwaehntVon": "1911",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "Geschwister? (laut Archiv).",
     "pruefen": "ja",
     "vorname": "Ernst",
-    "id": "p36"
+    "id": "p36",
+    "erwaehnt": "1911",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -658,13 +657,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Hochstr. 65",
-    "erwaehntVon": "1919",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "Archiv-Kuerzel 'M.' vor dem Namen. Evtl. identisch mit anderem Ernst-Eintrag - bitte pruefen.",
     "pruefen": "ja",
     "vorname": "Ernst",
-    "id": "p37"
+    "id": "p37",
+    "erwaehnt": "1919",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -676,13 +675,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Ernstr. 21 / Leipzigerstr. 31 / Neuenteich 35",
-    "erwaehntVon": "1921",
-    "erwaehntBis": "1935",
     "kennzeichen": "",
     "bemerkungen": "Archiv-Kuerzel 'M.'. Zusatz: Kranwagenführer/Angest.",
     "pruefen": "ja",
     "vorname": "Otto",
-    "id": "p38"
+    "id": "p38",
+    "erwaehnt": "1921–1935",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -694,13 +693,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Hauptstr. 57",
-    "erwaehntVon": "1925",
-    "erwaehntBis": "1935",
     "kennzeichen": "",
     "bemerkungen": "Archiv-Vermerk 'ohne' (Bedeutung unklar, evtl. konfessionslos/ohne Partei).",
     "pruefen": "ja",
     "vorname": "Ernst",
-    "id": "p39"
+    "id": "p39",
+    "erwaehnt": "1925–1935",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -712,13 +711,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "1925",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "Im Archiv nur als 'Frau Ewald' gefuehrt - vermutlich Ehefrau des Ewald-Eintrags (Schlosser, Höchsten 38).",
     "pruefen": "ja",
     "vorname": "(Frau) Ewald",
-    "id": "p40"
+    "id": "p40",
+    "erwaehnt": "1925",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -730,13 +729,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Höchsten 38\nAm Opphof 4",
-    "erwaehntVon": "1926",
-    "erwaehntBis": "1952",
     "kennzeichen": "",
     "bemerkungen": "Zwei Archiv-Eintraege (1926 und 1952) vermutlich zur selben Person zusammengefasst - bitte pruefen.",
     "pruefen": "ja",
     "vorname": "Ewald",
-    "id": "p41"
+    "id": "p41",
+    "erwaehnt": "1926–1952",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -748,13 +747,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "1933",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "Andere Berta als der 1911er-Eintrag (spaetere Generation).",
     "pruefen": "ja",
     "vorname": "Berta",
-    "id": "p42"
+    "id": "p42",
+    "erwaehnt": "1933",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -766,13 +765,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Ravensbergerstr. 98",
-    "erwaehntVon": "1933",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
     "pruefen": "ja",
     "vorname": "Willi",
-    "id": "p43"
+    "id": "p43",
+    "erwaehnt": "1933",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -784,13 +783,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Südstr. 5",
-    "erwaehntVon": "1933",
-    "erwaehntBis": "1938",
     "kennzeichen": "",
     "bemerkungen": "Im Archiv als 'Wwe Friedrich' gefuehrt (Witwe).",
     "pruefen": "ja",
     "vorname": "Friedrich",
-    "id": "p44"
+    "id": "p44",
+    "erwaehnt": "1933–1938",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -802,13 +801,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Luisenstr. 26",
-    "erwaehntVon": "1935",
-    "erwaehntBis": "1942",
     "kennzeichen": "",
     "bemerkungen": "",
     "pruefen": "ja",
     "vorname": "Hellmut",
-    "id": "p45"
+    "id": "p45",
+    "erwaehnt": "1935–1942",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -820,13 +819,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Hamburgerstr. 36",
-    "erwaehntVon": "1935",
-    "erwaehntBis": "1941",
     "kennzeichen": "",
     "bemerkungen": "Handschriftliche Notiz im Original schwer lesbar.",
     "pruefen": "ja",
     "vorname": "Josef",
-    "id": "p46"
+    "id": "p46",
+    "erwaehnt": "1935–1941",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -838,13 +837,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Charlottenstr. 17",
-    "erwaehntVon": "1935",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "Im Archiv als 'Wwe Ernst' gefuehrt (Witwe).",
     "pruefen": "ja",
     "vorname": "Ernst",
-    "id": "p47"
+    "id": "p47",
+    "erwaehnt": "1935",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -856,13 +855,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Luisenstr. 78",
-    "erwaehntVon": "1935",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "Anderer Willi als der 1933er-Eintrag.",
     "pruefen": "ja",
     "vorname": "Willi",
-    "id": "p48"
+    "id": "p48",
+    "erwaehnt": "1935",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -874,13 +873,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Markomannenstr. 15",
-    "erwaehntVon": "1938",
-    "erwaehntBis": "1951",
     "kennzeichen": "",
     "bemerkungen": "Archiv-Kuerzel 'M.'.",
     "pruefen": "ja",
     "vorname": "Otto",
-    "id": "p49"
+    "id": "p49",
+    "erwaehnt": "1938–1951",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -892,13 +891,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Königstr. 170",
-    "erwaehntVon": "1938",
-    "erwaehntBis": "1942",
     "kennzeichen": "",
     "bemerkungen": "Archiv-Kuerzel 'M.'.",
     "pruefen": "ja",
     "vorname": "Ernst",
-    "id": "p50"
+    "id": "p50",
+    "erwaehnt": "1938–1942",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -910,13 +909,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Wall 1",
-    "erwaehntVon": "1941",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "Ungewoehnlicher Eintrag - evtl. Firma/Erbengemeinschaft statt Einzelperson, bitte pruefen.",
     "pruefen": "ja",
     "vorname": "Karlshaus Erben",
-    "id": "p51"
+    "id": "p51",
+    "erwaehnt": "1941",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -928,13 +927,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Spichernstr. 20",
-    "erwaehntVon": "1941",
-    "erwaehntBis": "1942",
     "kennzeichen": "",
     "bemerkungen": "",
     "pruefen": "ja",
     "vorname": "Grete",
-    "id": "p52"
+    "id": "p52",
+    "erwaehnt": "1941–1942",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -946,13 +945,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Neue Friedrichstr. 43",
-    "erwaehntVon": "1942",
-    "erwaehntBis": "1960",
     "kennzeichen": "",
     "bemerkungen": "Vater von 'Jüppes' (Franz-Josef).",
     "pruefen": "ja",
     "vorname": "Josef",
-    "id": "p53"
+    "id": "p53",
+    "erwaehnt": "1942–1960",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -964,13 +963,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Friesenstr. 15 / Marienstr. 110",
-    "erwaehntVon": "1951",
-    "erwaehntBis": "1952",
     "kennzeichen": "",
     "bemerkungen": "Archiv-Kuerzel 'M.'.",
     "pruefen": "ja",
     "vorname": "Ernst",
-    "id": "p54"
+    "id": "p54",
+    "erwaehnt": "1951–1952",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -982,13 +981,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Schliefenstr. 56",
-    "erwaehntVon": "1951",
-    "erwaehntBis": "1952",
     "kennzeichen": "",
     "bemerkungen": "Im Archiv als 'Wwe Hellmut' gefuehrt (Witwe).",
     "pruefen": "ja",
     "vorname": "Hellmut",
-    "id": "p55"
+    "id": "p55",
+    "erwaehnt": "1951–1952",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -1000,13 +999,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Schliefenstr. 56",
-    "erwaehntVon": "1951",
-    "erwaehntBis": "1952",
     "kennzeichen": "",
     "bemerkungen": "Im Archiv als 'Wwe Werner' gefuehrt (Witwe).",
     "pruefen": "ja",
     "vorname": "Werner",
-    "id": "p56"
+    "id": "p56",
+    "erwaehnt": "1951–1952",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -1018,13 +1017,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Luisenstr. 106",
-    "erwaehntVon": "1952",
-    "erwaehntBis": "1964",
     "kennzeichen": "",
     "bemerkungen": "Frau von ? (laut Archiv unbekannt).",
     "pruefen": "ja",
     "vorname": "Elisabeth",
-    "id": "p57"
+    "id": "p57",
+    "erwaehnt": "1952–1964",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -1036,13 +1035,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Neue Friedrichstr. 43 / Memelerstr. 44",
-    "erwaehntVon": "1952",
-    "erwaehntBis": "1956",
     "kennzeichen": "",
     "bemerkungen": "Sohn von Josef (Archiv-Notiz). Archiv-Kuerzel 'M.'.",
     "pruefen": "ja",
     "vorname": "Otto",
-    "id": "p58"
+    "id": "p58",
+    "erwaehnt": "1952–1956",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -1054,13 +1053,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Uellendahler Str. 452",
-    "erwaehntVon": "1952",
-    "erwaehntBis": "1972",
     "kennzeichen": "",
     "bemerkungen": "Sohn von Josef (Gaststätte, *1899) laut Archiv-Notiz 'Vater von Jüppes'.",
     "pruefen": "ja",
     "vorname": "Franz-Josef (Jüppes)",
-    "id": "p59"
+    "id": "p59",
+    "erwaehnt": "1952–1972",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -1072,13 +1071,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Otto Hausmann Ring 204 / Kalkofen 11",
-    "erwaehntVon": "1956",
-    "erwaehntBis": "1976",
     "kennzeichen": "",
     "bemerkungen": "Im Archiv als 'Wwe Helene' gefuehrt (Witwe).",
     "pruefen": "ja",
     "vorname": "Helene",
-    "id": "p60"
+    "id": "p60",
+    "erwaehnt": "1956–1976",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -1090,13 +1089,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Luisenstr. 106 / Nützenberger 84 / Schrotzberg 1",
-    "erwaehntVon": "1956",
-    "erwaehntBis": "1976",
     "kennzeichen": "",
     "bemerkungen": "Sohn von Ewald laut Archiv-Notiz.",
     "pruefen": "ja",
     "vorname": "Hans-Helmut",
-    "id": "p61"
+    "id": "p61",
+    "erwaehnt": "1956–1976",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -1108,13 +1107,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Lübecker Str. 34",
-    "erwaehntVon": "1956",
-    "erwaehntBis": "1964",
     "kennzeichen": "",
     "bemerkungen": "Im Archiv als 'Wilhelm 2' bezeichnet - dritter Wilhelm-Eintrag insgesamt, zur Unterscheidung.",
     "pruefen": "ja",
     "vorname": "Wilhelm",
-    "id": "p62"
+    "id": "p62",
+    "erwaehnt": "1956–1964",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -1126,13 +1125,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Am Opphof 24 / Wilberg 16 / Marienstr. 95",
-    "erwaehntVon": "1960",
-    "erwaehntBis": "1968",
     "kennzeichen": "",
     "bemerkungen": "Im Archiv als 'Wwe Paula' gefuehrt (Witwe).",
     "pruefen": "ja",
     "vorname": "Paula",
-    "id": "p63"
+    "id": "p63",
+    "erwaehnt": "1960–1968",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -1144,13 +1143,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Bornberg 92",
-    "erwaehntVon": "1964",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "Archiv-Kuerzel 'M.'.",
     "pruefen": "ja",
     "vorname": "Hilmar",
-    "id": "p64"
+    "id": "p64",
+    "erwaehnt": "1964",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -1162,13 +1161,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "1964",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "Archiv-Kuerzel 'M.', sonst keine weiteren Angaben.",
     "pruefen": "ja",
     "vorname": "Ralf",
-    "id": "p65"
+    "id": "p65",
+    "erwaehnt": "1964",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -1180,13 +1179,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Memelerstr. 44",
-    "erwaehntVon": "1964",
-    "erwaehntBis": "1972",
     "kennzeichen": "",
     "bemerkungen": "Beruf im Original mit Fragezeichen vermerkt ('Bäcker???').",
     "pruefen": "ja",
     "vorname": "Josef",
-    "id": "p66"
+    "id": "p66",
+    "erwaehnt": "1964–1972",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -1198,13 +1197,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "Schillerstr. 8",
-    "erwaehntVon": "1976",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "Datumsangaben im Original widerspruechlich (Erwähnt 1976, daneben Zahl 1968) - bitte am Original pruefen.",
     "pruefen": "ja",
     "vorname": "Josef",
-    "id": "p67"
+    "id": "p67",
+    "erwaehnt": "1976",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -1216,13 +1215,13 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "Im Archiv als 'Wwe Ewald, Annemarie' gefuehrt (Witwe eines Ewald).",
     "pruefen": "ja",
     "vorname": "Annemarie",
-    "id": "p68"
+    "id": "p68",
+    "erwaehnt": "",
+    "zweig": ""
   },
   {
     "maedchenname": "",
@@ -1234,12 +1233,12 @@
     "ehepartner": [],
     "hochzeitsdatum": "",
     "wohnorte": "",
-    "erwaehntVon": "",
-    "erwaehntBis": "",
     "kennzeichen": "",
     "bemerkungen": "",
     "pruefen": "ja",
     "vorname": "Ursula Dillenberger",
-    "id": "p69"
+    "id": "p69",
+    "erwaehnt": "",
+    "zweig": ""
   }
 ]
