@@ -54,24 +54,6 @@
     "zweig": ""
   },
   {
-    "id": "p4",
-    "vorname": "Karl Blau",
-    "maedchenname": "",
-    "geburtsdatum": "",
-    "todesdatum": "",
-    "beruf": "",
-    "mutter": null,
-    "vater": null,
-    "ehepartner": "",
-    "hochzeitsdatum": "",
-    "wohnorte": "",
-    "kennzeichen": "",
-    "bemerkungen": "",
-    "pruefen": "ja",
-    "erwaehnt": "",
-    "zweig": ""
-  },
-  {
     "id": "p6",
     "vorname": "Klara",
     "maedchenname": "Anna Klara Schumacher",
@@ -463,7 +445,7 @@
     "wohnorte": "",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": "ja",
+    "pruefen": "",
     "erwaehnt": "",
     "zweig": "Bä"
   },
