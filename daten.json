@@ -1650,5 +1650,21 @@
     "ehepartner": "",
     "bemerkungen": "Sind Ernst und Hellmut Brüder?",
     "pruefen": "ja"
+  },
+  {
+    "id": "p99",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Wwe August",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "Haushaltshilfe",
+    "wohnorte": "Schlieffenstr. 56",
+    "zweig": "",
+    "erwaehnt": "1950",
+    "ehepartner": "",
+    "bemerkungen": "",
+    "pruefen": "ja"
   }
 ]
