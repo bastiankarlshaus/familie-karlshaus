@@ -1191,7 +1191,7 @@
     "id": "p70",
     "mutter": null,
     "vater": null,
-    "vorname": "Johann Wilhem dÄ",
+    "vorname": "Johann Wilhelm dÄ",
     "maedchenname": "",
     "geburtsdatum": "",
     "todesdatum": "",
@@ -1201,6 +1201,22 @@
     "erwaehnt": "",
     "ehepartner": "Juliana Schmachtender",
     "bemerkungen": "Vater von Wilhelm Otto, Wilhelmine Juliane Selma, Heinrich Wilhelm Ernst",
+    "pruefen": "ja"
+  },
+  {
+    "id": "p71",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Wilhelm Otto",
+    "maedchenname": "",
+    "geburtsdatum": "1864-12-19",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "Emma aus dem Siepen (Prüfen!)",
+    "bemerkungen": "",
     "pruefen": "ja"
   }
 ]
