@@ -1426,5 +1426,37 @@
     "ehepartner": "",
     "bemerkungen": "V: Johann Wilhelm PRÜFEN Vater von ?\nM: Clara Margaretha Brockmann",
     "pruefen": ""
+  },
+  {
+    "id": "p85",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Maria Catharina",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "Abraham Abel",
+    "bemerkungen": "",
+    "pruefen": "ja"
+  },
+  {
+    "id": "p86",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Julie Anna",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "",
+    "bemerkungen": "V: Heinrich Wilhelm Karlshaus\nM: Wilhelma Korten",
+    "pruefen": "ja"
   }
 ]
