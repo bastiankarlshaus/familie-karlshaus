@@ -1554,5 +1554,21 @@
     "ehepartner": "Ernst",
     "bemerkungen": "",
     "pruefen": ""
+  },
+  {
+    "id": "p93",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Ernst",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "Fuhrunternehmer",
+    "wohnorte": "Uellendahlerstr. 555",
+    "zweig": "",
+    "erwaehnt": "1921",
+    "ehepartner": "",
+    "bemerkungen": "",
+    "pruefen": "ja"
   }
 ]
