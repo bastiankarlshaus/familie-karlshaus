@@ -1362,5 +1362,21 @@
     "ehepartner": "",
     "bemerkungen": "",
     "pruefen": "ja"
+  },
+  {
+    "id": "p81",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Wilhelmine",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "Johann ... Carl Zimmlinghaus",
+    "bemerkungen": "",
+    "pruefen": "ja"
   }
 ]
