@@ -1282,5 +1282,21 @@
     "ehepartner": "",
     "bemerkungen": "Tochter von Heinrich Wilhelm Ernst \nGebDat 28.11.1900 prüfen",
     "pruefen": "ja"
+  },
+  {
+    "id": "p76",
+    "mutter": null,
+    "vater": null,
+    "vorname": "August Walter Helmut",
+    "maedchenname": "",
+    "geburtsdatum": "1908-04-04",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "",
+    "bemerkungen": "Sohn von Heinrich Wilhelm Ernst",
+    "pruefen": "ja"
   }
 ]
