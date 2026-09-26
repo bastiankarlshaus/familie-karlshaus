@@ -184,18 +184,18 @@
   .advsearch{display:flex; flex-direction:column; gap:8px; margin-top:8px}
   .advsearch .pair{display:flex; gap:8px}
   .advsearch select{flex:0 0 42%}
+  .checklist{display:flex; flex-wrap:wrap; gap:6px; max-height:260px; overflow:auto; padding:8px; border:1px solid var(--border); border-radius:10px; background:var(--card)}
+  .checklist label{display:flex; align-items:center; gap:5px; font-size:13px; background:var(--bg); border:1px solid var(--border); border-radius:999px; padding:4px 10px 4px 6px; white-space:nowrap}
+  #printArea{display:none}
   @media print{
-    header, .fab, #modalRoot, #saveBarRoot, .scrollToolbar, .hint, .back-btn, .tree, .btn-row{ display:none !important; }
+    header, .fab, #modalRoot, #saveBarRoot, main{ display:none !important; }
     body{ background:#fff; color:#000; }
-    main{ max-width:none !important; padding:0 !important; }
-    .cardlist{ display:none !important; }
-    .tablewrap{ display:block !important; overflow:visible !important; max-height:none !important; border:none !important; }
-    table.datatable{ table-layout:auto !important; font-size:10px; width:100% !important; }
-    table.datatable th, table.datatable td{
-      white-space:normal !important; overflow:visible !important; text-overflow:clip !important;
-      position:static !important; border:1px solid #999 !important;
+    #printArea{ display:block !important; }
+    #printArea h2{ margin:0 0 10px; font-size:16px; }
+    #printArea table{ width:100%; border-collapse:collapse; table-layout:auto; font-size:10px; }
+    #printArea th, #printArea td{
+      border:1px solid #999; padding:4px 6px; text-align:left; white-space:normal; word-break:break-word;
     }
-    table.datatable thead tr.filterRow{ display:none !important; }
     @page { size: A4 landscape; margin: 10mm; }
   }
 </style>
@@ -229,9 +229,10 @@
 <button class="fab" id="fabBtn" title="Neue Person erfassen">+</button>
 
 <div id="modalRoot"></div>
+<div id="printArea"></div>
 
 <script>
-document.getElementById("versionLabel").textContent = "v23 · Stand: 26.09.2026, 11:26 Uhr";
+document.getElementById("versionLabel").textContent = "v24 · Stand: 26.09.2026, 11:39 Uhr";
 
 const LS_KEY = "familie_karlshaus_config_v2";
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
@@ -536,6 +537,68 @@ function closeModal(){
   document.getElementById("modalRoot").innerHTML = "";
 }
 
+function currentFilteredSortedItems(){
+  const q = document.getElementById("searchInput").value.trim().toLowerCase();
+  let items = state.personen.map(p => ({ p }));
+  items = items.filter(x => !q || searchBlob(x.p).includes(q));
+  items = items.filter(x => Object.entries(columnFilters).every(([k,v]) => !v || fieldValueForFilter(x.p, k).toLowerCase().includes(v.toLowerCase())));
+  items.sort((a,b) => sortValue(a.p, sortState.key).localeCompare(sortValue(b.p, sortState.key), "de", {numeric:true}) * sortState.dir);
+  return items;
+}
+
+function buildPrintArea(colKeys, rows){
+  const cols = colKeys.map(k => FIELDS_BY_KEY[k]).filter(Boolean);
+  const area = document.getElementById("printArea");
+  area.innerHTML = `
+    <h2>🌳 Familie Karlshaus – ${rows.length} Person${rows.length === 1 ? "" : "en"}</h2>
+    <table>
+      <thead><tr>${cols.map(c => `<th>${escapeHtml(c.label)}</th>`).join("")}</tr></thead>
+      <tbody>${rows.map(p => `<tr>${cols.map(c => `<td>${escapeHtml(cellDisplay(p, c.key))}</td>`).join("")}</tr>`).join("")}</tbody>
+    </table>`;
+}
+
+function renderPrintModal(){
+  const root = document.getElementById("modalRoot");
+  const items = currentFilteredSortedItems();
+  const cols = orderedFields();
+  root.innerHTML = `
+    <div class="modal-overlay" id="overlay">
+      <div class="modal wide">
+        <h3>Drucken</h3>
+        <div class="section-label">Spalten</div>
+        <div class="checklist" id="printCols">${cols.map(c => `<label><input type="checkbox" value="${c.key}" checked> ${escapeHtml(c.label)}</label>`).join("")}</div>
+        <div class="section-label" style="margin-top:16px">Personen (${items.length} aktuell angezeigt)</div>
+        <div class="btn-row" style="margin-top:0; margin-bottom:8px">
+          <button class="btn secondary" id="printRowsAll">Alle auswählen</button>
+          <button class="btn secondary" id="printRowsNone">Keine auswählen</button>
+        </div>
+        <div class="checklist" id="printRows" style="display:block">
+          ${items.map(({p}) => `<label style="display:flex; width:100%; box-sizing:border-box; background:none; border:none; padding:4px 0"><input type="checkbox" value="${p.id}" checked style="width:auto; margin-right:8px"> ${escapeHtml(personName(p.id))}</label>`).join("")}
+        </div>
+        <div class="btn-row">
+          <button class="btn" id="printGo">Drucken</button>
+          <button class="btn secondary" id="printCancel">Abbrechen</button>
+        </div>
+      </div>
+    </div>`;
+  wireOverlayClose(document.getElementById("overlay"));
+  document.getElementById("printCancel").addEventListener("click", closeModal);
+  document.getElementById("printRowsAll").addEventListener("click", () => {
+    root.querySelectorAll("#printRows input").forEach(cb => cb.checked = true);
+  });
+  document.getElementById("printRowsNone").addEventListener("click", () => {
+    root.querySelectorAll("#printRows input").forEach(cb => cb.checked = false);
+  });
+  document.getElementById("printGo").addEventListener("click", () => {
+    const selectedCols = Array.from(root.querySelectorAll("#printCols input:checked")).map(el => el.value);
+    const selectedIds = new Set(Array.from(root.querySelectorAll("#printRows input:checked")).map(el => el.value));
+    const rows = items.filter(x => selectedIds.has(x.p.id)).map(x => x.p);
+    buildPrintArea(selectedCols, rows);
+    closeModal();
+    setTimeout(() => window.print(), 50);
+  });
+}
+
 function wireOverlayClose(overlay){
   let downOnOverlay = false;
   overlay.addEventListener("mousedown", (e) => { downOnOverlay = (e.target === overlay); });
@@ -653,11 +716,7 @@ let filterDebounce = null;
 
 function renderList(){
   const main = document.getElementById("main");
-  const q = document.getElementById("searchInput").value.trim().toLowerCase();
-  let items = state.personen.map(p => ({ p, name: personName(p.id) }));
-  items = items.filter(x => !q || searchBlob(x.p).includes(q));
-  items = items.filter(x => Object.entries(columnFilters).every(([k,v]) => !v || fieldValueForFilter(x.p, k).toLowerCase().includes(v.toLowerCase())));
-  items.sort((a,b) => sortValue(a.p, sortState.key).localeCompare(sortValue(b.p, sortState.key), "de", {numeric:true}) * sortState.dir);
+  const items = currentFilteredSortedItems();
 
   if (items.length === 0) {
     main.innerHTML = `<div class="hint">Keine Treffer.</div>`;
@@ -915,7 +974,7 @@ function initSortControls(){
 
 document.getElementById("settingsBtn").addEventListener("click", () => { if (isUnlocked()) renderSettingsModal(); });
 document.getElementById("saveBtn").addEventListener("click", () => { if (isUnlocked()) handleSaveClick(); });
-document.getElementById("printBtn").addEventListener("click", () => window.print());
+document.getElementById("printBtn").addEventListener("click", () => { if (isUnlocked()) renderPrintModal(); });
 document.getElementById("searchInput").addEventListener("input", () => { if (!currentPersonId) renderList(); });
 document.getElementById("fabBtn").addEventListener("click", () => { if (isUnlocked()) renderPersonForm(null); });
 window.addEventListener("resize", () => {
