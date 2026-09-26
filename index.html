@@ -44,7 +44,7 @@
   }
   textarea{resize:vertical}
   main{padding:12px 16px 40px; max-width:640px; margin:0 auto}
-  @media (min-width:760px){ main{max-width:1400px} }
+  @media (min-width:760px){ main{max-width:min(1900px, 98vw)} }
   .hint{color:var(--muted); font-size:13px; padding:24px 4px; text-align:center}
   .list{display:flex; flex-direction:column; gap:8px; margin-top:12px}
   .row{
@@ -138,7 +138,7 @@
   .cardlist{display:none}
 }
   .scrollToolbar{
-    display:flex; justify-content:flex-end; gap:8px; margin-top:12px;
+    justify-content:flex-end; gap:8px; margin-top:12px;
     position:sticky; top:var(--stickyTop, 0px); z-index:4; background:var(--bg); padding:4px 0;
   }
   .scrollBtn{
@@ -184,6 +184,20 @@
   .advsearch{display:flex; flex-direction:column; gap:8px; margin-top:8px}
   .advsearch .pair{display:flex; gap:8px}
   .advsearch select{flex:0 0 42%}
+  @media print{
+    header, .fab, #modalRoot, #saveBarRoot, .scrollToolbar, .hint, .back-btn, .tree, .btn-row{ display:none !important; }
+    body{ background:#fff; color:#000; }
+    main{ max-width:none !important; padding:0 !important; }
+    .cardlist{ display:none !important; }
+    .tablewrap{ display:block !important; overflow:visible !important; max-height:none !important; border:none !important; }
+    table.datatable{ table-layout:auto !important; font-size:10px; width:100% !important; }
+    table.datatable th, table.datatable td{
+      white-space:normal !important; overflow:visible !important; text-overflow:clip !important;
+      position:static !important; border:1px solid #999 !important;
+    }
+    table.datatable thead tr.filterRow{ display:none !important; }
+    @page { size: A4 landscape; margin: 10mm; }
+  }
 </style>
 </head>
 <body>
@@ -191,6 +205,7 @@
 <header>
   <h1><span class="title">🌳 Familie Karlshaus</span>
     <span style="display:flex; gap:4px; flex-shrink:0">
+      <button class="icon-btn" id="printBtn" title="Drucken">🖨️</button>
       <button class="icon-btn" id="saveBtn" title="Speichern">💾</button>
       <button class="icon-btn" id="settingsBtn" title="Einstellungen">⚙️</button>
     </span>
@@ -216,7 +231,7 @@
 <div id="modalRoot"></div>
 
 <script>
-document.getElementById("versionLabel").textContent = "v22 · Stand: 20.09.2026, 20:03 Uhr";
+document.getElementById("versionLabel").textContent = "v23 · Stand: 26.09.2026, 11:26 Uhr";
 
 const LS_KEY = "familie_karlshaus_config_v2";
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
@@ -281,6 +296,7 @@ function renderPinPad(container, title, onComplete){
 
 let state = { personen: [], personById: {}, loaded: false, error: null, dirty: false };
 let currentPersonId = null;
+let lastFocusPersonId = null;
 let sortState = { key: "vorname", dir: 1 };
 const COL_ORDER_KEY = "familie_karlshaus_colorder";
 let columnOrder = (() => {
@@ -331,15 +347,6 @@ function fmtDate(d){
   if (!d) return "";
   const [y,m,day] = d.split("-");
   return `${day}.${m}.${y}`;
-}
-function calcAge(geb, tod){
-  if (!geb) return null;
-  const start = new Date(geb);
-  const end = tod ? new Date(tod) : new Date();
-  let age = end.getFullYear() - start.getFullYear();
-  const m = end.getMonth() - start.getMonth();
-  if (m < 0 || (m === 0 && end.getDate() < start.getDate())) age--;
-  return age;
 }
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -487,7 +494,7 @@ function renderSettingsModal(){
         <div class="btn-row"><button class="btn secondary" id="cfgCancel">Schließen</button></div>
       </div>
     </div>`;
-  document.getElementById("overlay").addEventListener("click", (e) => { if (e.target.id === "overlay") closeModal(); });
+  wireOverlayClose(document.getElementById("overlay"));
   document.getElementById("cfgCancel").addEventListener("click", closeModal);
   document.getElementById("cfgDownload").addEventListener("click", downloadData);
   document.getElementById("cfgSaveGhToken").addEventListener("click", () => {
@@ -527,6 +534,15 @@ function renderSettingsModal(){
 
 function closeModal(){
   document.getElementById("modalRoot").innerHTML = "";
+}
+
+function wireOverlayClose(overlay){
+  let downOnOverlay = false;
+  overlay.addEventListener("mousedown", (e) => { downOnOverlay = (e.target === overlay); });
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay && downOnOverlay) closeModal();
+    downOnOverlay = false;
+  });
 }
 
 function deletePerson(id){
@@ -570,7 +586,7 @@ function renderPersonForm(editId){
         </div>
       </div>
     </div>`;
-  document.getElementById("overlay").addEventListener("click", (e) => { if (e.target.id === "overlay") closeModal(); });
+  wireOverlayClose(document.getElementById("overlay"));
   document.getElementById("pfCancel").addEventListener("click", closeModal);
   const delBtn = document.getElementById("pfDelete");
   if (delBtn) delBtn.addEventListener("click", () => { closeModal(); deletePerson(editId); });
@@ -678,6 +694,22 @@ function renderList(){
   }
   wireTableExtras();
   updateStickyOffsets();
+  updateScrollToolbarVisibility();
+  if (lastFocusPersonId) {
+    const id = lastFocusPersonId;
+    lastFocusPersonId = null;
+    main.querySelectorAll(`[data-person="${id}"]`).forEach(el => {
+      if (el.offsetParent !== null) el.scrollIntoView({block: "center"});
+    });
+  }
+}
+
+function updateScrollToolbarVisibility(){
+  const wrap = document.getElementById("tableWrap");
+  const toolbar = document.querySelector(".scrollToolbar");
+  if (!wrap || !toolbar) return;
+  const needsScroll = wrap.scrollWidth > wrap.clientWidth + 1;
+  toolbar.style.display = needsScroll ? "flex" : "none";
 }
 
 function updateStickyOffsets(){
@@ -697,10 +729,9 @@ function cellDisplay(p, key){
 
 function cardListHtml(items){
   return `<div class="list cardlist">${items.map(({p}) => {
-    const age = calcAge(p.geburtsdatum, p.todesdatum);
     const lines = [
       p.maedchenname ? `geb. ${p.maedchenname}` : null,
-      (p.geburtsdatum || p.todesdatum) ? `${p.geburtsdatum ? "* "+fmtDate(p.geburtsdatum) : ""}${p.todesdatum ? " † "+fmtDate(p.todesdatum) : ""}${age != null ? ` (${age} J.)` : ""}` : null,
+      (p.geburtsdatum || p.todesdatum) ? `${p.geburtsdatum ? "* "+fmtDate(p.geburtsdatum) : ""}${p.todesdatum ? " † "+fmtDate(p.todesdatum) : ""}` : null,
       p.beruf || null,
       p.ehepartner ? `⚭ ${p.ehepartner}` : null,
       p.wohnorte ? `🏠 ${p.wohnorte.replace(/\n/g, ", ")}` : null,
@@ -821,7 +852,6 @@ function renderDetail(id){
   const eltern = parentsOf(p);
   const geschwister = siblingsOf(id, p);
   const kinder = childrenOf(id);
-  const age = calcAge(p.geburtsdatum, p.todesdatum);
 
   main.innerHTML = `
     <button class="back-btn" id="backBtn">‹ Zurück zur Suche</button>
@@ -846,7 +876,6 @@ function renderDetail(id){
       <div class="meta">
         ${p.geburtsdatum ? "* " + fmtDate(p.geburtsdatum) : ""}
         ${p.todesdatum ? " † " + fmtDate(p.todesdatum) : ""}
-        ${age != null ? ` (${age} Jahre)` : ""}
       </div>
       <div class="section-label">Wohnorte</div>
       ${p.wohnorte ? `<div class="meta" style="white-space:pre-line">${escapeHtml(p.wohnorte)}</div>` : `<div class="meta">Keine Angabe</div>`}
@@ -859,7 +888,7 @@ function renderDetail(id){
       </div>
     </div>
   `;
-  document.getElementById("backBtn").addEventListener("click", () => { currentPersonId = null; render(); });
+  document.getElementById("backBtn").addEventListener("click", () => { lastFocusPersonId = currentPersonId; currentPersonId = null; render(); });
   document.getElementById("editBtn").addEventListener("click", () => renderPersonForm(id));
   document.getElementById("deleteBtn").addEventListener("click", () => deletePerson(id));
   main.querySelectorAll("[data-person]").forEach(el => {
@@ -886,8 +915,13 @@ function initSortControls(){
 
 document.getElementById("settingsBtn").addEventListener("click", () => { if (isUnlocked()) renderSettingsModal(); });
 document.getElementById("saveBtn").addEventListener("click", () => { if (isUnlocked()) handleSaveClick(); });
+document.getElementById("printBtn").addEventListener("click", () => window.print());
 document.getElementById("searchInput").addEventListener("input", () => { if (!currentPersonId) renderList(); });
 document.getElementById("fabBtn").addEventListener("click", () => { if (isUnlocked()) renderPersonForm(null); });
+window.addEventListener("resize", () => {
+  updateStickyOffsets();
+  if (!currentPersonId) updateScrollToolbarVisibility();
+});
 initSortControls();
 updateSaveBtn();
 
