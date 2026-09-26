@@ -232,7 +232,7 @@
 <div id="printArea"></div>
 
 <script>
-document.getElementById("versionLabel").textContent = "v24 · Stand: 26.09.2026, 11:39 Uhr";
+document.getElementById("versionLabel").textContent = "v25 · Stand: 26.09.2026, 11:50 Uhr";
 
 const LS_KEY = "familie_karlshaus_config_v2";
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
@@ -567,14 +567,7 @@ function renderPrintModal(){
         <h3>Drucken</h3>
         <div class="section-label">Spalten</div>
         <div class="checklist" id="printCols">${cols.map(c => `<label><input type="checkbox" value="${c.key}" checked> ${escapeHtml(c.label)}</label>`).join("")}</div>
-        <div class="section-label" style="margin-top:16px">Personen (${items.length} aktuell angezeigt)</div>
-        <div class="btn-row" style="margin-top:0; margin-bottom:8px">
-          <button class="btn secondary" id="printRowsAll">Alle auswählen</button>
-          <button class="btn secondary" id="printRowsNone">Keine auswählen</button>
-        </div>
-        <div class="checklist" id="printRows" style="display:block">
-          ${items.map(({p}) => `<label style="display:flex; width:100%; box-sizing:border-box; background:none; border:none; padding:4px 0"><input type="checkbox" value="${p.id}" checked style="width:auto; margin-right:8px"> ${escapeHtml(personName(p.id))}</label>`).join("")}
-        </div>
+        <div class="meta" style="margin-top:12px">${items.length} Person${items.length === 1 ? "" : "en"} werden gedruckt (aktuelle Such-/Filterauswahl).</div>
         <div class="btn-row">
           <button class="btn" id="printGo">Drucken</button>
           <button class="btn secondary" id="printCancel">Abbrechen</button>
@@ -583,16 +576,9 @@ function renderPrintModal(){
     </div>`;
   wireOverlayClose(document.getElementById("overlay"));
   document.getElementById("printCancel").addEventListener("click", closeModal);
-  document.getElementById("printRowsAll").addEventListener("click", () => {
-    root.querySelectorAll("#printRows input").forEach(cb => cb.checked = true);
-  });
-  document.getElementById("printRowsNone").addEventListener("click", () => {
-    root.querySelectorAll("#printRows input").forEach(cb => cb.checked = false);
-  });
   document.getElementById("printGo").addEventListener("click", () => {
     const selectedCols = Array.from(root.querySelectorAll("#printCols input:checked")).map(el => el.value);
-    const selectedIds = new Set(Array.from(root.querySelectorAll("#printRows input:checked")).map(el => el.value));
-    const rows = items.filter(x => selectedIds.has(x.p.id)).map(x => x.p);
+    const rows = items.map(x => x.p);
     buildPrintArea(selectedCols, rows);
     closeModal();
     setTimeout(() => window.print(), 50);
