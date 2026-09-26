@@ -232,7 +232,7 @@
 <div id="printArea"></div>
 
 <script>
-document.getElementById("versionLabel").textContent = "v25 · Stand: 26.09.2026, 11:50 Uhr";
+document.getElementById("versionLabel").textContent = "v26 · Stand: 26.09.2026, 11:58 Uhr";
 
 const LS_KEY = "familie_karlshaus_config_v2";
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
@@ -704,12 +704,10 @@ function renderList(){
   const main = document.getElementById("main");
   const items = currentFilteredSortedItems();
 
-  if (items.length === 0) {
-    main.innerHTML = `<div class="hint">Keine Treffer.</div>`;
-  } else {
-    main.innerHTML = `<div class="hint">${items.length} von ${state.personen.length} Personen. Sortierung oben wählen, oder (Laptop/Tablet) Spaltenkopf antippen. Filterzeile unter den Überschriften.</div>`
-      + tableHtml(items) + cardListHtml(items);
-  }
+  const hintText = items.length === 0
+    ? "Keine Treffer. Filter oben oder in der Filterzeile anpassen."
+    : `${items.length} von ${state.personen.length} Personen. Sortierung oben wählen, oder (Laptop/Tablet) Spaltenkopf antippen. Filterzeile unter den Überschriften.`;
+  main.innerHTML = `<div class="hint">${hintText}</div>` + tableHtml(items) + cardListHtml(items);
   main.querySelectorAll("[data-person]").forEach(el => {
     el.addEventListener("click", () => { currentPersonId = el.dataset.person; render(); window.scrollTo(0,0); });
   });
