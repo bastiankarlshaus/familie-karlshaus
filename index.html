@@ -232,7 +232,7 @@
 <div id="printArea"></div>
 
 <script>
-document.getElementById("versionLabel").textContent = "v26 · Stand: 26.09.2026, 11:58 Uhr";
+document.getElementById("versionLabel").textContent = "v27 · Stand: 26.09.2026, 12:07 Uhr";
 
 const LS_KEY = "familie_karlshaus_config_v2";
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
@@ -418,7 +418,8 @@ async function saveToGitHub(){
   setSaveStatus("Speichere…");
   const api = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}`;
   try {
-    const getRes = await fetch(`${api}?ref=${GH_BRANCH}`, {
+    const getRes = await fetch(`${api}?ref=${GH_BRANCH}&_=${Date.now()}`, {
+      cache: "no-store",
       headers: { Authorization: `Bearer ${config.ghToken}`, Accept: "application/vnd.github+json" },
     });
     if (!getRes.ok) throw new Error(`Aktuelle Datei nicht lesbar (${getRes.status}). Token/Berechtigung prüfen.`);
