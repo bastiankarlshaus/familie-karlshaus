@@ -1710,5 +1710,21 @@
     "ehepartner": "",
     "bemerkungen": "",
     "pruefen": "ja"
+  },
+  {
+    "id": "p105",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Johann",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "Bäcker",
+    "wohnorte": "Haspeler Schulstr. 20",
+    "zweig": "",
+    "erwaehnt": "Internetsuche",
+    "ehepartner": "",
+    "bemerkungen": "",
+    "pruefen": "ja"
   }
 ]
