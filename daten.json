@@ -134,7 +134,7 @@
     "beruf": "",
     "mutter": null,
     "vater": null,
-    "ehepartner": "Peterchenpan",
+    "ehepartner": "Peter Peter",
     "hochzeitsdatum": "",
     "wohnorte": "",
     "kennzeichen": "",
@@ -412,24 +412,6 @@
     "pruefen": "",
     "erwaehnt": "",
     "zweig": "Bä"
-  },
-  {
-    "id": "p26",
-    "vorname": "Juliane",
-    "maedchenname": "Testname",
-    "geburtsdatum": "1990-03-18",
-    "todesdatum": "",
-    "beruf": "",
-    "mutter": null,
-    "vater": null,
-    "ehepartner": "",
-    "hochzeitsdatum": "",
-    "wohnorte": "",
-    "kennzeichen": "",
-    "bemerkungen": "",
-    "pruefen": "ja",
-    "erwaehnt": "",
-    "zweig": ""
   },
   {
     "id": "p27",
