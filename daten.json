@@ -1852,5 +1852,21 @@
     "ehepartner": "Anna Catharina Poth",
     "bemerkungen": "Heirat 05.05.1834",
     "pruefen": "ja"
+  },
+  {
+    "id": "p115",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Otto Friedrich Ernst",
+    "maedchenname": "",
+    "geburtsdatum": "1919-08-27",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "Wall 1",
+    "zweig": "",
+    "erwaehnt": "StA Wuppertal 01.10.2026",
+    "ehepartner": "Rothe, Cäcilie geb 27.02.1925 - Heirat 22.1.1941 - geschieden 30.11.1944geschieden",
+    "bemerkungen": "Vater: Ernst Karlshaus, geb 19.10.1891\nMutter: Anna Auguste Simon",
+    "pruefen": "ja"
   }
 ]
