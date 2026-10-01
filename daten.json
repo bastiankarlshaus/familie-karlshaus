@@ -973,8 +973,8 @@
   },
   {
     "maedchenname": "",
-    "geburtsdatum": "",
-    "todesdatum": "",
+    "geburtsdatum": "1911-01-01",
+    "todesdatum": "2006-01-01",
     "beruf": "Arbeiterin/Rentnerin",
     "mutter": null,
     "vater": null,
@@ -986,7 +986,7 @@
     "pruefen": "ja",
     "vorname": "Helene",
     "id": "p60",
-    "erwaehnt": "1956–1976",
+    "erwaehnt": "ADR Vz 1956–1976",
     "zweig": ""
   },
   {
