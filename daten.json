@@ -1820,5 +1820,21 @@
     "ehepartner": "",
     "bemerkungen": "",
     "pruefen": "ja"
+  },
+  {
+    "id": "p113",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Johann Wilhelm (Oberdüssel)",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "Maria",
+    "bemerkungen": "1. Kind Maria 21.03.1859 (?)\n2. Kind Wilhelm 01.10.1835 (?)",
+    "pruefen": "ja"
   }
 ]
