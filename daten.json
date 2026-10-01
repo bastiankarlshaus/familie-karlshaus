@@ -1788,5 +1788,21 @@
     "ehepartner": "",
     "bemerkungen": "Geburtszeuge: Peter Karlshaus",
     "pruefen": ""
+  },
+  {
+    "id": "p111",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Johannes",
+    "maedchenname": "6. Kind von Johann Peter & Wilhelmine Rauterkuss",
+    "geburtsdatum": "1845-06-02",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "StA Wülfrath 30.09.2026",
+    "ehepartner": "",
+    "bemerkungen": "",
+    "pruefen": "ja"
   }
 ]
