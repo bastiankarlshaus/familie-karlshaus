@@ -1724,5 +1724,21 @@
     "ehepartner": "",
     "bemerkungen": "",
     "pruefen": ""
+  },
+  {
+    "id": "p107",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Lisetta",
+    "maedchenname": "2. Kind von Johann Peter & Wilhelmine",
+    "geburtsdatum": "1838-06-15",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "Heirat am 09.03.1859",
+    "zweig": "",
+    "erwaehnt": "StA Wülfrath 30.09.2026",
+    "ehepartner": "Nicolas Esser",
+    "bemerkungen": "",
+    "pruefen": ""
   }
 ]
