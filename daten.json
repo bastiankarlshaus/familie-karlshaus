@@ -1772,5 +1772,21 @@
     "ehepartner": "",
     "bemerkungen": "",
     "pruefen": ""
+  },
+  {
+    "id": "p110",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Friedrich",
+    "maedchenname": "",
+    "geburtsdatum": "1849-05-04",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "StA Wülfrath 30.09.2026",
+    "ehepartner": "",
+    "bemerkungen": "Geburtszeuge: Peter Karlshaus",
+    "pruefen": ""
   }
 ]
