@@ -232,7 +232,7 @@
 <div id="printArea"></div>
 
 <script>
-document.getElementById("versionLabel").textContent = "v27 · Stand: 26.09.2026, 12:07 Uhr";
+document.getElementById("versionLabel").textContent = "v28 · Stand: 03.10.2026, 11:05 Uhr";
 
 const LS_KEY = "familie_karlshaus_config_v2";
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
@@ -313,7 +313,7 @@ const FIELDS = [
   {key:"wohnorte", label:"Wohnorte"},
   {key:"zweig", label:"Zweig"},
   {key:"ehepartner", label:"verheiratet mit"},
-  {key:"erwaehnt", label:"Erwähnt"},
+  {key:"erwaehnt", label:"Quelle"},
   {key:"bemerkungen", label:"Bemerkungen"},
   {key:"pruefen", label:"Prüfen?"},
 ];
@@ -622,7 +622,7 @@ function renderPersonForm(editId){
         <div class="field"><label>Beruf</label><input type="text" id="pfBeruf" value="${p ? escapeHtml(p.beruf||"") : ""}"></div>
         <div class="field"><label>Wohnorte (Freitext, ein Eintrag pro Zeile)</label><textarea id="pfWohnorte" rows="5">${p ? escapeHtml(p.wohnorte||"") : ""}</textarea></div>
         <div class="field"><label>Zweig</label><input type="text" id="pfZweig" value="${p ? escapeHtml(p.zweig||"") : ""}"></div>
-        <div class="field"><label>Erwähnt (z.B. "1890–1933")</label><input type="text" id="pfErwaehnt" value="${p ? escapeHtml(p.erwaehnt||"") : ""}" placeholder="z.B. 1890–1933"></div>
+        <div class="field"><label>Quelle (z.B. "1890–1933")</label><input type="text" id="pfErwaehnt" value="${p ? escapeHtml(p.erwaehnt||"") : ""}" placeholder="z.B. 1890–1933"></div>
         <div class="field"><label>verheiratet mit</label><input type="text" id="pfEhepartner" value="${p ? escapeHtml(p.ehepartner||"") : ""}"></div>
         <div class="field"><label>Bemerkungen</label><textarea id="pfBemerkungen" rows="4">${p ? escapeHtml(p.bemerkungen||"") : ""}</textarea></div>
         <div class="field"><label style="display:flex; align-items:center; gap:8px; cursor:pointer">
@@ -780,7 +780,7 @@ function cardListHtml(items){
       p.ehepartner ? `⚭ ${p.ehepartner}` : null,
       p.wohnorte ? `🏠 ${p.wohnorte.replace(/\n/g, ", ")}` : null,
       p.zweig ? `Zweig: ${p.zweig}` : null,
-      p.erwaehnt ? `Erwähnt ${p.erwaehnt}` : null,
+      p.erwaehnt ? `Quelle: ${p.erwaehnt}` : null,
       p.bemerkungen ? `📝 ${p.bemerkungen}` : null,
     ].filter(Boolean);
     return `<div class="row" data-person="${p.id}" style="align-items:flex-start; ${p.pruefen ? "background:rgba(230,160,40,.15)" : ""}">
@@ -924,7 +924,7 @@ function renderDetail(id){
       <div class="section-label">Wohnorte</div>
       ${p.wohnorte ? `<div class="meta" style="white-space:pre-line">${escapeHtml(p.wohnorte)}</div>` : `<div class="meta">Keine Angabe</div>`}
       ${p.zweig ? `<div class="section-label">Zweig</div><div class="meta">${escapeHtml(p.zweig)}</div>` : ""}
-      ${p.erwaehnt ? `<div class="section-label">Erwähnt</div><div class="meta">${escapeHtml(p.erwaehnt)}</div>` : ""}
+      ${p.erwaehnt ? `<div class="section-label">Quelle</div><div class="meta">${escapeHtml(p.erwaehnt)}</div>` : ""}
       ${p.bemerkungen ? `<div class="section-label">Bemerkungen</div><div class="meta" style="white-space:pre-line">${escapeHtml(p.bemerkungen)}</div>` : ""}
       <div class="btn-row">
         <button class="btn secondary" id="editBtn">Bearbeiten</button>
