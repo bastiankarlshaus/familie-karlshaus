@@ -1226,10 +1226,11 @@
     "beruf": "",
     "wohnorte": "",
     "zweig": "",
-    "erwaehnt": "",
-    "ehepartner": "",
-    "bemerkungen": "Tochter von Heinrich Wilhelm Ernst \nGebDat 28.11.1900 prüfen",
-    "pruefen": "ja"
+    "erwaehnt": "STa Wpt",
+    "ehepartner": "Gustav Heinr. Eugen Blink",
+    "bemerkungen": "Tochter von Heinrich Wilhelm Ernst und Emma aus dem Siepen\nGebDat 28.11.1900 prüfen",
+    "pruefen": "ja",
+    "hochzeitsdatum": "1920-02-14"
   },
   {
     "id": "p76",
