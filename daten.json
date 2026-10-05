@@ -1335,15 +1335,16 @@
     "vater": null,
     "vorname": "Wilhelmine",
     "maedchenname": "",
-    "geburtsdatum": "",
+    "geburtsdatum": "1826-01-01",
     "todesdatum": "",
     "beruf": "",
     "wohnorte": "",
     "zweig": "",
-    "erwaehnt": "",
+    "erwaehnt": "STa Wpt",
     "ehepartner": "Philipp Aumand Enders",
-    "bemerkungen": "",
-    "pruefen": "ja"
+    "bemerkungen": "Vater unbekannt\nMutter ist Anna Catharina Karlshaus , verheiratete Lohe",
+    "pruefen": "ja",
+    "hochzeitsdatum": "1852-05-29"
   },
   {
     "id": "p83",
