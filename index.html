@@ -232,7 +232,7 @@
 <div id="printArea"></div>
 
 <script>
-document.getElementById("versionLabel").textContent = "v28 · Stand: 03.10.2026, 11:05 Uhr";
+document.getElementById("versionLabel").textContent = "v29 · Stand: 05.10.2026, 16:49 Uhr";
 
 const LS_KEY = "familie_karlshaus_config_v2";
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
@@ -313,6 +313,7 @@ const FIELDS = [
   {key:"wohnorte", label:"Wohnorte"},
   {key:"zweig", label:"Zweig"},
   {key:"ehepartner", label:"verheiratet mit"},
+  {key:"hochzeitsdatum", label:"Heiratsdatum", type:"date"},
   {key:"erwaehnt", label:"Quelle"},
   {key:"bemerkungen", label:"Bemerkungen"},
   {key:"pruefen", label:"Prüfen?"},
@@ -624,6 +625,7 @@ function renderPersonForm(editId){
         <div class="field"><label>Zweig</label><input type="text" id="pfZweig" value="${p ? escapeHtml(p.zweig||"") : ""}"></div>
         <div class="field"><label>Quelle (z.B. "1890–1933")</label><input type="text" id="pfErwaehnt" value="${p ? escapeHtml(p.erwaehnt||"") : ""}" placeholder="z.B. 1890–1933"></div>
         <div class="field"><label>verheiratet mit</label><input type="text" id="pfEhepartner" value="${p ? escapeHtml(p.ehepartner||"") : ""}"></div>
+        <div class="field"><label>Heiratsdatum</label><input type="date" id="pfHochzeit" value="${p ? p.hochzeitsdatum||"" : ""}"></div>
         <div class="field"><label>Bemerkungen</label><textarea id="pfBemerkungen" rows="4">${p ? escapeHtml(p.bemerkungen||"") : ""}</textarea></div>
         <div class="field"><label style="display:flex; align-items:center; gap:8px; cursor:pointer">
           <input type="checkbox" id="pfPruefen" ${p && p.pruefen ? "checked" : ""} style="width:auto">
@@ -652,6 +654,7 @@ function renderPersonForm(editId){
       zweig: document.getElementById("pfZweig").value.trim(),
       erwaehnt: document.getElementById("pfErwaehnt").value.trim(),
       ehepartner: document.getElementById("pfEhepartner").value.trim(),
+      hochzeitsdatum: document.getElementById("pfHochzeit").value,
       bemerkungen: document.getElementById("pfBemerkungen").value.trim(),
       pruefen: document.getElementById("pfPruefen").checked ? "ja" : "",
     };
@@ -687,7 +690,7 @@ function render(){
 }
 
 function fieldValueForFilter(p, key){
-  if (key === "geburtsdatum" || key === "todesdatum") return p[key] ? fmtDate(p[key]) : "";
+  if (key === "geburtsdatum" || key === "todesdatum" || key === "hochzeitsdatum") return p[key] ? fmtDate(p[key]) : "";
   return (p[key] || "").toString();
 }
 function sortValue(p, key){
@@ -766,7 +769,7 @@ function updateStickyOffsets(){
 function cellDisplay(p, key){
   if (key === "vorname") return (p.pruefen ? "⚠️ " : "") + personName(p.id);
   if (key === "pruefen") return p.pruefen ? "⚠️ ja" : "";
-  if (key === "geburtsdatum" || key === "todesdatum") return p[key] ? fmtDate(p[key]) : "";
+  if (key === "geburtsdatum" || key === "todesdatum" || key === "hochzeitsdatum") return p[key] ? fmtDate(p[key]) : "";
   if (key === "wohnorte" || key === "bemerkungen") return (p[key] || "").replace(/\n/g, ", ");
   return p[key] || "";
 }
@@ -777,7 +780,7 @@ function cardListHtml(items){
       p.maedchenname ? `geb. ${p.maedchenname}` : null,
       (p.geburtsdatum || p.todesdatum) ? `${p.geburtsdatum ? "* "+fmtDate(p.geburtsdatum) : ""}${p.todesdatum ? " † "+fmtDate(p.todesdatum) : ""}` : null,
       p.beruf || null,
-      p.ehepartner ? `⚭ ${p.ehepartner}` : null,
+      p.ehepartner ? `⚭ ${p.ehepartner}${p.hochzeitsdatum ? " (" + fmtDate(p.hochzeitsdatum) + ")" : ""}` : null,
       p.wohnorte ? `🏠 ${p.wohnorte.replace(/\n/g, ", ")}` : null,
       p.zweig ? `Zweig: ${p.zweig}` : null,
       p.erwaehnt ? `Quelle: ${p.erwaehnt}` : null,
@@ -906,7 +909,7 @@ function renderDetail(id){
         ${geschwister.map(pid => tnode(pid)).join("")}
         <div class="tunion">
           ${tnode(id, true)}
-          ${p.ehepartner ? `<span class="sep">⚭</span><div class="tnode">${escapeHtml(p.ehepartner)}</div>` : ""}
+          ${p.ehepartner ? `<span class="sep">⚭</span><div class="tnode">${escapeHtml(p.ehepartner)}${p.hochzeitsdatum ? `<div class="yr">${fmtDate(p.hochzeitsdatum)}</div>` : ""}</div>` : ""}
         </div>
       </div>
       ${kinder.length ? `<div class="tconn"></div><div class="trow">${kinder.map(pid => tnode(pid)).join("")}</div>` : ""}
@@ -924,6 +927,7 @@ function renderDetail(id){
       <div class="section-label">Wohnorte</div>
       ${p.wohnorte ? `<div class="meta" style="white-space:pre-line">${escapeHtml(p.wohnorte)}</div>` : `<div class="meta">Keine Angabe</div>`}
       ${p.zweig ? `<div class="section-label">Zweig</div><div class="meta">${escapeHtml(p.zweig)}</div>` : ""}
+      ${p.hochzeitsdatum ? `<div class="section-label">Heiratsdatum</div><div class="meta">${fmtDate(p.hochzeitsdatum)}</div>` : ""}
       ${p.erwaehnt ? `<div class="section-label">Quelle</div><div class="meta">${escapeHtml(p.erwaehnt)}</div>` : ""}
       ${p.bemerkungen ? `<div class="section-label">Bemerkungen</div><div class="meta" style="white-space:pre-line">${escapeHtml(p.bemerkungen)}</div>` : ""}
       <div class="btn-row">
