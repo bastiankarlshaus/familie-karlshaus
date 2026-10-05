@@ -1155,15 +1155,16 @@
     "vater": null,
     "vorname": "Wilhelm Otto",
     "maedchenname": "",
-    "geburtsdatum": "1864-12-19",
+    "geburtsdatum": "1854-12-15",
     "todesdatum": "",
     "beruf": "Fabrikarbeiter",
     "wohnorte": "Uellendahl 26",
     "zweig": "",
-    "erwaehnt": "",
-    "ehepartner": "Emma aus dem Siepen (Prüfen!)",
+    "erwaehnt": "StA Wpt",
+    "ehepartner": "Emma aus dem Siepen (Fabrikarbeiterin)",
     "bemerkungen": "Sohn von Johann Wilhelm dÄ & Juliana Schmachtenbeg",
-    "pruefen": "ja"
+    "pruefen": "ja",
+    "hochzeitsdatum": "1889-03-25"
   },
   {
     "id": "p72",
