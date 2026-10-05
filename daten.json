@@ -1603,7 +1603,7 @@
     "id": "p99",
     "mutter": null,
     "vater": null,
-    "vorname": "Wwe August",
+    "vorname": "Z Wwe August",
     "maedchenname": "",
     "geburtsdatum": "",
     "todesdatum": "",
@@ -1613,7 +1613,8 @@
     "erwaehnt": "1950",
     "ehepartner": "",
     "bemerkungen": "",
-    "pruefen": "ja"
+    "pruefen": "ja",
+    "hochzeitsdatum": ""
   },
   {
     "id": "p100",
