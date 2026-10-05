@@ -1457,7 +1457,7 @@
     "id": "p90",
     "mutter": null,
     "vater": null,
-    "vorname": "Helene",
+    "vorname": "Z Ehe Helene",
     "maedchenname": "Dörpelkus",
     "geburtsdatum": "",
     "todesdatum": "",
@@ -1467,7 +1467,8 @@
     "erwaehnt": "",
     "ehepartner": "",
     "bemerkungen": "",
-    "pruefen": "ja"
+    "pruefen": "ja",
+    "hochzeitsdatum": ""
   },
   {
     "id": "p91",
