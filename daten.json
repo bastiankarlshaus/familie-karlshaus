@@ -1319,15 +1319,16 @@
     "vater": null,
     "vorname": "Wilhelmine",
     "maedchenname": "",
-    "geburtsdatum": "",
+    "geburtsdatum": "1812-07-29",
     "todesdatum": "",
     "beruf": "",
     "wohnorte": "",
     "zweig": "",
-    "erwaehnt": "",
-    "ehepartner": "Johann ... Carl Zimmlinghaus",
-    "bemerkungen": "",
-    "pruefen": "ja"
+    "erwaehnt": "StA  Wut",
+    "ehepartner": "Johann Carl Zimmlinghaus",
+    "bemerkungen": "V: Johann Daniel Karlshaus (Leinenweber)\nM: Getrud Wichelhaus",
+    "pruefen": "ja",
+    "hochzeitsdatum": "1835-07-02"
   },
   {
     "id": "p82",
