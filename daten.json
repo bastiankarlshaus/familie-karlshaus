@@ -1618,7 +1618,7 @@
     "id": "p100",
     "mutter": null,
     "vater": null,
-    "vorname": "Wwe Helmut",
+    "vorname": "Z Wwe Helmut",
     "maedchenname": "",
     "geburtsdatum": "",
     "todesdatum": "",
@@ -1628,7 +1628,8 @@
     "erwaehnt": "1950-1951",
     "ehepartner": "",
     "bemerkungen": "",
-    "pruefen": "ja"
+    "pruefen": "ja",
+    "hochzeitsdatum": ""
   },
   {
     "id": "p101",
