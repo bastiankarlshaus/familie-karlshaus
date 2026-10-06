@@ -1144,10 +1144,11 @@
     "beruf": "",
     "wohnorte": "",
     "zweig": "",
-    "erwaehnt": "StA Wuppertal 1810-1930",
+    "erwaehnt": "StA Wpt und Adr VZ  1810-1930",
     "ehepartner": "Juliana Schmachtenberg",
-    "bemerkungen": "Vater von Wilhelm Otto, Wilhelmine Juliane Selma, Heinrich Wilhelm Ernst",
-    "pruefen": "ja"
+    "bemerkungen": "Vater von Wilhelm Otto, Wilhelmine Juliane Selma, Heinrich Wilhelm Ernst\nHeiratsurkunde nicht fundbar",
+    "pruefen": "ja",
+    "hochzeitsdatum": "1863-11-06"
   },
   {
     "id": "p71",
