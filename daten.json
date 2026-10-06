@@ -1260,10 +1260,11 @@
     "beruf": "",
     "wohnorte": "",
     "zweig": "",
-    "erwaehnt": "",
-    "ehepartner": "",
+    "erwaehnt": "StA Wpt",
+    "ehepartner": "Maria Augusta Thissen",
     "bemerkungen": "Sohn von Heinrich Wilhelm Ernst",
-    "pruefen": "ja"
+    "pruefen": "ja",
+    "hochzeitsdatum": "1929-04-04"
   },
   {
     "id": "p78",
