@@ -1951,5 +1951,22 @@
     "hochzeitsdatum": "1834-07-05",
     "bemerkungen": "V: Joh. Daniel Karlshaus\nM: Gertrud Wichelhaus oder andere verstorbene Mutter",
     "pruefen": ""
+  },
+  {
+    "id": "p120",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Anna Maria",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "1803-12-04",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "StA Wpt",
+    "ehepartner": "Wilhem Meinhardt",
+    "hochzeitsdatum": "1833-03-15",
+    "bemerkungen": "V: Johann Heinrich Karlshaus\nM: Maria Margaretha Hoppenhaus",
+    "pruefen": ""
   }
 ]
