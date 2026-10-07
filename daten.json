@@ -1827,8 +1827,8 @@
     "id": "p112",
     "mutter": null,
     "vater": null,
-    "vorname": "August",
-    "maedchenname": "7. Kind von Johann Peter & Wilhelmine Rauterkuss",
+    "vorname": "August (7. K Joh)",
+    "maedchenname": "",
     "geburtsdatum": "1852-07-01",
     "todesdatum": "",
     "beruf": "",
@@ -1837,7 +1837,8 @@
     "erwaehnt": "StA Wülfrath 30.09.2026",
     "ehepartner": "",
     "bemerkungen": "",
-    "pruefen": "ja"
+    "pruefen": "",
+    "hochzeitsdatum": ""
   },
   {
     "id": "p113",
