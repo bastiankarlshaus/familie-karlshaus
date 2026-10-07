@@ -2041,5 +2041,22 @@
     "hochzeitsdatum": "1919-07-02",
     "bemerkungen": "",
     "pruefen": ""
+  },
+  {
+    "id": "p125",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Johann Hermann",
+    "maedchenname": "",
+    "geburtsdatum": "1845-06-01",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "",
+    "hochzeitsdatum": "",
+    "bemerkungen": "V: Johann Peter Karlshaus\nM: Wilhelmine Rauterkuss",
+    "pruefen": ""
   }
 ]
