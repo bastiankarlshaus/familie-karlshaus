@@ -433,7 +433,7 @@
   },
   {
     "maedchenname": "",
-    "geburtsdatum": "",
+    "geburtsdatum": "1806-01-01",
     "todesdatum": "",
     "beruf": "Seidenweber",
     "mutter": null,
@@ -442,11 +442,11 @@
     "hochzeitsdatum": "",
     "wohnorte": "Hülsbeck",
     "kennzeichen": "",
-    "bemerkungen": "Frühester Eintrag im Stadtarchiv-Auszug.",
-    "pruefen": "ja",
+    "bemerkungen": "Frühester Eintrag im Stadtarchiv-Auszug.\nGebdat muss nicht stimmen",
+    "pruefen": "",
     "vorname": "Wilhelm",
     "id": "p29",
-    "erwaehnt": "1850–1864",
+    "erwaehnt": "Adr Vz 1850–1864",
     "zweig": ""
   },
   {
