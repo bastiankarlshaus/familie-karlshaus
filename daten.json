@@ -1800,15 +1800,16 @@
     "vater": null,
     "vorname": "Friedrich",
     "maedchenname": "",
-    "geburtsdatum": "1849-05-04",
+    "geburtsdatum": "1849-05-23",
     "todesdatum": "",
     "beruf": "",
     "wohnorte": "",
     "zweig": "",
     "erwaehnt": "StA Wülfrath 30.09.2026",
     "ehepartner": "",
-    "bemerkungen": "Geburtszeuge: Peter Karlshaus",
-    "pruefen": "ja"
+    "bemerkungen": "V: Johann Peter Karlshaus\nM: Wilhelmine Rauterkuss",
+    "pruefen": "",
+    "hochzeitsdatum": ""
   },
   {
     "id": "p111",
