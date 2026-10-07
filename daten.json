@@ -1762,8 +1762,8 @@
     "id": "p108",
     "mutter": null,
     "vater": null,
-    "vorname": "Anna Maria",
-    "maedchenname": "3. Kind von Johann Peter & Wilhelmine Rauterkuss",
+    "vorname": "Anna Maria (3. K Joh)",
+    "maedchenname": "",
     "geburtsdatum": "1841-02-27",
     "todesdatum": "",
     "beruf": "",
@@ -1772,7 +1772,8 @@
     "erwaehnt": "StA Wülfrath 30.09.2026",
     "ehepartner": "",
     "bemerkungen": "",
-    "pruefen": ""
+    "pruefen": "",
+    "hochzeitsdatum": ""
   },
   {
     "id": "p109",
