@@ -451,7 +451,7 @@
   },
   {
     "maedchenname": "",
-    "geburtsdatum": "",
+    "geburtsdatum": "1835-09-30",
     "todesdatum": "",
     "beruf": "Weber",
     "mutter": null,
@@ -460,11 +460,11 @@
     "hochzeitsdatum": "",
     "wohnorte": "Franzengasse 11",
     "kennzeichen": "",
-    "bemerkungen": "Bruder von Wilhelmine, Franzengasse 11\nmoeglicherweise anderer Wilhelm als voriger Eintrag.",
-    "pruefen": "ja",
+    "bemerkungen": "V: Wilhelm (!) Karlshaus, *1806\nM: Clara Margaretha Elisabeth Brackmann\n\nBruder von Wilhelmine, Franzengasse 11\nmoeglicherweise anderer Wilhelm als voriger Eintrag.",
+    "pruefen": "",
     "vorname": "Wilhelm",
     "id": "p30",
-    "erwaehnt": "1864",
+    "erwaehnt": "Adr Vz 1864",
     "zweig": ""
   },
   {
