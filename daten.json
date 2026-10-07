@@ -325,8 +325,8 @@
   },
   {
     "id": "p22",
-    "vorname": "Wilhelm (2) OPA",
-    "maedchenname": "Friedrich Wilhelm",
+    "vorname": "Friedrich Wilhelm (OPA, 2)",
+    "maedchenname": "",
     "geburtsdatum": "1882-06-27",
     "todesdatum": "1954-05-05",
     "beruf": "Bäckermeister",
@@ -337,7 +337,7 @@
     "wohnorte": "Uellendahler Str. 452, Untergrünewalder Str. 11a",
     "kennzeichen": "",
     "bemerkungen": "",
-    "pruefen": "ja",
+    "pruefen": "",
     "erwaehnt": "diverse",
     "zweig": "Bä"
   },
