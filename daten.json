@@ -2003,5 +2003,22 @@
     "hochzeitsdatum": "",
     "bemerkungen": "V: August Karlshaus (Bäckermeister)\nM: Maria Gertrud Emilie Meyers",
     "pruefen": ""
+  },
+  {
+    "id": "p123",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Z Ehe Gertrud Kranz",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "August Karlshaus (Bäckermeister)",
+    "hochzeitsdatum": "",
+    "bemerkungen": "",
+    "pruefen": ""
   }
 ]
