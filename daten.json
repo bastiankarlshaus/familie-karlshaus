@@ -1781,17 +1781,18 @@
     "id": "p109",
     "mutter": null,
     "vater": null,
-    "vorname": "Johann Wilhelm",
-    "maedchenname": "4. Kind von Johann Peter und Wilhelmine Rauterkuss",
-    "geburtsdatum": "1842-12-01",
+    "vorname": "Johann Wilhelm (4. K Joh) ?",
+    "maedchenname": "",
+    "geburtsdatum": "1842-11-30",
     "todesdatum": "",
     "beruf": "",
     "wohnorte": "",
     "zweig": "",
     "erwaehnt": "StA Wülfrath 30.09.2026",
     "ehepartner": "",
-    "bemerkungen": "",
-    "pruefen": "ja"
+    "bemerkungen": "V: Johann Peter Karlshaus\nM: Wilhelmine Rauterkuss",
+    "pruefen": "",
+    "hochzeitsdatum": ""
   },
   {
     "id": "p110",
