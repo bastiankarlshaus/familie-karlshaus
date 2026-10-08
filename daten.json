@@ -1278,10 +1278,11 @@
     "beruf": "",
     "wohnorte": "",
     "zweig": "",
-    "erwaehnt": "",
+    "erwaehnt": "1. Besuch StA Wpt",
     "ehepartner": "",
     "bemerkungen": "Geburtsurkunde nicht lesbar",
-    "pruefen": "ja"
+    "pruefen": "",
+    "hochzeitsdatum": ""
   },
   {
     "id": "p79",
