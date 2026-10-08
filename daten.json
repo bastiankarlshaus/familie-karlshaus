@@ -630,7 +630,7 @@
     "zweig": ""
   },
   {
-    "maedchenname": "Frau von Ewald",
+    "maedchenname": "",
     "geburtsdatum": "",
     "todesdatum": "",
     "beruf": "",
@@ -640,11 +640,11 @@
     "hochzeitsdatum": "",
     "wohnorte": "Hauptstraße. 57",
     "kennzeichen": "",
-    "bemerkungen": "Im Archiv nur als 'Frau Ewald' gefuehrt - vermutlich Ehefrau des Ewald-Eintrags (Schlosser, Höchsten 38).",
-    "pruefen": "ja",
+    "bemerkungen": "vermutlich Ehefrau des Ewald-Eintrags (Schlosser, Höchsten 38).",
+    "pruefen": "",
     "vorname": "Z Wwe Ewald",
     "id": "p40",
-    "erwaehnt": "1925",
+    "erwaehnt": "Adr Vz 1925",
     "zweig": ""
   },
   {
@@ -2186,6 +2186,23 @@
     "ehepartner": "Johann Heinrich Lang",
     "hochzeitsdatum": "1864-07-06",
     "bemerkungen": "V: Johann Heinrich Wilhelm Karlshaus\nM: Maria Gertrud Burghoff",
+    "pruefen": ""
+  },
+  {
+    "id": "p133",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Emilie",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "1953-12-13",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "Karl Radermacher",
+    "hochzeitsdatum": "",
+    "bemerkungen": "",
     "pruefen": ""
   }
 ]
