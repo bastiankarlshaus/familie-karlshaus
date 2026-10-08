@@ -1312,10 +1312,11 @@
     "beruf": "",
     "wohnorte": "",
     "zweig": "",
-    "erwaehnt": "",
-    "ehepartner": "Erwin Kunert am 03.10.1944 - geschieden 15.12.1950",
+    "erwaehnt": "1. Besuch StA Wpt und....",
+    "ehepartner": "Erwin Kunert (geschieden 15.12.1950)",
     "bemerkungen": "Vater: August Ewald, geb 28.03.1897 in Elberfeld Polizist in Haßfurt\nMutter: Clever, Anna Julia, geb. 31.07.1896 in Elberfeld wohnhaft später in  Haßfurt",
-    "pruefen": "ja"
+    "pruefen": "",
+    "hochzeitsdatum": "1944-11-03"
   },
   {
     "id": "p81",
