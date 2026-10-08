@@ -2170,5 +2170,22 @@
     "hochzeitsdatum": "1924-03-20",
     "bemerkungen": "",
     "pruefen": ""
+  },
+  {
+    "id": "p132",
+    "mutter": null,
+    "vater": null,
+    "vorname": "Anna Maria Catharina Wilhelmine",
+    "maedchenname": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "Sta Wpt",
+    "ehepartner": "Johann Heinrich Lang",
+    "hochzeitsdatum": "1864-07-06",
+    "bemerkungen": "V: Johann Heinrich Wilhelm Karlshaus\nM: Maria Gertrud Burghoff",
+    "pruefen": ""
   }
 ]
