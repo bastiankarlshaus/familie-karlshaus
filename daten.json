@@ -1391,15 +1391,16 @@
     "vater": null,
     "vorname": "Julie Anna",
     "maedchenname": "",
-    "geburtsdatum": "",
+    "geburtsdatum": "1829-04-09",
     "todesdatum": "",
     "beruf": "",
     "wohnorte": "",
     "zweig": "",
-    "erwaehnt": "StA Wuppertal 1558-1898",
+    "erwaehnt": "StA Wuppertal 1558-1898, Heritage",
     "ehepartner": "",
     "bemerkungen": "V: Heinrich Wilhelm Karlshaus\nM: Wilhelma Korten, geb 09.04.1829",
-    "pruefen": "ja"
+    "pruefen": "ja",
+    "hochzeitsdatum": ""
   },
   {
     "id": "p87",
