@@ -1341,15 +1341,16 @@
     "vater": null,
     "vorname": "Wilhelmine",
     "maedchenname": "",
-    "geburtsdatum": "",
-    "todesdatum": "",
+    "geburtsdatum": "1821-04-12",
+    "todesdatum": "1895-01-09",
     "beruf": "",
     "wohnorte": "in Düssel (Düssel ist nur ca. 3 Km von Ortschaft Karlshaus entfernt)",
     "zweig": "",
-    "erwaehnt": "",
-    "ehepartner": "Friedrich Wilhelm Strucker (geheiratet in Sonnborn)",
-    "bemerkungen": "",
-    "pruefen": "ja"
+    "erwaehnt": "Heritage",
+    "ehepartner": "Friedrich Wilhelm Strücker (geheiratet in Sonnborn)",
+    "bemerkungen": "V: Johann Heinrich Karlshaus\nM: Marie Christine Borbeck",
+    "pruefen": "",
+    "hochzeitsdatum": ""
   },
   {
     "id": "p84",
