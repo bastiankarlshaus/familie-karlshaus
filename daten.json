@@ -1606,8 +1606,8 @@
   },
   {
     "id": "p99",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Z Wwe August",
     "maedchenname": "",
     "geburtsdatum": "",
@@ -1618,7 +1618,7 @@
     "erwaehnt": "1950",
     "ehepartner": "",
     "bemerkungen": "",
-    "pruefen": "ja",
+    "pruefen": "",
     "hochzeitsdatum": ""
   },
   {
