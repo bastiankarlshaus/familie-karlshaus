@@ -1807,9 +1807,9 @@
   },
   {
     "id": "p111",
-    "mutter": null,
-    "vater": null,
-    "vorname": "Johannes",
+    "mutter": "",
+    "vater": "",
+    "vorname": "Johannes (6.K Joh)",
     "maedchenname": "6. Kind von Johann Peter & Wilhelmine Rauterkuss",
     "geburtsdatum": "1845-06-02",
     "todesdatum": "",
@@ -1819,7 +1819,8 @@
     "erwaehnt": "StA Wülfrath 30.09.2026",
     "ehepartner": "",
     "bemerkungen": "",
-    "pruefen": "ja"
+    "pruefen": "ja",
+    "hochzeitsdatum": ""
   },
   {
     "id": "p112",
