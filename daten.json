@@ -1540,8 +1540,8 @@
   },
   {
     "id": "p95",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Z Wwe Friedrich",
     "maedchenname": "",
     "geburtsdatum": "",
@@ -1552,7 +1552,7 @@
     "erwaehnt": "1927",
     "ehepartner": "",
     "bemerkungen": "",
-    "pruefen": "ja",
+    "pruefen": "",
     "hochzeitsdatum": ""
   },
   {
