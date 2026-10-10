@@ -1091,7 +1091,7 @@
     "wohnorte": "Luisenstraße. 106",
     "kennzeichen": "",
     "bemerkungen": "evtl Wwe von Ewald",
-    "pruefen": "ja",
+    "pruefen": "",
     "vorname": "Z Wwe Annemarie",
     "id": "p68",
     "erwaehnt": "1968",
@@ -1907,7 +1907,7 @@
   {
     "id": "p117",
     "mutter": "Maria Gertrud vom Dorp (verstorben)",
-    "vater": "Joh. Daniel Karlshaus (Weber)",
+    "vater": "Joh. Daniel Karlshaus",
     "vorname": "Henriette",
     "maedchenname": "",
     "geburtsdatum": "1818-06-07",
