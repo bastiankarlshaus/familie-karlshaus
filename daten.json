@@ -1489,8 +1489,8 @@
   },
   {
     "id": "p92",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Z Wwe Ernst",
     "maedchenname": "",
     "geburtsdatum": "",
@@ -1501,7 +1501,7 @@
     "erwaehnt": "1899 / 1938",
     "ehepartner": "Ernst",
     "bemerkungen": "",
-    "pruefen": "ja",
+    "pruefen": "",
     "hochzeitsdatum": ""
   },
   {
