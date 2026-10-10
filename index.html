@@ -155,7 +155,7 @@
   .tablewrap::-webkit-scrollbar-thumb{background:var(--accent); border-radius:7px}
   table.datatable{border-collapse:collapse; width:100%; font-size:13px; table-layout:fixed}
   table.datatable th, table.datatable td{
-    padding:8px 11px; border:1px solid var(--border); text-align:left; white-space:nowrap;
+    padding:8px 11px; border:1px solid var(--border); text-align:left; vertical-align:top; white-space:nowrap;
     overflow:hidden; text-overflow:ellipsis; position:relative;
   }
   table.datatable td.wrapcell{white-space:normal; overflow:visible; text-overflow:clip; word-break:break-word; vertical-align:top}
@@ -232,7 +232,7 @@
 <div id="printArea"></div>
 
 <script>
-document.getElementById("versionLabel").textContent = "v29 · Stand: 05.10.2026, 16:49 Uhr";
+document.getElementById("versionLabel").textContent = "v32 · Stand: 10.10.2026, 12:10 Uhr";
 
 const LS_KEY = "familie_karlshaus_config_v2";
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
@@ -307,6 +307,8 @@ let columnOrder = (() => {
 const FIELDS = [
   {key:"vorname", label:"Vorname"},
   {key:"maedchenname", label:"Mädchenname"},
+  {key:"mutter", label:"Mutter"},
+  {key:"vater", label:"Vater"},
   {key:"geburtsdatum", label:"geboren", type:"date"},
   {key:"todesdatum", label:"verstorben", type:"date"},
   {key:"beruf", label:"Beruf"},
@@ -316,7 +318,6 @@ const FIELDS = [
   {key:"hochzeitsdatum", label:"Heiratsdatum", type:"date"},
   {key:"erwaehnt", label:"Quelle"},
   {key:"bemerkungen", label:"Bemerkungen"},
-  {key:"pruefen", label:"Prüfen?"},
 ];
 const FIELDS_BY_KEY = Object.fromEntries(FIELDS.map(f => [f.key, f]));
 const WRAP_KEYS = ["wohnorte", "beruf", "bemerkungen"];
@@ -599,10 +600,6 @@ function wireOverlayClose(overlay){
 function deletePerson(id){
   if (!confirm(`${personName(id)} wirklich löschen?`)) return;
   state.personen = state.personen.filter(x => x.id !== id);
-  state.personen.forEach(x => {
-    if (x.mutter === id) x.mutter = null;
-    if (x.vater === id) x.vater = null;
-  });
   rebuildIndex();
   markDirty();
   currentPersonId = null;
@@ -618,6 +615,8 @@ function renderPersonForm(editId){
         <h3>${p ? "Person bearbeiten" : "Neue Person"}</h3>
         <div class="field"><label>Vorname</label><input type="text" id="pfVorname" value="${p ? escapeHtml(p.vorname||"") : ""}"></div>
         <div class="field"><label>Mädchenname (falls abweichend)</label><input type="text" id="pfMaedchenname" value="${p ? escapeHtml(p.maedchenname||"") : ""}"></div>
+        <div class="field"><label>Mutter</label><input type="text" id="pfMutter" value="${p ? escapeHtml(p.mutter||"") : ""}"></div>
+        <div class="field"><label>Vater</label><input type="text" id="pfVater" value="${p ? escapeHtml(p.vater||"") : ""}"></div>
         <div class="field"><label>Geburtsdatum</label><input type="date" id="pfGeburtsdatum" value="${p ? p.geburtsdatum||"" : ""}"></div>
         <div class="field"><label>Todesdatum</label><input type="date" id="pfTodesdatum" value="${p ? p.todesdatum||"" : ""}"></div>
         <div class="field"><label>Beruf</label><input type="text" id="pfBeruf" value="${p ? escapeHtml(p.beruf||"") : ""}"></div>
@@ -647,6 +646,8 @@ function renderPersonForm(editId){
     const data = {
       vorname: document.getElementById("pfVorname").value.trim(),
       maedchenname: document.getElementById("pfMaedchenname").value.trim(),
+      mutter: document.getElementById("pfMutter").value.trim(),
+      vater: document.getElementById("pfVater").value.trim(),
       geburtsdatum: document.getElementById("pfGeburtsdatum").value,
       todesdatum: document.getElementById("pfTodesdatum").value,
       beruf: document.getElementById("pfBeruf").value.trim(),
@@ -665,7 +666,7 @@ function renderPersonForm(editId){
       savedId = p.id;
     } else {
       savedId = nextId();
-      state.personen.push({ id: savedId, mutter: null, vater: null, ...data });
+      state.personen.push({ id: savedId, ...data });
     }
     rebuildIndex();
     markDirty();
@@ -874,22 +875,10 @@ function tnode(id, isSelf){
     ${year ? `<div class="yr">*${year}</div>` : ""}
   </div>`;
 }
-function chipsOrNone(ids){
-  return ids.length ? ids.map(id => `<span class="chip" data-person="${id}">${escapeHtml(personName(id))}</span>`).join("") : `<div class="meta">Keine Angabe</div>`;
+function tnodeText(name){
+  return `<div class="tnode">${escapeHtml(name)}</div>`;
 }
 function parentsOf(p){ return [p.mutter, p.vater].filter(Boolean); }
-function siblingsOf(id, p){
-  if (!p.mutter && !p.vater) return [];
-  const set = new Set();
-  state.personen.forEach(other => {
-    if (other.id === id) return;
-    if ((p.mutter && other.mutter === p.mutter) || (p.vater && other.vater === p.vater)) set.add(other.id);
-  });
-  return [...set];
-}
-function childrenOf(id){
-  return state.personen.filter(p => p.mutter === id || p.vater === id).map(p => p.id);
-}
 
 function renderDetail(id){
   const p = state.personById[id];
@@ -897,22 +886,18 @@ function renderDetail(id){
   if (!p) { currentPersonId = null; render(); return; }
 
   const eltern = parentsOf(p);
-  const geschwister = siblingsOf(id, p);
-  const kinder = childrenOf(id);
 
   main.innerHTML = `
     <button class="back-btn" id="backBtn">‹ Zurück zur Suche</button>
 
     <div class="tree">
-      ${eltern.length ? `<div class="trow">${eltern.map(pid => tnode(pid)).join("")}</div><div class="tconn"></div>` : ""}
+      ${eltern.length ? `<div class="trow">${eltern.map(name => tnodeText(name)).join("")}</div><div class="tconn"></div>` : ""}
       <div class="trow">
-        ${geschwister.map(pid => tnode(pid)).join("")}
         <div class="tunion">
           ${tnode(id, true)}
           ${p.ehepartner ? `<span class="sep">⚭</span><div class="tnode">${escapeHtml(p.ehepartner)}${p.hochzeitsdatum ? `<div class="yr">${fmtDate(p.hochzeitsdatum)}</div>` : ""}</div>` : ""}
         </div>
       </div>
-      ${kinder.length ? `<div class="tconn"></div><div class="trow">${kinder.map(pid => tnode(pid)).join("")}</div>` : ""}
     </div>
 
     <div class="card">
