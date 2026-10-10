@@ -929,7 +929,7 @@
     "wohnorte": "Neue Friedrichstr. 43 / Memelerstr. 44",
     "kennzeichen": "",
     "bemerkungen": "Sohn von Josef",
-    "pruefen": "ja",
+    "pruefen": "",
     "vorname": "Otto",
     "id": "p58",
     "erwaehnt": "1952–1956",
@@ -1472,8 +1472,8 @@
   },
   {
     "id": "p91",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Z Wwe Otto",
     "maedchenname": "",
     "geburtsdatum": "",
@@ -1484,7 +1484,7 @@
     "erwaehnt": "1896",
     "ehepartner": "",
     "bemerkungen": "",
-    "pruefen": "ja",
+    "pruefen": "",
     "hochzeitsdatum": ""
   },
   {
