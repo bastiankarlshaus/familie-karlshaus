@@ -1133,8 +1133,8 @@
   },
   {
     "id": "p72",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Wilhelmine Juliane Selma",
     "maedchenname": "",
     "geburtsdatum": "1869-11-15",
@@ -1145,7 +1145,8 @@
     "erwaehnt": "",
     "ehepartner": "",
     "bemerkungen": "Tochter von Johann Wilhelm dÄ & Juliana Schmachtenbeg",
-    "pruefen": "ja"
+    "pruefen": "",
+    "hochzeitsdatum": ""
   },
   {
     "id": "p73",
