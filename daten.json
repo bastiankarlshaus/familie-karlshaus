@@ -1674,8 +1674,8 @@
   },
   {
     "id": "p105",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Johann",
     "maedchenname": "",
     "geburtsdatum": "",
@@ -1686,7 +1686,8 @@
     "erwaehnt": "Internetsuche",
     "ehepartner": "",
     "bemerkungen": "",
-    "pruefen": "ja"
+    "pruefen": "",
+    "hochzeitsdatum": ""
   },
   {
     "id": "p106",
