@@ -2382,8 +2382,8 @@
   },
   {
     "id": "p145",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Helmut",
     "maedchenname": "",
     "geburtsdatum": "",
@@ -2392,7 +2392,7 @@
     "wohnorte": "",
     "zweig": "",
     "erwaehnt": "Heritage",
-    "ehepartner": "Helene Dörpelkus, + 2006",
+    "ehepartner": "Helene Dörpelkus, *1911, + 2006",
     "hochzeitsdatum": "",
     "bemerkungen": "Website von Unda Karlshaus",
     "pruefen": ""
