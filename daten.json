@@ -1099,8 +1099,8 @@
   },
   {
     "id": "p70",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Johann Wilhelm dÄ",
     "maedchenname": "",
     "geburtsdatum": "",
@@ -1111,7 +1111,7 @@
     "erwaehnt": "StA Wpt und Adr VZ  1810-1930",
     "ehepartner": "Juliana Schmachtenberg",
     "bemerkungen": "Vater von Wilhelm Otto, Wilhelmine Juliane Selma, Heinrich Wilhelm Ernst\nHeiratsurkunde nicht fundbar",
-    "pruefen": "ja",
+    "pruefen": "",
     "hochzeitsdatum": "1863-11-06"
   },
   {
