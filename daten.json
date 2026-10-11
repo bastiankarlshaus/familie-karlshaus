@@ -1871,8 +1871,8 @@
   },
   {
     "id": "p116",
-    "mutter": null,
-    "vater": null,
+    "mutter": "Emma aus dem Siepen",
+    "vater": "Wilhelm Otto",
     "vorname": "Ernst",
     "maedchenname": "",
     "geburtsdatum": "1899-10-19",
@@ -1883,7 +1883,7 @@
     "erwaehnt": "",
     "ehepartner": "Anne Auguste Simon",
     "hochzeitsdatum": "1919-04-05",
-    "bemerkungen": "Sohn von Wilhelm Otto und Emma aus dem Siepen",
+    "bemerkungen": "",
     "pruefen": ""
   },
   {
