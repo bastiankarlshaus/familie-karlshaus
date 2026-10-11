@@ -1234,8 +1234,8 @@
   },
   {
     "id": "p78",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Wilhelmine Berta",
     "maedchenname": "",
     "geburtsdatum": "1855-05-25",
@@ -1245,7 +1245,7 @@
     "zweig": "",
     "erwaehnt": "1. Besuch StA Wpt",
     "ehepartner": "",
-    "bemerkungen": "Geburtsurkunde nicht lesbar",
+    "bemerkungen": "Geburtsurkunde nicht lesbar\n1. Besuch StA Wpt",
     "pruefen": "",
     "hochzeitsdatum": ""
   },
