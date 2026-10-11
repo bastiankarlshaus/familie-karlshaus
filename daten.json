@@ -1656,8 +1656,8 @@
   },
   {
     "id": "p103",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Otto",
     "maedchenname": "",
     "geburtsdatum": "",
@@ -1665,10 +1665,11 @@
     "beruf": "Stadt. Angestellter",
     "wohnorte": "Am Opphof 4",
     "zweig": "",
-    "erwaehnt": "1952-1953",
+    "erwaehnt": "Adr Vz 1952-1953",
     "ehepartner": "",
     "bemerkungen": "",
-    "pruefen": "ja"
+    "pruefen": "",
+    "hochzeitsdatum": ""
   },
   {
     "id": "p104",
