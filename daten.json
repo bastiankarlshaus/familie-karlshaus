@@ -1303,8 +1303,8 @@
   },
   {
     "id": "p82",
-    "mutter": null,
-    "vater": null,
+    "mutter": "Anna Catharina Karlshaus",
+    "vater": "",
     "vorname": "Wilhelmine",
     "maedchenname": "",
     "geburtsdatum": "1826-01-01",
@@ -1312,10 +1312,10 @@
     "beruf": "",
     "wohnorte": "",
     "zweig": "",
-    "erwaehnt": "STa Wpt",
+    "erwaehnt": "StA Wpt",
     "ehepartner": "Philipp Aumand Enders",
     "bemerkungen": "Vater unbekannt\nMutter ist Anna Catharina Karlshaus , verheiratete Lohe",
-    "pruefen": "ja",
+    "pruefen": "",
     "hochzeitsdatum": "1852-05-29"
   },
   {
