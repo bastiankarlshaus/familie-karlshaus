@@ -1218,8 +1218,8 @@
   },
   {
     "id": "p77",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Johann Wilhem dJ",
     "maedchenname": "",
     "geburtsdatum": "1902-02-15",
@@ -1230,7 +1230,7 @@
     "erwaehnt": "StA Wpt",
     "ehepartner": "Maria Augusta Thissen",
     "bemerkungen": "Sohn von Heinrich Wilhelm Ernst",
-    "pruefen": "ja",
+    "pruefen": "",
     "hochzeitsdatum": "1929-04-04"
   },
   {
