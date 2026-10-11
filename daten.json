@@ -1839,8 +1839,8 @@
   },
   {
     "id": "p114",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Johann Heinrich",
     "maedchenname": "",
     "geburtsdatum": "",
@@ -1850,8 +1850,9 @@
     "zweig": "",
     "erwaehnt": "StA Wülfrath 30.09.2026",
     "ehepartner": "Anna Catharina Poth",
-    "bemerkungen": "Heirat 05.05.1834",
-    "pruefen": "ja"
+    "bemerkungen": "",
+    "pruefen": "",
+    "hochzeitsdatum": "1834-05-05"
   },
   {
     "id": "p115",
