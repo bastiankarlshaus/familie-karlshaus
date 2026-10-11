@@ -1571,8 +1571,8 @@
   },
   {
     "id": "p98",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Ernst",
     "maedchenname": "",
     "geburtsdatum": "",
@@ -1582,7 +1582,7 @@
     "zweig": "",
     "erwaehnt": "",
     "ehepartner": "",
-    "bemerkungen": "Sind Ernst und Hellmut Brüder?",
+    "bemerkungen": "Sind Ernst und Helmut Brüder?",
     "pruefen": "",
     "hochzeitsdatum": ""
   },
