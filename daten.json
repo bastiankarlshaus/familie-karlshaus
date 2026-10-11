@@ -1673,8 +1673,8 @@
   },
   {
     "id": "p104",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Otto",
     "maedchenname": "",
     "geburtsdatum": "",
@@ -1682,10 +1682,11 @@
     "beruf": "Kraftfahrer",
     "wohnorte": "Am Opphof 4",
     "zweig": "",
-    "erwaehnt": "1956",
+    "erwaehnt": "Adr Vz 1956",
     "ehepartner": "",
     "bemerkungen": "",
-    "pruefen": "ja"
+    "pruefen": "",
+    "hochzeitsdatum": ""
   },
   {
     "id": "p105",
