@@ -1201,8 +1201,8 @@
   },
   {
     "id": "p75",
-    "mutter": null,
-    "vater": null,
+    "mutter": "Emma aus dem Siepen",
+    "vater": "Heinrich Wilhelm Ernst",
     "vorname": "Adele Anna Olga",
     "maedchenname": "",
     "geburtsdatum": "1898-02-20",
@@ -1210,9 +1210,9 @@
     "beruf": "",
     "wohnorte": "",
     "zweig": "",
-    "erwaehnt": "STa Wpt",
-    "ehepartner": "Gustav Heinr. Eugen Blink",
-    "bemerkungen": "Tochter von Heinrich Wilhelm Ernst und Emma aus dem Siepen",
+    "erwaehnt": "StA Wpt",
+    "ehepartner": "Gustav Heinrich Eugen Blöink",
+    "bemerkungen": "",
     "pruefen": "",
     "hochzeitsdatum": "1920-02-14"
   },
