@@ -1150,8 +1150,8 @@
   },
   {
     "id": "p73",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Heinrich Wilhelm Ernst",
     "maedchenname": "",
     "geburtsdatum": "1867-05-15",
@@ -1159,10 +1159,10 @@
     "beruf": "",
     "wohnorte": "Geb oder 15.05.1857 \nMarienstr. 62\nGermanenstr.",
     "zweig": "",
-    "erwaehnt": "StA Wut",
+    "erwaehnt": "StA Wpt",
     "ehepartner": "Emma aus dem Siepen Wwe von Wilhelm Otto Karlshaus",
     "bemerkungen": "Eltern von Adele Anna Olga, Johann Wilhelm dJ, August Walter Helmut\nSohn von Johann Wilhelm dÄ & Juliana Schmachtenbeg",
-    "pruefen": "ja",
+    "pruefen": "",
     "hochzeitsdatum": "1897-07-04"
   },
   {
