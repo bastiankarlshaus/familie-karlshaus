@@ -1201,8 +1201,8 @@
   },
   {
     "id": "p76",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "August Walter Helmut",
     "maedchenname": "",
     "geburtsdatum": "1908-04-04",
@@ -1211,10 +1211,10 @@
     "wohnorte": "",
     "zweig": "",
     "erwaehnt": "",
-    "ehepartner": "Helene Döppelkuss, geb 15.01.1911",
-    "bemerkungen": "Sohn von Heinrich Wilhelm Ernst\nHeirat 15. Mai 1934, Zeuge:Ernst Karlshaus",
+    "ehepartner": "Helene Dörpelkuss, geb 15.01.1911",
+    "bemerkungen": "Sohn von Heinrich Wilhelm Ernst",
     "pruefen": "",
-    "hochzeitsdatum": ""
+    "hochzeitsdatum": "1934-05-15"
   },
   {
     "id": "p77",
