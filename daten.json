@@ -1167,8 +1167,8 @@
   },
   {
     "id": "p74",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Wilhelm Walter Otto",
     "maedchenname": "",
     "geburtsdatum": "1890-04-18",
@@ -1179,7 +1179,7 @@
     "erwaehnt": "",
     "ehepartner": "Katharina Penquitt",
     "bemerkungen": "Sohn von Wilhelm Otto & Emma aus den Siepen",
-    "pruefen": "ja",
+    "pruefen": "",
     "hochzeitsdatum": "1917-03-21"
   },
   {
