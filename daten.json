@@ -2235,8 +2235,8 @@
   },
   {
     "id": "p139",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Johann Heinrich",
     "maedchenname": "",
     "geburtsdatum": "",
@@ -2247,7 +2247,7 @@
     "erwaehnt": "Heritage",
     "ehepartner": "Maria Christina Borbeck",
     "hochzeitsdatum": "",
-    "bemerkungen": "T: Anna Maria *13.07.1818",
+    "bemerkungen": "T: Anna Maria *13.07.1818\nT: Wilhelmiine* (struecker)",
     "pruefen": ""
   },
   {
