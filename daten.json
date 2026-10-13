@@ -1520,19 +1520,20 @@
   },
   {
     "id": "p97",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Willi",
     "maedchenname": "",
     "geburtsdatum": "",
     "todesdatum": "",
     "beruf": "Techniker",
-    "wohnorte": "Königstor. 170",
+    "wohnorte": "Königstr. 170",
     "zweig": "",
-    "erwaehnt": "1938",
+    "erwaehnt": "Adr Vz 1938",
     "ehepartner": "",
     "bemerkungen": "",
-    "pruefen": "ja"
+    "pruefen": "",
+    "hochzeitsdatum": ""
   },
   {
     "id": "p98",
