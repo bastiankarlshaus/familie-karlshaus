@@ -1504,19 +1504,20 @@
   },
   {
     "id": "p96",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Willi",
     "maedchenname": "",
     "geburtsdatum": "",
     "todesdatum": "",
     "beruf": "Lebensmittelhandlung",
-    "wohnorte": "Charlottenstraße. 17",
+    "wohnorte": "Charlottenstraße 17,\nLuisenstraße. 78",
     "zweig": "",
-    "erwaehnt": "1935",
+    "erwaehnt": "Adr Vz 1935",
     "ehepartner": "",
     "bemerkungen": "",
-    "pruefen": "ja"
+    "pruefen": "",
+    "hochzeitsdatum": ""
   },
   {
     "id": "p97",
