@@ -1282,8 +1282,8 @@
   },
   {
     "id": "p85",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Maria Catharina",
     "maedchenname": "",
     "geburtsdatum": "",
@@ -1292,9 +1292,10 @@
     "wohnorte": "",
     "zweig": "",
     "erwaehnt": "",
-    "ehepartner": "Abel, Abraham oder Eigenmann, Johann Wilhelm",
+    "ehepartner": "Abel, Abraham oder Eigenmann od Johann Wilhelm",
     "bemerkungen": "",
-    "pruefen": "ja"
+    "pruefen": "",
+    "hochzeitsdatum": ""
   },
   {
     "id": "p86",
