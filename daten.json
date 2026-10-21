@@ -294,8 +294,8 @@
     "geburtsdatum": "1928-08-12",
     "todesdatum": "2019-11-14",
     "beruf": "",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "ehepartner": "Wolfgang-Franz",
     "hochzeitsdatum": "",
     "wohnorte": "",
@@ -303,7 +303,7 @@
     "bemerkungen": "Mutter von Martin",
     "pruefen": "",
     "erwaehnt": "Heritage",
-    "zweig": "Bä"
+    "zweig": "19280812"
   },
   {
     "id": "p20",
