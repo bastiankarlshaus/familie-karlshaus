@@ -616,8 +616,8 @@
     "geburtsdatum": "1897-03-28",
     "todesdatum": "",
     "beruf": "Schlosser (1926) / Städt. Angestellter (1952)",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "ehepartner": "",
     "hochzeitsdatum": "",
     "wohnorte": "Höchsten 38\nAm Opphof 4",
@@ -627,7 +627,7 @@
     "vorname": "Ewald",
     "id": "p41",
     "erwaehnt": "Adr Vz 1926–1952",
-    "zweig": ""
+    "zweig": "18970328"
   },
   {
     "maedchenname": "",
