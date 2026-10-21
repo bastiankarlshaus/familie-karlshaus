@@ -1012,8 +1012,8 @@
     "geburtsdatum": "1927-04-10",
     "todesdatum": "2020-01-21",
     "beruf": "",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "ehepartner": "Karl Dillenberger",
     "hochzeitsdatum": "",
     "wohnorte": "",
@@ -1023,7 +1023,7 @@
     "vorname": "Ursula",
     "id": "p69",
     "erwaehnt": "",
-    "zweig": ""
+    "zweig": "19270121"
   },
   {
     "id": "p70",
