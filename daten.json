@@ -42,8 +42,8 @@
     "geburtsdatum": "1929-06-18",
     "todesdatum": "2016-12-19",
     "beruf": "Heizer",
-    "mutter": "",
-    "vater": "",
+    "mutter": "Clara Schumacher",
+    "vater": "Friedrich Wilhelm",
     "ehepartner": "Maria Späte",
     "hochzeitsdatum": "",
     "wohnorte": "Hügelstr. 21 / 26",
@@ -51,7 +51,7 @@
     "bemerkungen": "Vater von Daniel & Christoph",
     "pruefen": "",
     "erwaehnt": "",
-    "zweig": "Bä"
+    "zweig": "19290618"
   },
   {
     "id": "p6",
