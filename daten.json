@@ -222,8 +222,8 @@
     "geburtsdatum": "1987-07-02",
     "todesdatum": "",
     "beruf": "",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "ehepartner": "",
     "hochzeitsdatum": "",
     "wohnorte": "",
@@ -231,7 +231,7 @@
     "bemerkungen": "Sohn von Martin & Lydia",
     "pruefen": "",
     "erwaehnt": "",
-    "zweig": "Bä"
+    "zweig": "19870702"
   },
   {
     "id": "p16",
