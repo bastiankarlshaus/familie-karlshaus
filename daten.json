@@ -168,8 +168,8 @@
     "geburtsdatum": "1981-08-24",
     "todesdatum": "",
     "beruf": "",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "ehepartner": "",
     "hochzeitsdatum": "",
     "wohnorte": "",
@@ -177,7 +177,7 @@
     "bemerkungen": "",
     "pruefen": "",
     "erwaehnt": "",
-    "zweig": "Bä"
+    "zweig": "19810824"
   },
   {
     "id": "p13",
