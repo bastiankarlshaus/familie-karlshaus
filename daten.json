@@ -150,8 +150,8 @@
     "geburtsdatum": "1960-04-06",
     "todesdatum": "",
     "beruf": "",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "ehepartner": "Lydia",
     "hochzeitsdatum": "",
     "wohnorte": "",
@@ -159,7 +159,7 @@
     "bemerkungen": "Sohn von Wolfgang",
     "pruefen": "",
     "erwaehnt": "",
-    "zweig": "Bä"
+    "zweig": "19600406"
   },
   {
     "id": "p12",
