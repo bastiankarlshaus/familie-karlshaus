@@ -96,8 +96,8 @@
     "geburtsdatum": "1851-01-25",
     "todesdatum": "",
     "beruf": "",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "ehepartner": "August dÄ",
     "hochzeitsdatum": "",
     "wohnorte": "Rosenstrasse. oder Josephstrasse",
@@ -105,7 +105,7 @@
     "bemerkungen": "Mutter von Wilhelm & August dJ",
     "pruefen": "",
     "erwaehnt": "StA Wpt",
-    "zweig": "Bä"
+    "zweig": "18510125"
   },
   {
     "id": "p9",
