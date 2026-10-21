@@ -6,8 +6,8 @@
     "geburtsdatum": "2000-12-07",
     "todesdatum": "",
     "beruf": "",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "ehepartner": "",
     "hochzeitsdatum": "",
     "wohnorte": "Cuxhaven",
@@ -15,7 +15,7 @@
     "bemerkungen": "Sohn von Martin & Lydia",
     "pruefen": "",
     "erwaehnt": "",
-    "zweig": "Bä"
+    "zweig": "20001207"
   },
   {
     "id": "p2",
