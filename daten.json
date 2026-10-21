@@ -114,8 +114,8 @@
     "geburtsdatum": "1955-03-18",
     "todesdatum": "",
     "beruf": "",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "ehepartner": "Claudia Creuzburg",
     "hochzeitsdatum": "",
     "wohnorte": "",
@@ -123,7 +123,7 @@
     "bemerkungen": "Vater von Ann-Kathrin & Bastian",
     "pruefen": "",
     "erwaehnt": "",
-    "zweig": "Bä"
+    "zweig": "19550318"
   },
   {
     "id": "p10",
