@@ -402,8 +402,8 @@
     "geburtsdatum": "1949-11-02",
     "todesdatum": "2017-10-18",
     "beruf": "",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "ehepartner": "Michael",
     "hochzeitsdatum": "1981-02-24",
     "wohnorte": "",
@@ -411,7 +411,7 @@
     "bemerkungen": "",
     "pruefen": "",
     "erwaehnt": "bekannt",
-    "zweig": "Bä"
+    "zweig": "19491102"
   },
   {
     "id": "p28",
