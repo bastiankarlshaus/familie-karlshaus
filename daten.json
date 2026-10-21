@@ -24,8 +24,8 @@
     "geburtsdatum": "1925-06-28",
     "todesdatum": "1999-01-17",
     "beruf": "Beamter",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "ehepartner": "Gerda Kniep",
     "hochzeitsdatum": "",
     "wohnorte": "",
@@ -33,7 +33,7 @@
     "bemerkungen": "",
     "pruefen": "",
     "erwaehnt": "bekannt",
-    "zweig": ""
+    "zweig": "19250628"
   },
   {
     "id": "p3",
