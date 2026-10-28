@@ -2299,5 +2299,22 @@
     "hochzeitsdatum": "",
     "bemerkungen": "Maria Catharina bringt am 12.02.1830 unverheiratet die Tochter Wilhelmina mit Hilfe einer Hebamme im Schafstall zur Welt",
     "pruefen": ""
+  },
+  {
+    "id": "p153",
+    "vorname": "Wilhelmina",
+    "maedchenname": "",
+    "mutter": "Maria Catharina",
+    "vater": "",
+    "geburtsdatum": "1830-02-12",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "StA 19.10.2026",
+    "ehepartner": "",
+    "hochzeitsdatum": "",
+    "bemerkungen": "Sie kommt als uneheliches Kind unter Mitwirkung einer Hebamme zur Welt.",
+    "pruefen": ""
   }
 ]
