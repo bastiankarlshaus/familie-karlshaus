@@ -1316,8 +1316,8 @@
   },
   {
     "id": "p87",
-    "mutter": null,
-    "vater": null,
+    "mutter": "",
+    "vater": "",
     "vorname": "Heinrich Wilhelm",
     "maedchenname": "",
     "geburtsdatum": "",
@@ -1327,7 +1327,7 @@
     "zweig": "",
     "erwaehnt": "StA Wuppertal 1558-1898, Heritage",
     "ehepartner": "Wilhelma Korten",
-    "bemerkungen": "T: Julie Anna *09.04.1829",
+    "bemerkungen": "T: Julie Anna *09.04.1829\nTodgeburt: + 04.01.1835 mit Wilhelma Korten",
     "pruefen": "",
     "hochzeitsdatum": ""
   },
