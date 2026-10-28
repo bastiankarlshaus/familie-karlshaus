@@ -2316,5 +2316,22 @@
     "hochzeitsdatum": "",
     "bemerkungen": "Sie kommt als uneheliches Kind unter Mitwirkung einer Hebamme zur Welt.",
     "pruefen": ""
+  },
+  {
+    "id": "p154",
+    "vorname": "Helene Maria",
+    "maedchenname": "",
+    "mutter": "",
+    "vater": "",
+    "geburtsdatum": "",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "",
+    "erwaehnt": "",
+    "ehepartner": "Franz Clemens Nolte",
+    "hochzeitsdatum": "1922-09-05",
+    "bemerkungen": "",
+    "pruefen": ""
   }
 ]
