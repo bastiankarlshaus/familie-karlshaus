@@ -191,12 +191,14 @@
     header, .fab, #modalRoot, #saveBarRoot, main{ display:none !important; }
     body{ background:#fff; color:#000; }
     #printArea{ display:block !important; }
-    #printArea h2{ margin:0 0 10px; font-size:16px; }
-    #printArea table{ width:100%; border-collapse:collapse; table-layout:auto; font-size:10px; }
-    #printArea th, #printArea td{
-      border:1px solid #999; padding:4px 6px; text-align:left; white-space:normal; word-break:break-word;
-    }
-    @page { size: A4 landscape; margin: 10mm; }
+    #printArea .cardsgrid{ display:flex; flex-wrap:wrap; gap:8mm; }
+    #printArea .printcard{ width:88mm; break-inside:avoid; margin-bottom:6mm; }
+    table.cardtbl{ width:100%; border-collapse:collapse; table-layout:fixed; font-size:12px; }
+    table.cardtbl th, table.cardtbl td{ border:1px solid #000; padding:5px 7px; text-align:left; height:24px; }
+    table.cardtbl th{ text-align:center; font-weight:700; font-size:14px; padding:7px; }
+    table.cardtbl td.lbl{ width:16%; font-weight:600; white-space:nowrap }
+    table.cardtbl td.empty-row{ text-align:center; color:#999; height:44px; font-size:11px }
+    @page { size: A4 portrait; margin: 12mm; }
   }
 </style>
 </head>
@@ -232,7 +234,7 @@
 <div id="printArea"></div>
 
 <script>
-document.getElementById("versionLabel").textContent = "v32 · Stand: 10.10.2026, 12:10 Uhr";
+document.getElementById("versionLabel").textContent = "v34 · Stand: 29.10.2026, 19:57 Uhr";
 
 const LS_KEY = "familie_karlshaus_config_v2";
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
@@ -549,28 +551,35 @@ function currentFilteredSortedItems(){
   return items;
 }
 
-function buildPrintArea(colKeys, rows){
-  const cols = colKeys.map(k => FIELDS_BY_KEY[k]).filter(Boolean);
+function buildPrintArea(rows){
   const area = document.getElementById("printArea");
-  area.innerHTML = `
-    <h2>🌳 Familie Karlshaus – ${rows.length} Person${rows.length === 1 ? "" : "en"}</h2>
-    <table>
-      <thead><tr>${cols.map(c => `<th>${escapeHtml(c.label)}</th>`).join("")}</tr></thead>
-      <tbody>${rows.map(p => `<tr>${cols.map(c => `<td>${escapeHtml(cellDisplay(p, c.key))}</td>`).join("")}</tr>`).join("")}</tbody>
-    </table>`;
+  area.innerHTML = `<div class="cardsgrid">${rows.map(p => `
+    <div class="printcard">
+      <table class="cardtbl">
+        <tr><th colspan="4">&quot;${escapeHtml(personName(p.id))}&quot;</th></tr>
+        <tr><td class="lbl">*:</td><td>${escapeHtml(p.geburtsdatum ? fmtDate(p.geburtsdatum) : "")}</td><td class="lbl">Ehep:</td><td>${escapeHtml(p.ehepartner || "")}</td></tr>
+        <tr><td class="lbl">+:</td><td>${escapeHtml(p.todesdatum ? fmtDate(p.todesdatum) : "")}</td><td class="lbl">Heirat:</td><td>${escapeHtml(p.hochzeitsdatum ? fmtDate(p.hochzeitsdatum) : "")}</td></tr>
+        <tr><td class="lbl">M:</td><td>${escapeHtml(p.mutter || "")}</td><td class="lbl">V:</td><td>${escapeHtml(p.vater || "")}</td></tr>
+        <tr><td colspan="4" class="empty-row">- leer -</td></tr>
+      </table>
+    </div>`).join("")}</div>`;
 }
 
 function renderPrintModal(){
   const root = document.getElementById("modalRoot");
   const items = currentFilteredSortedItems();
-  const cols = orderedFields();
   root.innerHTML = `
     <div class="modal-overlay" id="overlay">
       <div class="modal wide">
-        <h3>Drucken</h3>
-        <div class="section-label">Spalten</div>
-        <div class="checklist" id="printCols">${cols.map(c => `<label><input type="checkbox" value="${c.key}" checked> ${escapeHtml(c.label)}</label>`).join("")}</div>
-        <div class="meta" style="margin-top:12px">${items.length} Person${items.length === 1 ? "" : "en"} werden gedruckt (aktuelle Such-/Filterauswahl).</div>
+        <h3>Karteikarten drucken</h3>
+        <div class="section-label">Personen (${items.length} aktuell angezeigt)</div>
+        <div class="btn-row" style="margin-top:0; margin-bottom:8px">
+          <button class="btn secondary" id="printRowsAll">Alle auswählen</button>
+          <button class="btn secondary" id="printRowsNone">Keine auswählen</button>
+        </div>
+        <div class="checklist" id="printRows" style="display:block">
+          ${items.map(({p}) => `<label style="display:flex; width:100%; box-sizing:border-box; background:none; border:none; padding:4px 0"><input type="checkbox" value="${p.id}" checked style="width:auto; margin-right:8px"> ${escapeHtml(personName(p.id))}</label>`).join("")}
+        </div>
         <div class="btn-row">
           <button class="btn" id="printGo">Drucken</button>
           <button class="btn secondary" id="printCancel">Abbrechen</button>
@@ -579,10 +588,16 @@ function renderPrintModal(){
     </div>`;
   wireOverlayClose(document.getElementById("overlay"));
   document.getElementById("printCancel").addEventListener("click", closeModal);
+  document.getElementById("printRowsAll").addEventListener("click", () => {
+    root.querySelectorAll("#printRows input").forEach(cb => cb.checked = true);
+  });
+  document.getElementById("printRowsNone").addEventListener("click", () => {
+    root.querySelectorAll("#printRows input").forEach(cb => cb.checked = false);
+  });
   document.getElementById("printGo").addEventListener("click", () => {
-    const selectedCols = Array.from(root.querySelectorAll("#printCols input:checked")).map(el => el.value);
-    const rows = items.map(x => x.p);
-    buildPrintArea(selectedCols, rows);
+    const selectedIds = new Set(Array.from(root.querySelectorAll("#printRows input:checked")).map(el => el.value));
+    const rows = items.filter(x => selectedIds.has(x.p.id)).map(x => x.p);
+    buildPrintArea(rows);
     closeModal();
     setTimeout(() => window.print(), 50);
   });
