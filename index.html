@@ -201,7 +201,11 @@
     table.cardtbl th{ text-align:center; font-weight:700; font-size:14px; padding:7px; }
     table.cardtbl td.lbl{ width:1%; font-weight:600; white-space:nowrap }
     table.cardtbl td.empty-row{ text-align:center; color:#999; height:44px; font-size:11px }
-    @page { size: A4 portrait; margin: 12mm; }
+    #printArea h2{ margin:0 0 10px; font-size:16px; }
+    #printArea table.listtbl{ width:100%; border-collapse:collapse; table-layout:auto; font-size:10px; }
+    #printArea table.listtbl th, #printArea table.listtbl td{
+      border:1px solid #999; padding:4px 6px; text-align:left; white-space:normal; word-break:break-word;
+    }
   }
 </style>
 </head>
@@ -237,7 +241,7 @@
 <div id="printArea"></div>
 
 <script>
-document.getElementById("versionLabel").textContent = "v35 · Stand: 29.10.2026, 20:36 Uhr";
+document.getElementById("versionLabel").textContent = "v36 · Stand: 29.10.2026, 20:48 Uhr";
 
 const LS_KEY = "familie_karlshaus_config_v2";
 const UNLOCK_KEY = "familie_karlshaus_unlocked";
@@ -554,7 +558,18 @@ function currentFilteredSortedItems(){
   return items;
 }
 
-function buildPrintArea(rows){
+function printNow(orientation){
+  let el = document.getElementById("printPageStyle");
+  if (!el) {
+    el = document.createElement("style");
+    el.id = "printPageStyle";
+    document.head.appendChild(el);
+  }
+  el.textContent = `@page { size: A4 ${orientation}; margin: ${orientation === "landscape" ? "10mm" : "12mm"}; }`;
+  setTimeout(() => window.print(), 50);
+}
+
+function buildPrintAreaCards(rows){
   const area = document.getElementById("printArea");
   area.innerHTML = `<div class="cardsgrid">${rows.map(p => `
     <div class="printcard">
@@ -568,21 +583,117 @@ function buildPrintArea(rows){
     </div>`).join("")}</div>`;
 }
 
+function buildPrintAreaTable(colKeys, rows){
+  const cols = colKeys.map(k => FIELDS_BY_KEY[k]).filter(Boolean);
+  const area = document.getElementById("printArea");
+  area.innerHTML = `
+    <h2>🌳 Familie Karlshaus – ${rows.length} Person${rows.length === 1 ? "" : "en"}</h2>
+    <table class="listtbl">
+      <thead><tr>${cols.map(c => `<th>${escapeHtml(c.label)}</th>`).join("")}</tr></thead>
+      <tbody>${rows.map(p => `<tr>${cols.map(c => `<td>${escapeHtml(cellDisplay(p, c.key))}</td>`).join("")}</tr>`).join("")}</tbody>
+    </table>`;
+}
+
+function printSelectionTableHtml(items, selectedIds){
+  const cols = orderedFields();
+  return `
+    <div class="tablewrap" id="printTableWrap" style="max-height:320px; margin-top:0">
+      <table class="datatable" id="printSelTable">
+        <colgroup><col style="width:34px">${cols.map(c => `<col style="width:${widthFor(c.key)}px">`).join("")}</colgroup>
+        <thead><tr class="headRow">
+          <th style="cursor:default"></th>
+          ${cols.map(c => `<th data-key="${c.key}" draggable="true">${escapeHtml(c.label)}<div class="colResizer" data-key="${c.key}" draggable="false"></div></th>`).join("")}
+        </tr></thead>
+        <tbody>
+          ${items.map(({p}) => `<tr class="datarow" style="${p.pruefen ? "background:rgba(230,160,40,.15)" : ""}">
+            <td><input type="checkbox" class="printRowChk" value="${p.id}" ${selectedIds.has(p.id) ? "checked" : ""} style="width:auto; margin:0"></td>
+            ${cols.map(c => `<td class="${WRAP_KEYS.includes(c.key) ? "wrapcell" : ""}">${escapeHtml(cellDisplay(p, c.key))}</td>`).join("")}
+          </tr>`).join("")}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function wirePrintSelTable(selectedIds, rerender){
+  const wrap = document.getElementById("printTableWrap");
+  if (!wrap) return;
+  wrap.querySelectorAll(".printRowChk").forEach(cb => {
+    cb.addEventListener("change", () => {
+      if (cb.checked) selectedIds.add(cb.value); else selectedIds.delete(cb.value);
+    });
+  });
+  let draggedKey = null;
+  wrap.querySelectorAll("th[data-key]").forEach(th => {
+    th.addEventListener("dragstart", () => { draggedKey = th.dataset.key; th.classList.add("dragging"); });
+    th.addEventListener("dragend", () => th.classList.remove("dragging"));
+    th.addEventListener("dragover", e => e.preventDefault());
+    th.addEventListener("drop", e => {
+      e.preventDefault();
+      if (!draggedKey || draggedKey === th.dataset.key) return;
+      moveColumn(draggedKey, th.dataset.key);
+      rerender();
+    });
+  });
+  wrap.querySelectorAll(".colResizer").forEach(handle => {
+    handle.addEventListener("dragstart", e => e.preventDefault());
+    handle.addEventListener("pointerdown", e => {
+      e.preventDefault();
+      e.stopPropagation();
+      const key = handle.dataset.key;
+      const colIdx = orderedFields().findIndex(f => f.key === key) + 2;
+      const col = wrap.querySelector(`col:nth-child(${colIdx})`);
+      const startX = e.clientX;
+      const startWidth = widthFor(key);
+      handle.classList.add("resizing");
+      handle.setPointerCapture(e.pointerId);
+      const onMove = (ev) => {
+        const newWidth = Math.max(50, startWidth + (ev.clientX - startX));
+        if (col) col.style.width = newWidth + "px";
+      };
+      const onUp = (ev) => {
+        const newWidth = Math.max(50, startWidth + (ev.clientX - startX));
+        setWidth(key, newWidth);
+        handle.classList.remove("resizing");
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
+      };
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
+    });
+  });
+}
+
+let printMode = "karteikarte";
+
 function renderPrintModal(){
   const root = document.getElementById("modalRoot");
   const items = currentFilteredSortedItems();
+  const cols = orderedFields();
+  const selectedIds = new Set(items.map(x => x.p.id));
+
+  const modeTabs = `
+    <div class="btn-row" style="margin-top:0; margin-bottom:14px">
+      <button class="btn ${printMode === "karteikarte" ? "" : "secondary"}" id="modeKarte">Karteikarten</button>
+      <button class="btn ${printMode === "liste" ? "" : "secondary"}" id="modeListe">Liste (Tabelle)</button>
+    </div>`;
+
+  const body = printMode === "karteikarte" ? `
+      <div class="section-label">Personen (${items.length} aktuell angezeigt) – Spalten per Drag &amp; Drop verschiebbar</div>
+      <div class="btn-row" style="margin-top:0; margin-bottom:8px">
+        <button class="btn secondary" id="printRowsAll">Alle auswählen</button>
+        <button class="btn secondary" id="printRowsNone">Keine auswählen</button>
+      </div>
+      <div id="printSelTableHost"></div>` : `
+      <div class="section-label">Spalten</div>
+      <div class="checklist" id="printCols">${cols.map(c => `<label><input type="checkbox" value="${c.key}" checked> ${escapeHtml(c.label)}</label>`).join("")}</div>
+      <div class="meta" style="margin-top:12px">${items.length} Person${items.length === 1 ? "" : "en"} werden gedruckt (aktuelle Such-/Filterauswahl).</div>`;
+
   root.innerHTML = `
     <div class="modal-overlay" id="overlay">
       <div class="modal wide">
-        <h3>Karteikarten drucken</h3>
-        <div class="section-label">Personen (${items.length} aktuell angezeigt)</div>
-        <div class="btn-row" style="margin-top:0; margin-bottom:8px">
-          <button class="btn secondary" id="printRowsAll">Alle auswählen</button>
-          <button class="btn secondary" id="printRowsNone">Keine auswählen</button>
-        </div>
-        <div class="checklist" id="printRows" style="display:block">
-          ${items.map(({p}) => `<label style="display:flex; width:100%; box-sizing:border-box; background:none; border:none; padding:4px 0"><input type="checkbox" value="${p.id}" checked style="width:auto; margin-right:8px"> ${escapeHtml(personName(p.id))}</label>`).join("")}
-        </div>
+        <h3>Drucken</h3>
+        ${modeTabs}
+        ${body}
         <div class="btn-row">
           <button class="btn" id="printGo">Drucken</button>
           <button class="btn secondary" id="printCancel">Abbrechen</button>
@@ -591,19 +702,38 @@ function renderPrintModal(){
     </div>`;
   wireOverlayClose(document.getElementById("overlay"));
   document.getElementById("printCancel").addEventListener("click", closeModal);
-  document.getElementById("printRowsAll").addEventListener("click", () => {
-    root.querySelectorAll("#printRows input").forEach(cb => cb.checked = true);
-  });
-  document.getElementById("printRowsNone").addEventListener("click", () => {
-    root.querySelectorAll("#printRows input").forEach(cb => cb.checked = false);
-  });
-  document.getElementById("printGo").addEventListener("click", () => {
-    const selectedIds = new Set(Array.from(root.querySelectorAll("#printRows input:checked")).map(el => el.value));
-    const rows = items.filter(x => selectedIds.has(x.p.id)).map(x => x.p);
-    buildPrintArea(rows);
-    closeModal();
-    setTimeout(() => window.print(), 50);
-  });
+  document.getElementById("modeKarte").addEventListener("click", () => { printMode = "karteikarte"; renderPrintModal(); });
+  document.getElementById("modeListe").addEventListener("click", () => { printMode = "liste"; renderPrintModal(); });
+
+  if (printMode === "karteikarte") {
+    function renderSelTable(){
+      document.getElementById("printSelTableHost").innerHTML = printSelectionTableHtml(items, selectedIds);
+      wirePrintSelTable(selectedIds, renderSelTable);
+    }
+    renderSelTable();
+    document.getElementById("printRowsAll").addEventListener("click", () => {
+      items.forEach(x => selectedIds.add(x.p.id));
+      root.querySelectorAll(".printRowChk").forEach(cb => cb.checked = true);
+    });
+    document.getElementById("printRowsNone").addEventListener("click", () => {
+      selectedIds.clear();
+      root.querySelectorAll(".printRowChk").forEach(cb => cb.checked = false);
+    });
+    document.getElementById("printGo").addEventListener("click", () => {
+      const rows = items.filter(x => selectedIds.has(x.p.id)).map(x => x.p);
+      buildPrintAreaCards(rows);
+      closeModal();
+      printNow("portrait");
+    });
+  } else {
+    document.getElementById("printGo").addEventListener("click", () => {
+      const selectedCols = Array.from(root.querySelectorAll("#printCols input:checked")).map(el => el.value);
+      const rows = items.map(x => x.p);
+      buildPrintAreaTable(selectedCols, rows);
+      closeModal();
+      printNow("landscape");
+    });
+  }
 }
 
 function wireOverlayClose(overlay){
