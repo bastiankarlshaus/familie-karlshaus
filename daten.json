@@ -2452,5 +2452,22 @@
     "hochzeitsdatum": "",
     "bemerkungen": "Der Bruder Johann Peter hat dasselbe Geburtsdatum.\nHandelt es sich um Zwillinge ? Geburtsurkunde ?",
     "pruefen": ""
+  },
+  {
+    "id": "p162",
+    "vorname": "Franz Friederich",
+    "maedchenname": "",
+    "mutter": "Poth",
+    "vater": "Johann Heinrich",
+    "geburtsdatum": "1812-09-13",
+    "todesdatum": "",
+    "beruf": "",
+    "wohnorte": "",
+    "zweig": "18120913",
+    "erwaehnt": "",
+    "ehepartner": "",
+    "hochzeitsdatum": "",
+    "bemerkungen": "",
+    "pruefen": ""
   }
 ]
